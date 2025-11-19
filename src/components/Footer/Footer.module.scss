@@ -1,0 +1,21 @@
+.footer {
+  padding: 40px;
+  background: #111;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+
+  &__links {
+    display: flex;
+    gap: 20px;
+
+    a {
+      color: #aaa;
+      transition: 0.2s;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+.advantages {
+  padding: 200px 0;
+
+  &__title {
+    text-align: center;
+
+    margin-bottom: 50px;
+    font-size: 48px;
+    color: white;
+    margin-bottom: 18px
+  }
+
+  &__list {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  &__item {
+    padding: 20px 25px;
+    border-radius: 10px;
+    background: #e31e24;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+  }
+}

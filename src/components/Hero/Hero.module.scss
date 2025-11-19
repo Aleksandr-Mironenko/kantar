@@ -1,0 +1,40 @@
+.hero {
+  padding: 200px 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: left;
+  color: #fff;
+
+  &__container {
+    margin-left: 20%;
+  }
+
+  &__title {
+    font-size: 56px;
+    font-weight: 800;
+    max-width: 600px;
+  }
+
+
+  &__subtitle {
+    margin-top: 20px;
+    font-size: 20px;
+    max-width: 400px;
+    color: rgba(255, 255, 255, 0.5)
+  }
+
+  &__button {
+    display: inline-block;
+    margin-top: 40px;
+    margin-right: 15px;
+    padding: 15px 25px;
+    font-weight: 700;
+    border-radius: 16px;
+    color: #fff;
+    background: #e31e24;
+    transition: 0.2s;
+
+    &:hover {
+      background: #bf0f15;
+    }
+  }
+}

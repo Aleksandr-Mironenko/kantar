@@ -1,0 +1,84 @@
+.calculator {}
+
+
+.calculator__add {
+  margin-top: 20px;
+  background: none;
+  border: none;
+  color: #ff0d01;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+/* Примечание */
+.calculator__note {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 20px;
+  line-height: 1.4;
+}
+
+
+/* Правая колонка */
+.calculator__right {
+  width: 300px;
+  background: #f8f8ff;
+  border-radius: 20px;
+  padding: 24px;
+}
+
+
+.total__title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+
+.total__price {
+  margin-top: 10px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+
+.total__details {
+  margin-top: 10px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+.total__time {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+.total__button {
+  width: 100%;
+  margin-top: 20px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  background: #ff0d01;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+.total__phone {
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+
+.total__phone a {
+  color: #ff0d01;
+  font-weight: 600;
+}

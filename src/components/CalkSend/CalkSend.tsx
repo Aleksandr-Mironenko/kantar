@@ -600,7 +600,7 @@ export default function CalkSend() {
           <button className={styles.total__button}>Отправить заявку</button>
 
           <div className={styles.total__phone}>
-            Или оставьте заявку по номеру: <a href="tel:88006006600">8 800 600 66 00</a>
+            Или оставьте заявку по номеру: <a href="tel:+79101056423">+7 910 105 64 23</a>
           </div>
         </div>
       </div >

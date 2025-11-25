@@ -310,6 +310,7 @@ export default function CalkSend() {
     const where = whereCountry?.trim().toLowerCase() || "";
     let rf
     if (!fromCountry || !whereCountry || !fromCountryObj || !whereCountryObj) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPrice(0);
       return;
     }

@@ -29,19 +29,13 @@ interface City {
   numberZoneForeign: number
 }
 
-
 export default function CalkSend() {
-  const [fromCountry, setFromCountry] = useState("");
   const [fromCountryObj, setFromCountryObj] = useState<Country | null>(null);
-
-  const [fromCity, setFromCity] = useState("");
   const [fromCityObj, setFromCityObj] = useState<City | null>(null);
-
-  const [whereCountry, setWhereCountry] = useState("");
   const [whereCountryObj, setWhereCountryObj] = useState<Country | null>(null);
-
-  const [whereCity, setWhereCity] = useState("");
   const [whereCityObj, setWhereCityObj] = useState<City | null>(null);
+  const [price, setPrice] = useState<number>(0);
+  const [document, setDocument] = useState<"document" | "goods">("document");
 
   const [places, setPlaces] = useState<Place[]>([
     {
@@ -55,9 +49,7 @@ export default function CalkSend() {
       volume: 0
     },
   ]);
-  const [price, setPrice] = useState(0);
 
-  const [document, setDocument] = useState<"document" | "goods">("document");
 
   const updatePlace = (id: number, field: keyof Place, value: string | number) => {
     setPlaces(prev => prev.map(p => {
@@ -67,94 +59,50 @@ export default function CalkSend() {
 
       // Автоматически пересчитываем объёмный вес
       const vol = (updated.length * updated.width * updated.height) / 5000;
-      updated.volume = vol >= 0.2 ? Math.ceil(vol * 100) / 100 : 0;
+      updated.volume = vol >= 0.2 ? Math.ceil(vol * 100) / 100 : 0.2;
 
       return updated;
     }));
   };
 
-
-  function getVolume(p: Place): number | undefined {//расчет объемного веса и запись в состояние места
-    if (p.heft && p.places && p.length && p.width && p.height) {
-      const res = Math.ceil(((p.length * p.width * p.height) / 5000) * 100) / 100
-      const volume = res >= 0.2 ? res : 0
-      // updatePlace(p.id, "volume", volume)
-      return volume;
-    }
-  }
-
-
-  console.log(document, 79)
-
-  const selectFromCountry = (e: React.ChangeEvent<HTMLInputElement>) => {//поиск страны отправления в списке
+  //поиск страны отправления в списке
+  const selectFromCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setFromCountry(value);
     console.log(value, 312)
     const found = coutriesZoneObject.find(el => el.name === value) || null
     console.log("Выбранная страна - от:", found, 314);
-
-    // const arrCountries = coutriesZoneObject.map(el => el.name)
-
-    // console.log(arrCountries, 96)
-    // const zn = e.target.value.trim()
-    // console.log(arrCountries.includes(zn) && zn !== "Россия", 97)
-
-    // if (arrCountries.includes(zn) && zn !== "Россия") {
-    //   found = { name: 'Россия', zone: 1, id: 0 }
-    //   setWhereCountryObj(found)
-    // }
-    // if (arrCountries.includes(whereCountry) && fromCountry !== "Россия") {
-    //   found = { name: 'Россия', zone: 1, id: 0 }
-    // }
-
-
     setFromCountryObj(found)
   };
 
-  const selectFromCity = (e: React.ChangeEvent<HTMLInputElement>) => {//поиск города отправления в списке
+  //поиск города отправления в списке
+  const selectFromCity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setFromCity(value)
     console.log(value, 321)
     const found = citiesZoneObject.find(el => el.name === value) || null
     console.log("Выбранный город - от:", found, 323);
-
     setFromCityObj(found)
   }
 
-  const selectWhereCountry = (e: React.ChangeEvent<HTMLInputElement>) => {//поиск страны назначения в списке
+  //поиск страны назначения в списке
+  const selectWhereCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setWhereCountry(value);
     console.log(value, 330)
     const found = coutriesZoneObject.find(el => el.name === value) || null
     console.log("Выбранная страна - до:", found, 332);
-
-    // const arrCountries = coutriesZoneObject.map(el => el.name)
-
-
-    // fromCountry, whereCountry
-
-    // if (arrCountries.includes(e.target.value) && e.target.value !== "Россия") {
-    //   found = { name: 'Россия', zone: 1, id: 0 }
-    //   setFromCountryObj(found)
-    // }
-
-    // if (arrCountries.includes(fromCountry) && fromCountry !== "Россия") {
-    //   found = { name: 'Россия', zone: 1, id: 0 }
-    // }
-
     setWhereCountryObj(found)
   };
 
-  const selectWhereCity = (e: React.ChangeEvent<HTMLInputElement>) => {//поиск города назначения в списке
+  //поиск города назначения в списке
+  const selectWhereCity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setWhereCity(value)
     console.log(value, 339)
     const found = citiesZoneObject.find(el => el.name === value) || null
     console.log("Выбранный город - до:", found, 341);
-
     setWhereCityObj(found)
   }
-  const listCountries = (//отображение списка стран
+
+  //отображение списка стран
+  const listCountries = (
     <datalist id="countries">
       {coutriesZoneObject.map(c => (
         <option key={c.id} value={c.name} />
@@ -162,7 +110,8 @@ export default function CalkSend() {
     </datalist>
   );
 
-  const listCities = (//отображение списка городов
+  //отображение списка городов
+  const listCities = (
     <datalist id="cities">
       {citiesZoneObject.map(c => (
         <option key={c.id} value={c.name} />
@@ -170,15 +119,16 @@ export default function CalkSend() {
     </datalist>
   );
 
-  const delPlace = (id: number) => {//удаление строки характеристик отправления
+  //удаление строки характеристик отправления
+  const delPlace = (id: number) => {
     const indexUpdate = places.findIndex(place => place.id === id)
     setPlaces(prev => [
       ...prev.slice(0, indexUpdate), ...prev.slice(indexUpdate + 1)
     ]);
   };
 
-
-  const addPlace = () => {//добаление строки характеристик отправления
+  //добаление строки характеристик отправления
+  const addPlace = () => {
     setPlaces(prev => [
       ...prev,
       {
@@ -190,131 +140,248 @@ export default function CalkSend() {
         price: 0,
         volume: 0,
         id: prev.length > 0 ? Math.max(...prev.map(p => p.id)) + 1 : 0
-
       }
     ]);
   };
 
+  //изменение значений полей характеристик отправления по кнопкам +/-
+  const handleChange = (place: Place, e: React.MouseEvent<HTMLButtonElement>, action: string,) => {
+    const parentElement = e.currentTarget.parentElement;
+    const grandParentElement = parentElement?.parentElement;
+    const input = grandParentElement?.querySelector("input");
+    const name = input?.name;
+    const value = input?.value;
+    const step = input?.step;
+    const min = input?.min;
 
+    if (name && value) {
+      if (action === "minus" && Number(value) - Number(step) >= Number(min)) {
+        updatePlace(place.id, name as keyof Place, Number(value) - Number(step));
+        return;
+      }
+      if (action === "plus") {
+        updatePlace(place.id, name as keyof Place, Number(value) + Number(step));
+        return;
+      }
+    }
+  };
 
-  const mapPlaces = places.map((place) => ( //поля ввода характеристик отправления из массива places
-    <div key={place.id} className={styles.calculator__grid}>
-      <div className={styles.field__block}>
-        <div className={styles.field}>
-          <label htmlFor="heft" className={styles.field__label}>Вес места, кг</label>
-          <input
-            id="heft"
-            name="heft"
-            type="number"
-            min="0.5"
-            step="0.1"
-            className={styles.field__input}
-            placeholder="Ввести"
-            value={place.heft}
-            onChange={e => updatePlace(place.id, "heft", e.target.value)}
-          />
-        </div>
-        <div className={styles.field}>
-          <label htmlFor="places" className={styles.field__label}>Мест</label>
-          <input
-            id="places"
-            name="places"
-            type="number"
-            min="1"
-            step="1"
-            onChange={e => updatePlace(place.id, "places", e.target.value)}
-            value={place.places}
-            className={styles.field__input}
-            placeholder="Ввести" />
-        </div>
-      </div>
-      <div className={styles.fields}>
-        <div className={styles.field}>
-          <div className={styles.field__label}>Габариты ДxШxВ, см</div>
-          <div className={styles.field__group}>
-            <div className={styles.field__labels}>
-              <label htmlFor="length"> Длина</label>
-              <input type="number"
-                id="length"
-                name="length"
-                min="1"
-                step="1"
-                className={styles.field__input}
-                placeholder="Длина"
-                value={place.length}
-                onChange={e => updatePlace(place.id, "length", e.target.value)}
-              />
+  //поля ввода характеристик отправления из массива places
+  const mapPlaces = places.map((place, index) => (
+    <div key={place.id} className={styles.place}>
+      <div className={styles.place__card}>
+        <div className={styles.place__header}>
+          <div className={styles.place__titleRow}>
+            <h2 className={styles.place__title}>Габариты отправления</h2>
+            <div className={styles.volumeField}>
+              <label htmlFor="volume" className={styles.volumeField__label}>Об. вес</label>
+              <div className={styles.volumeField__wrapper}>
+                <input
+                  id="volume"
+                  name="volume"
+                  type="number"
+                  min="0.2"
+                  step="0.01"
+                  value={place.volume}
+                  onChange={e => updatePlace(place.id, "volume", e.target.value)}
+                  style={{ backgroundColor: "transparent" }}
+                  className={styles.volumeField__input}
+                  readOnly />
+                <p>кг</p>
+              </div>
             </div>
-            <div className={styles.field__labels}>
-              <label htmlFor="width"> Ширина</label>
-              <input
-                id="width"
-                name="width"
-                type="number"
-                min="1"
-                step="1"
-                className={styles.field__input}
-                placeholder="Ширина"
-                value={place.width}
-                onChange={e => updatePlace(place.id, "width", e.target.value)}
-
-              /></div>
-            <div className={styles.field__labels}>
-              <label htmlFor="height"> Высота</label>
-              <input
-                id="height"
-                name="height"
-                type="number"
-                min="1"
-                step="1"
-                className={styles.field__input}
-                value={place.height}
-                onChange={e => updatePlace(place.id, "height", e.target.value)}
-                placeholder="Высота"
-              />
+          </div>
+          <div className={styles.place__fields}>
+            <div className={styles.place__field}>
+              <label className={styles.place__label} htmlFor="length"> Длина</label>
+              <div className={styles.place__inputGroup}>
+                <div className={styles.place__controls}>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "plus")}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "minus")}
+                  >
+                    ▼
+                  </button>
+                </div>
+                <input type="number"
+                  id="length"
+                  name="length"
+                  min="1"
+                  step="1"
+                  className={styles.place__input}
+                  placeholder="Длина"
+                  value={place.length}
+                  onChange={e => updatePlace(place.id, "length", e.target.value)}
+                />
+                <p>см</p>
+              </div>
+            </div>
+            <div className={styles.place__field}>
+              <label className={styles.place__label} htmlFor="width"> Ширина</label>
+              <div className={styles.place__inputGroup}>
+                <div className={styles.place__controls}>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "plus")}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "minus")}
+                  >
+                    ▼
+                  </button>
+                </div>
+                <input
+                  id="width"
+                  name="width"
+                  type="number"
+                  min="1"
+                  step="1"
+                  className={styles.place__input}
+                  placeholder="Ширина"
+                  value={place.width}
+                  onChange={e => updatePlace(place.id, "width", e.target.value)}
+                />
+                <p>см</p>
+              </div>
+            </div>
+            <div className={styles.place__field}>
+              <label className={styles.place__label} htmlFor="height"> Высота</label>
+              <div className={styles.place__inputGroup}>
+                <div className={styles.place__controls}>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "plus")}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "minus")}
+                  >
+                    ▼
+                  </button>
+                </div>
+                <input
+                  id="height"
+                  name="height"
+                  type="number"
+                  min="1"
+                  step="1"
+                  className={styles.place__input}
+                  value={place.height}
+                  onChange={e => updatePlace(place.id, "height", e.target.value)}
+                  placeholder="Высота"
+                />
+                <p>см</p>
+              </div>
+            </div>
+            <div className={styles.place__field}>
+              <label htmlFor="heft" className={styles.place__label}>Вес 1 шт. </label>
+              <div className={styles.place__inputGroup}>
+                <div className={styles.place__controls}>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "plus")}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "minus")}
+                  >
+                    ▼
+                  </button>
+                </div>
+                <input
+                  id="heft"
+                  name="heft"
+                  type="number"
+                  min="0.5"
+                  step="0.1"
+                  className={styles.place__input}
+                  placeholder="Ввести"
+                  value={place.heft}
+                  onChange={e => updatePlace(place.id, "heft", e.target.value)}
+                />
+                <p>кг</p>
+              </div>
+            </div>
+            <div className={styles.place__field}>
+              <label htmlFor="places" className={styles.place__label}>Мест</label>
+              <div className={styles.place__inputGroup}>
+                <div className={styles.place__controls}>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "plus")}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.place__btn}
+                    onClick={(e) => handleChange(place, e, "minus")}
+                  >
+                    ▼
+                  </button>
+                </div>
+                <input
+                  id="places"
+                  name="places"
+                  type="number"
+                  min="1"
+                  step="1"
+                  onChange={e => updatePlace(place.id, "places", e.target.value)}
+                  value={place.places}
+                  className={styles.place__input}
+                  placeholder="Ввести" />
+                <p>шт</p>
+              </div>
             </div>
           </div>
         </div>
-
-        <div className={styles.field}>
-          <label htmlFor="volume" className={styles.field__label}>Об. вес места, кг</label>
-          <input
-            id="volume"
-            name="volume"
-            type="number"
-            min="0.2"
-            step="0.01"
-            value={place.volume}
-            onChange={e => updatePlace(place.id, "volume", e.target.value)}
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.6)", textAlign: "center" }}
-            className={styles.field__input}
-            readOnly />
-
-        </div>
-
-
       </div>
-
-
-      {places.length > 1 && <button onClick={() => delPlace(place.id)}
-        className={styles.field__input_del}
-      >удаление</button>}
+      {
+        places.length > 1 &&
+        <button
+          onClick={() => delPlace(place.id)}
+          className={styles.place__delete}
+        > x
+        </button>
+      }
+      {
+        places.length - 1 === index &&
+        < button onClick={addPlace} className={styles.calculator__addButton}
+        > + </button>}
     </div >
   ))
 
-
-
-
+  // определение стоимости мест, в зависимости от страны и города отправления и назначения
   useEffect(() => {
-    const from = fromCountry?.trim().toLowerCase() || "";
-    const where = whereCountry?.trim().toLowerCase() || "";
+    const from = fromCountryObj?.name?.trim().toLowerCase() || "";
+    const where = whereCountryObj?.name?.trim().toLowerCase() || "";
     let rf
-    if (!fromCountry || !whereCountry || !fromCountryObj || !whereCountryObj) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPrice(0);
+    if (!fromCountryObj || !whereCountryObj) {
+      setPrice(0); ///..найти
       return;
     }
-
     let result: string | undefined;
 
     // Россия → За границу
@@ -325,6 +392,7 @@ export default function CalkSend() {
       };
       rf = true
     }
+
     // За границу → Россия
     else if (from !== "россия" && where === "россия" && whereCityObj && fromCountryObj) {
       const key = `${whereCityObj.numberZoneForeign}-${fromCountryObj.zone}`;
@@ -333,31 +401,28 @@ export default function CalkSend() {
       };
       rf = true
     }
-    // Россия → Россия — пока 0
+
+    // Россия → Россия  
     else if (from === "россия" && where === "россия" && fromCityObj && whereCityObj) {
-
       const key = `${fromCityObj.numberZoneRF}-${whereCityObj.numberZoneRF}`;
-
       if (key in tableRFRF) {
         result = funcTableRFRF(key as RFRFKey)
         console.log(result, 317)
       };
       rf = false
-
-
     }
 
     if (!result) {
       setPrice(0);
       return;
     }
-
     let totalPrice = 0;
-
+    // Считаем общую цену отправления по России напрямую по всем местам 
     if (rf) {
-      // Считаем общую цену напрямую по всем местам
       places.forEach(el => {
-        const heft = el.heft > el.volume ? el.heft : el.volume;//выбираем больший вес - фактический или объемный
+        const heft = el.heft > el.volume ? el.heft : el.volume;
+
+        //выбираем больший вес - фактический или объемный
         const totalWeight = heft * el.places;
         let calcWeight = totalWeight;
 
@@ -367,16 +432,17 @@ export default function CalkSend() {
         }
 
         let price = 0;
-
+        //малый вес и/или документы
         if (document === "document" && totalWeight <= 2) {
           const key = `${result}-${calcWeight}`;
           if (key in smallDoc) {
             price = koefficient * funcSmallDoc(key as SmallDocKey);
           }
-        } else {
+        } else {//большой вес и/или груз
           let excessPerKg = 0;
           let excessWeight = 0;
 
+          //стоимость за кг сверх 70 кг
           if (totalWeight > 70) {
             excessPerKg = totalWeight <= 300
               ? funcExcess70(result as Excess70Key)
@@ -397,7 +463,8 @@ export default function CalkSend() {
     }
     else {
       places.forEach(el => {
-        const heft = el.heft > el.volume ? el.heft : el.volume;//выбираем больший вес - фактический или объемный
+        //выбираем больший вес - фактический или объемный
+        const heft = el.heft > el.volume ? el.heft : el.volume;
         const totalWeight = heft * el.places;
         let calcWeight = totalWeight;
 
@@ -407,200 +474,164 @@ export default function CalkSend() {
         }
 
         let price = 0;
-
-
         let excessPerKg = 0;
         let excessWeight = 0;
 
         if (totalWeight > 70) {
           excessPerKg = funcExcess70RF(result as Excess70RfKey)
-
           excessWeight = totalWeight - 70;
           calcWeight = 70;
         }
 
         const key = `${result}-${calcWeight}`;
         console.log(key, 404)
+
         if (key in rfBigDoc) {
           const base = funcRfBigDoc(key as RfBigDocKey);
           price = koefficient * (base + Math.ceil(excessWeight) * excessPerKg);
         }
-        // }
-
         totalPrice += price;
       });
     }
-
     setPrice(totalPrice);
-
   }, [
-    fromCountry,
-    whereCountry,
     fromCityObj,
     whereCityObj,
     fromCountryObj,
     whereCountryObj,
     document,
-    places,        // Теперь можно! Потому что мы НЕ вызываем setPlaces → нет цикла
+    places,
     koefficient
   ]);
 
+  //автоматическа подстановка города
   useEffect(() => {
     if (!fromCountryObj) return;
-
     const name = fromCountryObj.name;
     const arrCountries = coutriesZoneObject.map(el => el.name);
-
     if (arrCountries.includes(name) && name !== "Россия") {
-      setWhereCountry("Россия");
-      setWhereCountryObj({ name: "Россия", zone: 1, id: 0 });
+      setWhereCountryObj({ name: "Россия", zone: 1, id: 0 });//..найти
     }
-
   }, [fromCountryObj]);
 
-
-
+  //автоматическа подстановка города
   useEffect(() => {
     if (!whereCountryObj) return;
-
     const name = whereCountryObj.name;
     const arrCountries = coutriesZoneObject.map(el => el.name);
-
     if (arrCountries.includes(name) && name !== "Россия") {
-      setFromCountry("Россия");
-      setFromCountryObj({ name: "Россия", zone: 1, id: 0 });
+      setFromCountryObj({ name: "Россия", zone: 1, id: 0 });//..найти
     }
-
   }, [whereCountryObj]);
 
   const nds = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 0.2 : 0;
   const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 1.2 : price;
-
-  // fromCountryObj whereCountryObj
-
 
   return (
     <div className={styles.calculator}>
       {/* Контейнер */}
       <div className={styles.calculator__left}>
         {/* Заголовок */}
-        <div className={styles.calculator__title}>Рассчитать стоимость доставки</div>
-
-
-        {/* Блок "Откуда" */}
-        <div className={styles.calculator__row}>
-          <div className={styles.field}>
-            <div className={styles.field__label}>Откуда</div>
-
-            <input
-              className={styles.field__select}
-              list="countries"
-              placeholder="Выберите или введите страну"
-              onChange={selectFromCountry}
-              value={fromCountry}
-            />
-
-
-            {listCountries}
-
-
-            {fromCountry === "Россия" && <>
+        <h1 className={styles.calculator__title}>Расчет стоимости доставки</h1>
+        <div className={styles.calculator__header}>
+          {/* Блок "Откуда" */}
+          <div className={styles.calculator__row}>
+            <div className={styles.calculator__fieldRow}>
+              <label htmlFor="fromCountry" className={styles.calculator__countryLabel}>Откуда</label>
               <input
-                className={styles.field__select}
-                list="cities"
-                placeholder="Выберите или введите страну"
-                onChange={selectFromCity}
-                value={fromCity}//from where to where
+                name="fromCountry"
+                id="fromCountry"
+                className={styles.calculator__select}
+                list="countries"
+                placeholder="Страна отправления"
+                onChange={selectFromCountry}
+                value={fromCountryObj?.name}
               />
+              {listCountries}
 
-
-              {listCities}
-
-            </>}
+              {fromCountryObj?.name === "Россия" && <>
+                <input
+                  className={styles.calculator__select}
+                  list="cities"
+                  placeholder="Город отправления"
+                  onChange={selectFromCity}
+                  value={fromCityObj?.name}
+                />
+                {listCities}
+              </>}
+            </div>
           </div>
-        </div>
-
-        {/* Стрелка */}
-        <div className={styles.calculator__arrow}>→</div>
-
-        {/* Блок "Куда" */}
-        <div className={styles.calculator__row}>
-          <div className={styles.field}>
-            <div className={styles.field__label}>Куда</div>
-            <input
-              className={styles.field__select}
-              list="countries"
-              placeholder="Выберите или введите страну"
-              onChange={selectWhereCountry}
-              value={whereCountry}
-            />
-            {listCountries}
-
-            {whereCountry === "Россия" && <>
+          {/* Блок "Куда" */}
+          <div className={styles.calculator__row}>
+            <div className={styles.calculator__fieldRow}>
+              <label htmlFor="whereCountry" className={styles.calculator__countryLabel}>Куда</label>
               <input
-                className={styles.field__select}
-                list="cities"
-                placeholder="Выберите или введите страну"
-                onChange={selectWhereCity}
-                value={whereCity}
+                name="whereCountry"
+                id="whereCountry"
+                className={styles.calculator__select}
+                list="countries"
+                placeholder="Страна получения"
+                onChange={selectWhereCountry}
+                value={whereCountryObj?.name}
               />
-              {listCities}
-            </>
-            }
-
+              {listCountries}
+              {whereCountryObj?.name === "Россия" && <>
+                <input
+                  className={styles.calculator__select}
+                  list="cities"
+                  placeholder="Город получения"
+                  onChange={selectWhereCity}
+                  value={whereCityObj?.name}
+                />
+                {listCities}
+              </>
+              }
+            </div>
           </div>
-        </div>
-
-        {/* Документы / Груз */}
-        <div className={styles.calculator__radioGroup}>
-          <label className={styles.radio}>
-            <input
-              type="radio"
-              name="type"
-              value="document"
-              checked={document === "document"}
-              onChange={(e) => setDocument(e.target.value as "document")}
-              defaultChecked /> Документы
-          </label>
-
-          <label className={styles.radio}>
-            <input
-              type="radio"
-              name="type"
-              value="goods"
-              checked={document === "goods"}
-              onChange={(e) => setDocument(e.target.value as "goods")}
-            /> Груз
-          </label>
-
+          {/* Документы / Груз */}
+          <div className={styles.radioButton}>
+            <label className={styles.radio}>
+              <input
+                className={styles.radioButtonChenge}
+                type="radio"
+                name="type"
+                value="document"
+                checked={document === "document"}
+                onChange={(e) => setDocument(e.target.value as "document")}
+                defaultChecked /> Документы
+            </label>
+            <label className={styles.radioButton}>
+              <input
+                className={styles.radioButtonChenge}
+                type="radio"
+                name="type"
+                value="goods"
+                checked={document === "goods"}
+                onChange={(e) => setDocument(e.target.value as "goods")}
+              /> Груз
+            </label>
+          </div>
         </div>
         {mapPlaces}
-
-        <button onClick={addPlace} className={styles.calculator__add}>+ Добавить</button>
-
         {/* Подвал */}
         <div className={styles.calculator__note}>
           Транзитное время является ориентировочным. Фактическое время может отличаться.
         </div>
       </div >
-
       {/* Правая колонка */}
-      < div className={styles.calculator__right} >
+      < div className={styles.calculator__sidebar} >
         <div className={styles.total}>
           <div className={styles.total__title}>Итого:</div>
           <div className={styles.total__price}>{Math.ceil(fullPrice)} ₽</div>
-
           <div className={styles.total__details}>
             <div>НДС: {Math.ceil(nds)} ₽</div>
             <div>Цена: {Math.ceil(price)} ₽</div>
           </div>
-
           <div className={styles.total__time}>5-10 дней</div>
-
           <button className={styles.total__button}>Отправить заявку</button>
-
           <div className={styles.total__phone}>
-            Или оставьте заявку по номеру: <a href="tel:+79101056423">+7 910 105 64 23</a>
+            <p>Или оставьте заявку по номеру: </p>
+            <a href="tel:+79101056423">+7 910 105 64 23</a>
           </div>
         </div>
       </div >

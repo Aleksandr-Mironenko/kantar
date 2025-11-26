@@ -6165,7 +6165,7 @@ export function funcExcess70RF(zn: Excess70RfKey): Excess70RfValue {
 
 export const koefficient = 0.8
 export const costIsHigher70 = 1800
-
+export const fs = 0.35
 
 
 

@@ -1,7 +1,7 @@
 "use client";
 import styles from "./CalkSend.module.scss";
 import { useState, useEffect } from "react"
-import { rfBigDoc, RfBigDocKey, funcRfBigDoc, excess70RF, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key, funcExcess70, funcExcess300, costIsHigher70, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF, funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey } from './data'
+import { fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, excess70RF, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key, funcExcess70, funcExcess300, costIsHigher70, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF, funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey } from './data'
 
 
 interface Place {
@@ -436,7 +436,7 @@ export default function CalkSend() {
         if (document === "document" && totalWeight <= 2) {
           const key = `${result}-${calcWeight}`;
           if (key in smallDoc) {
-            price = koefficient * funcSmallDoc(key as SmallDocKey);
+            price = koefficient * fsRF * funcSmallDoc(key as SmallDocKey);
           }
         } else {//большой вес и/или груз
           let excessPerKg = 0;
@@ -454,7 +454,7 @@ export default function CalkSend() {
           const key = `${result}-${calcWeight}`;
           if (key in bigDoc) {
             const base = funcBigDoc(key as BigDocKey);
-            price = koefficient * (base + Math.ceil(excessWeight) * excessPerKg);
+            price = koefficient * fsRF * (base + Math.ceil(excessWeight) * excessPerKg);
           }
         }
 
@@ -488,7 +488,7 @@ export default function CalkSend() {
 
         if (key in rfBigDoc) {
           const base = funcRfBigDoc(key as RfBigDocKey);
-          price = koefficient * (base + Math.ceil(excessWeight) * excessPerKg);
+          price = koefficient * fs * (base + Math.ceil(excessWeight) * excessPerKg);
         }
         totalPrice += price;
       });

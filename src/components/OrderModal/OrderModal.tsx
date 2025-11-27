@@ -124,7 +124,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
               </p>
               <p>Направление: {fromCountryObj && fromCityObj ? `${fromCountryObj?.name}-${fromCityObj?.name}` : `${fromCountryObj?.name}`} ➤ ➤ ➤</p>
               <p>  ➤ ➤ ➤ {whereCountryObj && whereCityObj ? `${whereCountryObj?.name}-${whereCityObj?.name}` : `${whereCountryObj?.name}`}</p>
-              {/* можно вывести краткую сводку */}
+
             </div>
 
             <form className={styles.modal__form}>

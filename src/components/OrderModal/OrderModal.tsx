@@ -113,78 +113,245 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
               ×
             </button>
 
-            <h2 className={styles.modal__title}>Оформление заявки</h2>
+            <h2 className={styles.modal__title}>Формирование заявки</h2>
 
             <div className={styles.modal__summary}>
-              <p>
-                <strong>Итого:</strong> {Math.ceil(price)} ₽
-              </p>
-              <p>
-                <strong>Всего мест:</strong>  {count}
-              </p>
-              <p>Направление: {fromCountryObj && fromCityObj ? `${fromCountryObj?.name}-${fromCityObj?.name}` : `${fromCountryObj?.name}`} ➤ ➤ ➤</p>
-              <p>  ➤ ➤ ➤ {whereCountryObj && whereCityObj ? `${whereCountryObj?.name}-${whereCityObj?.name}` : `${whereCountryObj?.name}`}</p>
 
+              <div className={styles.modal__info} style={{ display: "flex", justifyContent: "space-between" }}>
+                <div className={styles.modal__info_characteristics}
+                  style={{ border: "1px solid black", borderRadius: "10px", padding: "10px", margin: "10px 5px", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }} >
+                  <div className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column", padding: "16px" }}>
+                    <p className={styles.modal__info_text} style={{
+                      display: "block",
+                      alignSelf: "stretch",
+                      width: "100%",
+                      textAlign: "center",
+                      wordBreak: "break-word",
+                      overflowWrap: "anywhere",
+                      margin: 0,
+                      padding: 0
+                    }}>
+                      <strong>Характеристики отправления</strong>
+                    </p>
+                  </div>
+
+                  <p className={styles.modal__info_text} style={{
+                    display: "block",
+                    alignSelf: "stretch",
+                    width: "100%",
+                    textAlign: "center",
+                    wordBreak: "break-word",
+                    overflowWrap: "anywhere",
+                    margin: 0,
+                    padding: 0
+                  }}>
+                    <strong>Итого:</strong> {Math.ceil(price)} ₽
+                  </p>
+                  <p className={styles.modal__info_text} style={{
+                    display: "block",
+                    alignSelf: "stretch",
+                    width: "100%",
+                    textAlign: "center",
+                    wordBreak: "break-word",
+                    overflowWrap: "anywhere",
+                    margin: 0,
+                    padding: 0
+                  }}>
+                    <strong>Всего мест:</strong>  {count}
+                  </p>
+
+                </div>
+                <div className={styles.modal__info_direction}
+                  style={{ border: "1px solid black", borderRadius: "10px", padding: "10px", margin: "10px 5px", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }}>
+                  <p className={styles.modal__info_title}>
+                    <strong>Направление: </strong>
+                  </p>
+
+                  <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                    {
+                      fromCountryObj && fromCityObj ?
+                        <div className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                          <p className={styles.modal__info_text} style={{
+                            display: "block",
+                            alignSelf: "stretch",
+                            width: "100%",
+                            textAlign: "center",
+                            wordBreak: "break-word",
+                            overflowWrap: "anywhere",
+                            margin: 0,
+                            padding: 0
+                          }}>
+                            {fromCountryObj?.name}
+                          </p>
+                          <p className={styles.modal__info_text} style={{
+                            display: "block",
+                            alignSelf: "stretch",
+                            width: "100%",
+                            textAlign: "center",
+                            wordBreak: "break-word",
+                            overflowWrap: "anywhere",
+                            margin: 0,
+                            padding: 0
+                          }}>
+                            -
+                          </p>
+                          <p className={styles.modal__info_text} style={{
+                            display: "block",
+                            alignSelf: "stretch",
+                            width: "100%",
+                            textAlign: "center",
+                            wordBreak: "break-word",
+                            overflowWrap: "anywhere",
+                            margin: 0,
+                            padding: 0
+                          }}>
+                            {fromCityObj?.name}
+                          </p>
+                        </div>
+                        :
+                        <p className={styles.modal__info_text} style={{
+                          display: "block",
+                          alignSelf: "stretch",
+                          width: "100%",
+                          textAlign: "center",
+                          wordBreak: "break-word",
+                          overflowWrap: "anywhere",
+                          margin: 0,
+                          padding: 0
+                        }}> {fromCountryObj?.name} </p>
+                    }
+                    <p className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>  ⤋ ⤋ ⤋ ⤋ ⤋ ⤋ ⤋ ⤋</p>
+                    {
+                      whereCountryObj && whereCityObj ?
+                        <div className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                          <p className={styles.modal__info_text} style={{
+                            display: "block",
+                            alignSelf: "stretch",
+                            width: "100%",
+                            textAlign: "center",
+                            wordBreak: "break-word",
+                            overflowWrap: "anywhere",
+                            margin: 0,
+                            padding: 0
+                          }}>
+                            {whereCountryObj?.name}
+                          </p>
+                          <p className={styles.modal__info_text} style={{
+                            display: "block",
+                            alignSelf: "stretch",
+                            width: "100%",
+                            textAlign: "center",
+                            wordBreak: "break-word",
+                            overflowWrap: "anywhere",
+                            margin: 0,
+                            padding: 0
+                          }}>
+                            -
+                          </p>
+                          <p className={styles.modal__info_text} style={{
+                            display: "block",
+                            alignSelf: "stretch",
+                            width: "100%",
+                            textAlign: "center",
+                            wordBreak: "break-word",
+                            overflowWrap: "anywhere",
+                            margin: 0,
+                            padding: 0
+                          }}>
+                            {whereCityObj?.name}
+                          </p>
+                        </div>
+                        :
+                        <p className={styles.modal__info_text} style={{
+                          display: "block",
+                          alignSelf: "stretch",
+                          width: "100%",
+                          textAlign: "center",
+                          wordBreak: "break-word",
+                          overflowWrap: "anywhere",
+                          margin: 0,
+                          padding: 0
+                        }}>
+                          {whereCountryObj?.name}
+                        </p>
+                    }
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <form className={styles.modal__form}
+                style={{ margin: "10px 5px" }}>
+                <input
+                  placeholder="Имя"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
+                <input
+                  placeholder="+7 (___) ___-__-__"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                />
+                <input
+                  placeholder="Email (необязательно)"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
+                <input
+                  placeholder="Укажите точный адрес (необязательно)"
+                  value={from}
+                  onChange={e => setFrom(e.target.value)}
+                />
+                <p>Укажите точный адрес (необязательно)</p>
+                <input
+                  placeholder="Укажите индекс (необязательно)"
+                  value={indexFrom}
+                  onChange={e => setIndexFrom(e.target.value)}
+                />
+
+                <input
+                  placeholder="Укажите точный адрес (необязательно)"
+                  value={where}
+                  onChange={e => setWhere(e.target.value)}
+                />
+                <p>Укажите точный адрес (необязательно)</p>
+                <input
+                  placeholder="Укажите индекс (необязательно)"
+                  value={indexWhere}
+                  onChange={e => setIndexWhere(e.target.value)}
+                />
+
+
+
+
+                <label className={styles.modal__checkbox}>
+                  <input
+                    id="agree"
+                    name="agree"
+                    type="checkbox"
+                    checked={agree}
+                    onChange={e => setAgree(e.target.checked)}
+                    style={{ margin: "auto 2px" }}
+                  />
+                  <span>Согласен с обработкой персональных данных</span>
+                </label>
+
+
+
+                <button
+                  className={styles.modal__submit}
+                // onClick={handleSubmit}
+                // disabled={isLoading || !agree || !phone}
+                >
+                  {/* {isLoading ? "Отправка..." : "Отправить заявку"} */}
+                </button>
+              </form>
             </div>
-
-            <form className={styles.modal__form}>
-              <input
-                placeholder="Имя"
-                value={name}
-                onChange={e => setName(e.target.value)}
-              />
-              <input
-                placeholder="+7 (___) ___-__-__"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-              />
-              <input
-                placeholder="Email (необязательно)"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
-              <input
-                placeholder="Укажите точный адрес (необязательно)"
-                value={from}
-                onChange={e => setFrom(e.target.value)}
-              />
-              <p>Укажите точный адрес (необязательно)</p>
-              <input
-                placeholder="Укажите индекс (необязательно)"
-                value={indexFrom}
-                onChange={e => setIndexFrom(e.target.value)}
-              />
-
-              <input
-                placeholder="Укажите точный адрес (необязательно)"
-                value={where}
-                onChange={e => setWhere(e.target.value)}
-              />
-              <p>Укажите точный адрес (необязательно)</p>
-              <input
-                placeholder="Укажите индекс (необязательно)"
-                value={indexWhere}
-                onChange={e => setIndexWhere(e.target.value)}
-              />
-
-
-
-              <label className={styles.modal__checkbox}>
-                <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} />
-                Согласен с обработкой персональных данных
-              </label>
-
-              <button
-                className={styles.modal__submit}
-              // onClick={handleSubmit}
-              // disabled={isLoading || !agree || !phone}
-              >
-                {/* {isLoading ? "Отправка..." : "Отправить заявку"} */}
-              </button>
-            </form>
-          </div>
-        </div>
-
+          </div >
+        </div >
       }
-    </>)
+    </>
+  )
 }

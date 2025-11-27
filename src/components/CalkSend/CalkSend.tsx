@@ -1,33 +1,10 @@
 "use client";
 import styles from "./CalkSend.module.scss";
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, excess70RF, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key, funcExcess70, funcExcess300, costIsHigher70, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF, funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey } from './data'
-
-
-interface Place {
-  heft: number;
-  length: number;
-  width: number;
-  height: number;
-  places: number;
-  id: number;
-  price: number;
-  volume: number
-}
-
-interface Country {
-  id: number;
-  name: string;
-  zone: number;
-}
-
-interface City {
-  id: number;
-  name: string;
-  zone: string;
-  numberZoneRF: number;
-  numberZoneForeign: number
-}
+import Image from "next/image";
+import OrderModal from "../OrderModal/OrderModal"
+import { Place, Country, City } from "../DTO/DTO"
 
 export default function CalkSend() {
   const [fromCountryObj, setFromCountryObj] = useState<Country | null>(null);
@@ -36,6 +13,7 @@ export default function CalkSend() {
   const [whereCityObj, setWhereCityObj] = useState<City | null>(null);
   const [price, setPrice] = useState<number>(0);
   const [document, setDocument] = useState<"document" | "goods">("document");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [places, setPlaces] = useState<Place[]>([
     {
@@ -527,65 +505,116 @@ export default function CalkSend() {
   const nds = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 0.2 : 0;
   const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 1.2 : price;
 
+  const totalPlaces = places.reduce((acc, el) => {
+    return acc + el.places;
+  }, 0);
+
+  const orderData = {
+    isModalOpen,
+    fromCountryObj,
+    fromCityObj,
+    whereCountryObj,
+    whereCityObj,
+    price,
+    count: totalPlaces,
+    onClose: () => { setIsModalOpen(false) }   //нужна ли вообще функция
+  }
+
+
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  const changeFromwhere = () => {
+    const tempFromCountry = fromCountryObj;
+    const tempFromCity = fromCityObj;
+    const tempToCountry = whereCountryObj;
+    const tempToCity = whereCityObj;
+
+    setFromCountryObj(tempToCountry);
+    setFromCityObj(tempToCity);
+    setWhereCountryObj(tempFromCountry);
+    setWhereCityObj(tempFromCity);
+  }
+
+  const isFormInvalid = () => {
+    const fromIsRussia = fromCountryObj?.name === "Россия";
+    const toIsRussia = whereCountryObj?.name === "Россия";
+
+    return (
+      !fromCountryObj ||
+      !whereCountryObj ||
+      (fromIsRussia && !fromCityObj) ||
+      (toIsRussia && !whereCityObj)
+    );
+  };
+
+
   return (
-    <div className={styles.calculator}>
+    <div className={styles.calculator} >
       {/* Контейнер */}
-      <div className={styles.calculator__left}>
+      < div className={styles.calculator__left} >
         {/* Заголовок */}
-        <h1 className={styles.calculator__title}>Расчет стоимости доставки</h1>
+        < h1 className={styles.calculator__title} > Расчет стоимости доставки</h1>
         <div className={styles.calculator__header}>
           {/* Блок "Откуда" */}
-          <div className={styles.calculator__row}>
-            <div className={styles.calculator__fieldRow}>
-              <label htmlFor="fromCountry" className={styles.calculator__countryLabel}>Откуда</label>
-              <input
-                name="fromCountry"
-                id="fromCountry"
-                className={styles.calculator__select}
-                list="countries"
-                placeholder="Страна отправления"
-                onChange={selectFromCountry}
-                value={fromCountryObj?.name}
-              />
-              {listCountries}
+          <div className={styles.calculator__rows}>
+            <div className={styles.calculator__row}>
+              <div className={styles.calculator__fieldRow}>
+                <label htmlFor="fromCountry" className={styles.calculator__countryLabel}>Откуда</label>
+                <input
+                  name="fromCountry"
+                  id="fromCountry"
+                  className={styles.calculator__select}
+                  list="countries"
+                  placeholder="Страна отправления"
+                  onChange={selectFromCountry}
+                  value={fromCountryObj?.name}
+                />
+                {listCountries}
 
-              {fromCountryObj?.name === "Россия" && <>
-                <input
-                  className={styles.calculator__select}
-                  list="cities"
-                  placeholder="Город отправления"
-                  onChange={selectFromCity}
-                  value={fromCityObj?.name}
-                />
-                {listCities}
-              </>}
+                {fromCountryObj?.name === "Россия" && <>
+                  <input
+                    className={styles.calculator__select}
+                    list="cities"
+                    placeholder="Город отправления"
+                    onChange={selectFromCity}
+                    value={fromCityObj?.name}
+                  />
+                  {listCities}
+                </>}
+              </div>
             </div>
-          </div>
-          {/* Блок "Куда" */}
-          <div className={styles.calculator__row}>
-            <div className={styles.calculator__fieldRow}>
-              <label htmlFor="whereCountry" className={styles.calculator__countryLabel}>Куда</label>
-              <input
-                name="whereCountry"
-                id="whereCountry"
-                className={styles.calculator__select}
-                list="countries"
-                placeholder="Страна получения"
-                onChange={selectWhereCountry}
-                value={whereCountryObj?.name}
-              />
-              {listCountries}
-              {whereCountryObj?.name === "Россия" && <>
+            <div>
+              <Image onClick={() => changeFromwhere()} className={styles.calculator__array} src="/arrow-right-double-251.svg" alt="Arrow to change direction" width={20} height={100} />
+            </div>
+            {/* Блок "Куда" */}
+            <div className={styles.calculator__row}>
+              <div className={styles.calculator__fieldRow}>
+                <label htmlFor="whereCountry" className={styles.calculator__countryLabel}>Куда</label>
                 <input
+                  name="whereCountry"
+                  id="whereCountry"
                   className={styles.calculator__select}
-                  list="cities"
-                  placeholder="Город получения"
-                  onChange={selectWhereCity}
-                  value={whereCityObj?.name}
+                  list="countries"
+                  placeholder="Страна получения"
+                  onChange={selectWhereCountry}
+                  value={whereCountryObj?.name}
                 />
-                {listCities}
-              </>
-              }
+                {listCountries}
+                {whereCountryObj?.name === "Россия" && <>
+                  <input
+                    className={styles.calculator__select}
+                    list="cities"
+                    placeholder="Город получения"
+                    onChange={selectWhereCity}
+                    value={whereCityObj?.name}
+                  />
+                  {listCities}
+                </>
+                }
+              </div>
             </div>
           </div>
           {/* Документы / Груз */}
@@ -628,13 +657,35 @@ export default function CalkSend() {
             <div>Цена: {Math.ceil(price)} ₽</div>
           </div>
           <div className={styles.total__time}>5-10 дней</div>
-          <button className={styles.total__button}>Отправить заявку</button>
+          <button disabled={isFormInvalid()} onClick={() => setIsModalOpen(true)}
+            className={styles.total__button}>Отправить заявку</button>
           <div className={styles.total__phone}>
             <p>Или оставьте заявку по номеру: </p>
             <a href="tel:+79101056423">+7 910 105 64 23</a>
           </div>
         </div>
       </div >
+      <div>
+        <OrderModal
+          initialData={orderData}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        />
+      </div>
     </div >
   );
 }
+
+
+// const orderData = {
+//   isModalOpen,
+//   fromCountryObj,
+//   fromCityObj,
+//   whereCountryObj,
+//   whereCityObj,
+//   price,
+//   count: totalPlaces,
+//   onClose: () => { setIsModalOpen(false) }   //нужна ли вообще функция
+// }
+
+

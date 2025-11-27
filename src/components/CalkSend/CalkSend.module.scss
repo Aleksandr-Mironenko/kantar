@@ -611,7 +611,7 @@
   display: flex;
   justify-content: space-between;
   background-color: rgba(255, 255, 255, 0.85);
-  min-width: 790px;
+  min-width: 811px;
   max-width: 990px;
   margin: 40px auto;
   padding: 30px;
@@ -621,8 +621,18 @@
   position: relative;
 }
 
+.calculator__rows {
+  position: relative;
+}
+
 .calculator__row {
   margin-bottom: 20px;
+}
+
+.calculator__array {
+  position: absolute;
+  top: -8px;
+  left: -15px;
 }
 
 .calculator__fieldRow {

@@ -30,7 +30,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [agree, setAgree] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const [from, setFrom] = useState<string>("")
   const [where, setWhere] = useState<string>("")
@@ -176,8 +176,8 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
 
               <button
                 className={styles.modal__submit}
-                // onClick={handleSubmit}
-                disabled={isLoading || !agree || !phone}
+              // onClick={handleSubmit}
+              // disabled={isLoading || !agree || !phone}
               >
                 {/* {isLoading ? "Отправка..." : "Отправить заявку"} */}
               </button>

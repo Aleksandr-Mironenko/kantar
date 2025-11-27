@@ -220,7 +220,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                           padding: 0
                         }}> {fromCountryObj?.name} </p>
                     }
-                    <p className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>  ⤋ ⤋ ⤋ ⤋ ⤋ ⤋ ⤋ ⤋</p>
+                    <p className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>  ⤋  ⤋  ⤋  </p>
                     {
                       whereCountryObj && whereCityObj ?
                         <div className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>

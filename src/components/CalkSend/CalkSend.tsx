@@ -46,36 +46,32 @@ export default function CalkSend() {
   //поиск страны отправления в списке
   const selectFromCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    console.log(value, 312)
+
     const found = coutriesZoneObject.find(el => el.name === value) || null
-    console.log("Выбранная страна - от:", found, 314);
+
     setFromCountryObj(found)
   };
 
   //поиск города отправления в списке
   const selectFromCity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    console.log(value, 321)
+
     const found = citiesZoneObject.find(el => el.name === value) || null
-    console.log("Выбранный город - от:", found, 323);
+
     setFromCityObj(found)
   }
 
   //поиск страны назначения в списке
   const selectWhereCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    console.log(value, 330)
     const found = coutriesZoneObject.find(el => el.name === value) || null
-    console.log("Выбранная страна - до:", found, 332);
     setWhereCountryObj(found)
   };
 
   //поиск города назначения в списке
   const selectWhereCity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    console.log(value, 339)
     const found = citiesZoneObject.find(el => el.name === value) || null
-    console.log("Выбранный город - до:", found, 341);
     setWhereCityObj(found)
   }
 
@@ -385,7 +381,6 @@ export default function CalkSend() {
       const key = `${fromCityObj.numberZoneRF}-${whereCityObj.numberZoneRF}`;
       if (key in tableRFRF) {
         result = funcTableRFRF(key as RFRFKey)
-        console.log(result, 317)
       };
       rf = false
     }
@@ -462,7 +457,6 @@ export default function CalkSend() {
         }
 
         const key = `${result}-${calcWeight}`;
-        console.log(key, 404)
 
         if (key in rfBigDoc) {
           const base = funcRfBigDoc(key as RfBigDocKey);

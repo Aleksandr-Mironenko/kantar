@@ -211,7 +211,7 @@ export default function CalkSend() {
             <div className={styles.place__field}>
               <label className={styles.place__label} htmlFor="length"> Длина</label>
               <div className={styles.place__inputGroup}>
-                {control(control)}
+                {control(place)}
                 <input type="number"
                   id="length"
                   name="length"

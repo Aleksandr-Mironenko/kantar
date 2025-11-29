@@ -22,3 +22,26 @@ export interface City {
   numberZoneRF: number;
   numberZoneForeign: number
 }
+
+export interface InitialData {
+  fromCountryObj: Country | null,
+  fromCityObj: City | null,
+  whereCountryObj: Country | null,
+  whereCityObj: City | null,
+  price: number
+  count: number
+}
+export interface OrderModalProps {
+  initialData: InitialData,
+  isOpen: boolean,
+  onClose: () => void;
+}
+
+export interface FormValues {
+  name: string;
+  phone: string;
+  email: string;
+  adressFrom: string;
+  adressWhere: string;
+  agree: boolean;
+}

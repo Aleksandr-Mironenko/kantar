@@ -1,6 +1,6 @@
 "use client";
 import styles from "./CalkSend.module.scss";
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, excess70RF, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key, funcExcess70, funcExcess300, costIsHigher70, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF, funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey } from './data'
 import Image from "next/image";
 import OrderModal from "../OrderModal/OrderModal"
@@ -29,26 +29,47 @@ export default function CalkSend() {
   ]);
 
 
+
+  const changeValue = (value: number | string): number => {
+    const str = String(value).trim();
+
+    // Если дробное — оставляем как есть
+    if (str.includes(".")) {
+      const num = Number(str);
+      return isNaN(num) ? 0.5 : num;
+    }
+
+    // Если целое и начинается с 0 (и длиннее 1 символа) — убираем нули
+    if (str.length > 1 && str.startsWith("0")) {
+      const cleaned = str.replace(/^0+/, "");
+      const result = cleaned === "" ? 0.5 : Number(cleaned);
+      return result;
+    }
+
+    // Иначе — просто число
+    const num = Number(str);
+    return isNaN(num) ? 0.5 : num;
+  };
+
   const updatePlace = (id: number, field: keyof Place, value: string | number) => {
     setPlaces(prev => prev.map(p => {
       if (p.id !== id) return p;
-
       const updated = { ...p, [field]: Number(value) };
-
       // Автоматически пересчитываем объёмный вес
       const vol = (updated.length * updated.width * updated.height) / 5000;
       updated.volume = vol >= 0.2 ? Math.ceil(vol * 100) / 100 : 0.2;
-
       return updated;
     }));
   };
 
+
+
+
+
   //поиск страны отправления в списке
   const selectFromCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-
     const found = coutriesZoneObject.find(el => el.name === value) || null
-
     setFromCountryObj(found)
   };
 
@@ -97,7 +118,7 @@ export default function CalkSend() {
   const delPlace = (id: number) => {
     const indexUpdate = places.findIndex(place => place.id === id)
     setPlaces(prev => [
-      ...prev.slice(0, indexUpdate), ...prev.slice(indexUpdate + 1)
+      ...prev.slice(0, indexUpdate), ...prev.slice((indexUpdate + 1))
     ]);
   };
 
@@ -130,15 +151,36 @@ export default function CalkSend() {
 
     if (name && value) {
       if (action === "minus" && Number(value) - Number(step) >= Number(min)) {
-        updatePlace(place.id, name as keyof Place, Number(value) - Number(step));
+        updatePlace(place.id, name as keyof Place, Math.round((Number(value) - Number(step)) * 10) / 10)
         return;
       }
       if (action === "plus") {
-        updatePlace(place.id, name as keyof Place, Number(value) + Number(step));
+        updatePlace(place.id, name as keyof Place, Math.round((Number(value) + Number(step)) * 10) / 10)
         return;
       }
     }
   };
+
+  const control = (place: Place) => {
+    return (<div className={styles.place__controls}>
+      <button
+        type="button"
+        className={styles.place__btn}
+        onClick={(e) => handleChange(place, e, "plus")}
+      >
+        ▲
+      </button>
+      <button
+        type="button"
+        className={styles.place__btn}
+        onClick={(e) => handleChange(place, e, "minus")}
+      >
+        ▼
+      </button>
+    </div>
+    )
+  }
+
 
   //поля ввода характеристик отправления из массива places
   const mapPlaces = places.map((place, index) => (
@@ -169,22 +211,7 @@ export default function CalkSend() {
             <div className={styles.place__field}>
               <label className={styles.place__label} htmlFor="length"> Длина</label>
               <div className={styles.place__inputGroup}>
-                <div className={styles.place__controls}>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "plus")}
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "minus")}
-                  >
-                    ▼
-                  </button>
-                </div>
+                {control(control)}
                 <input type="number"
                   id="length"
                   name="length"
@@ -201,22 +228,7 @@ export default function CalkSend() {
             <div className={styles.place__field}>
               <label className={styles.place__label} htmlFor="width"> Ширина</label>
               <div className={styles.place__inputGroup}>
-                <div className={styles.place__controls}>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "plus")}
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "minus")}
-                  >
-                    ▼
-                  </button>
-                </div>
+                {control(place)}
                 <input
                   id="width"
                   name="width"
@@ -234,22 +246,7 @@ export default function CalkSend() {
             <div className={styles.place__field}>
               <label className={styles.place__label} htmlFor="height"> Высота</label>
               <div className={styles.place__inputGroup}>
-                <div className={styles.place__controls}>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "plus")}
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "minus")}
-                  >
-                    ▼
-                  </button>
-                </div>
+                {control(place)}
                 <input
                   id="height"
                   name="height"
@@ -267,31 +264,16 @@ export default function CalkSend() {
             <div className={styles.place__field}>
               <label htmlFor="heft" className={styles.place__label}>Вес 1 шт. </label>
               <div className={styles.place__inputGroup}>
-                <div className={styles.place__controls}>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "plus")}
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "minus")}
-                  >
-                    ▼
-                  </button>
-                </div>
+                {control(place)}
                 <input
                   id="heft"
                   name="heft"
-                  type="number"
+                  type="text"
                   min="0.5"
                   step="0.1"
                   className={styles.place__input}
                   placeholder="Ввести"
-                  value={place.heft}
+                  value={changeValue(place.heft)}
                   onChange={e => updatePlace(place.id, "heft", e.target.value)}
                 />
                 <p>кг</p>
@@ -300,22 +282,7 @@ export default function CalkSend() {
             <div className={styles.place__field}>
               <label htmlFor="places" className={styles.place__label}>Мест</label>
               <div className={styles.place__inputGroup}>
-                <div className={styles.place__controls}>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "plus")}
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.place__btn}
-                    onClick={(e) => handleChange(place, e, "minus")}
-                  >
-                    ▼
-                  </button>
-                </div>
+                {control(place)}
                 <input
                   id="places"
                   name="places"
@@ -346,6 +313,8 @@ export default function CalkSend() {
         > + </button>}
     </div >
   ))
+  // const memoSetPrice = useMemo(() => { setPrice(0) }, [setPrice]);
+
 
   // определение стоимости мест, в зависимости от страны и города отправления и назначения
   useEffect(() => {

@@ -784,7 +784,8 @@
   height: 30px;
   border: none;
   margin: 0 5px;
-  width: 40px;
+  min-width: 40px;
+  max-width: 50px;
   text-align: right;
   -moz-appearance: textfield;
   appearance: textfield;

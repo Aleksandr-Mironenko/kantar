@@ -38,6 +38,10 @@
       background: #bf0f15;
     }
   }
+
+  @media (min-width: 812px) {
+    width: 100vw;
+  }
 }
 
 // .hero {

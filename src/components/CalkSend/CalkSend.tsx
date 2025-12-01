@@ -24,7 +24,7 @@ export default function CalkSend() {
       places: 1,
       id: 0,
       price: 0,
-      volume: 0
+      volume: 0.2
     },
   ]);
 
@@ -549,11 +549,12 @@ export default function CalkSend() {
                 </>}
               </div>
             </div>
-            <div>
-              <Image onClick={() => changeFromwhere()} className={styles.calculator__array} src="/arrow-right-double-251.svg" alt="Arrow to change direction" width={20} height={100} />
-            </div>
+
             {/* Блок "Куда" */}
             <div className={styles.calculator__row}>
+              <div>
+                <Image onClick={() => changeFromwhere()} className={styles.calculator__array} src="/arrow-right-double-251.svg" alt="Arrow to change direction" width={20} height={100} />
+              </div>
               <div className={styles.calculator__fieldRow}>
                 <label htmlFor="whereCountry" className={styles.calculator__countryLabel}>Куда</label>
                 <input
@@ -587,28 +588,26 @@ export default function CalkSend() {
                 className={styles.radioButtonChenge}
                 type="radio"
                 name="type"
-                value="document"
-                checked={document === "document"}
-                onChange={(e) => setDocument(e.target.value as "document")}
-                defaultChecked /> Документы
-            </label>
-            <label className={styles.radioButton}>
-              <input
-                className={styles.radioButtonChenge}
-                type="radio"
-                name="type"
                 value="goods"
                 checked={document === "goods"}
                 onChange={(e) => setDocument(e.target.value as "goods")}
               /> Груз
             </label>
+            <label className={styles.radio}>
+              <input
+                className={styles.radioButtonChenge}
+                type="radio"
+                name="type"
+                value="document"
+                checked={document === "document"}
+                onChange={(e) => setDocument(e.target.value as "document")}
+                defaultChecked /> Документы
+            </label >
           </div>
         </div>
         {mapPlaces}
         {/* Подвал */}
-        <div className={styles.calculator__note}>
-          Транзитное время является ориентировочным. Фактическое время может отличаться.
-        </div>
+
       </div >
       {/* Правая колонка */}
       < div className={styles.calculator__sidebar} >
@@ -627,7 +626,11 @@ export default function CalkSend() {
             <a href="tel:+79101056423">+7 910 105 64 23</a>
           </div>
         </div>
+        <p className={styles.calculator__note}>
+          Транзитное время является ориентировочным. Фактическое время может отличаться.
+        </p>
       </div >
+
       <div>
         <OrderModal
           initialData={orderData}

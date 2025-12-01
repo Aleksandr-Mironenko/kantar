@@ -7,13 +7,16 @@
     margin-bottom: 50px;
     font-size: 48px;
     color: white;
-    margin-bottom: 18px
+    margin-bottom: 18px;
+
+
   }
 
   &__list {
     display: flex;
     gap: 20px;
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   &__item {
@@ -23,5 +26,9 @@
     color: white;
     font-size: 18px;
     font-weight: 600;
+  }
+
+  @media (min-width: 812px) {
+    width: 100vw;
   }
 }

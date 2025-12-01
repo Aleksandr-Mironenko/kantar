@@ -2,7 +2,12 @@
   padding: 150px 10%;
   background-color: rgb(185, 49, 37);
   color: white;
-  text-align: center
+
+  text-align: center;
+
+  @media (min-width: 812px) {
+    width: 100vw;
+  }
 }
 
 .h2 {

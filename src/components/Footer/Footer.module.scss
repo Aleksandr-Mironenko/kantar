@@ -5,6 +5,8 @@
   display: flex;
   justify-content: space-between;
 
+  min-width: 350px;
+
   &__links {
     display: flex;
     gap: 20px;
@@ -17,5 +19,16 @@
         color: #fff;
       }
     }
+
+    @media (max-width: 490px) {
+      margin-top: 30px;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 812px) {
+    width: 100vw;
+    flex-direction: column;
+    justify-content: center;
   }
 }

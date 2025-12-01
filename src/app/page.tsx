@@ -19,11 +19,11 @@ export default function Home() {
       <WhoWeAre />
       <Services />
       <Advantages />
-      <Calculator />
+      {/* <Calculator /> */}
       <FormCalc />
       <Contacts />
-      <Footer />
       <CalkSend />
+      <Footer />
     </>
   );
 }

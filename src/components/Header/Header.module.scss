@@ -1,18 +1,66 @@
 .header {
   width: 100%;
-  display: flex;
-  justify-content: center;
+
   padding: 0 auto;
-  align-items: center;
+
   background-color: #ffffff;
-  text-wrap: nowrap;
+
+
+  &__wrapper {
+    margin: 0 auto;
+    font-size: 500px;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    text-wrap: nowrap;
+
+
+    @media (max-width: 670px) {
+      flex-direction: column;
+      font-size: 40px;
+
+    }
+
+    // @media (max-width: 1000px) {
+    //   height: 150px;
+    //   flex-direction: column;
+    // }
+  }
+
+
+
+  &__nav_menu {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0 auto;
+    align-items: center;
+    // justify-content: space-between;
+    width: 100%;
+
+
+    @media (max-width: 670px) {
+      // height: 150px;  
+      max-height: 500px;
+      flex-direction: column;
+      background-color: #ffffff;
+    }
+  }
 
   &__logo {
     font-size: 30px;
     font-weight: 800;
     color: #e31e24;
     position: relative;
-    top: -3px
+
+    top: -3px;
+
+    @media (max-width: 670px) {
+      width: 100vw;
+      height: 100%;
+      position: relative;
+      right: 15px;
+    }
   }
 
   &__nav {
@@ -20,12 +68,22 @@
     gap: 20px;
     align-items: center;
     font-size: 30px;
+    width: 100%;
+    justify-content: space-evenly;
+    margin: 0 20px;
 
     &_link {
       font-size: 16px;
       text-decoration: none;
       color: #222;
       transition: 0.2s;
+
+      @media (max-width: 670px) {
+
+        font-size: 25px;
+        margin: 10px;
+        font-weight: 700;
+      }
 
       &:hover {
         color: #e31e24;
@@ -35,8 +93,8 @@
 
     &_button {
       display: block;
-      width: 100%;
-      height: 100%;
+      // width: 100%;
+
       background: #e53535;
       border-radius: 20px;
       color: white;
@@ -50,19 +108,26 @@
       justify-content: center;
       align-items: center;
 
+      @media (max-width: 670px) {
+
+        font-size: 25px;
+        padding: 10px 20px;
+        font-weight: 700;
+      }
+
       &:hover {
         background-color: #c62e2e;
         transform: scale(1.01);
 
       }
 
-      @media (max-width: 480px) {
-        font-size: 18px;
-      }
+      // @media (max-width: 480px) {
+      //   font-size: 18px;
+      // }
 
-      @media (max-width: 320px) {
-        font-size: 13px;
-      }
+      // @media (max-width: 320px) {
+      //   font-size: 13px;
+      // }
     }
 
     &_button_content {
@@ -72,6 +137,11 @@
       // font-size: 25px;
     }
 
+    @media (max-width: 670px) {
+      flex-direction: column;
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
   }
 
 

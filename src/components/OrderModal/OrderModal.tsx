@@ -104,168 +104,67 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
               </button>
             </div>
             <div className={styles.modal__summary}>
-              <div className={styles.modal__info} style={{ display: "flex", justifyContent: "space-between" }}>
-                <div className={styles.modal__info_characteristics}
-                  style={{ border: "1px solid black", borderRadius: "10px", padding: "10px", margin: "10px 5px", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }} >
-                  <div className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column", padding: "16px" }}>
-                    <p className={styles.modal__info_text} style={{
-                      display: "block",
-                      alignSelf: "stretch",
-                      width: "100%",
-                      textAlign: "center",
-                      wordBreak: "break-word",
-                      overflowWrap: "anywhere",
-                      margin: 0,
-                      padding: 0
-                    }}>
-                      <strong>Характеристики отправления</strong>
-                    </p>
-                  </div>
-                  <p className={styles.modal__info_text} style={{
-                    display: "block",
-                    alignSelf: "stretch",
-                    width: "100%",
-                    textAlign: "center",
-                    wordBreak: "break-word",
-                    overflowWrap: "anywhere",
-                    margin: 0,
-                    padding: 0
-                  }}>
-                    <strong>Итого:</strong> {Math.ceil(price)} ₽
-                  </p>
-                  <p className={styles.modal__info_text} style={{
-                    display: "block",
-                    alignSelf: "stretch",
-                    width: "100%",
-                    textAlign: "center",
-                    wordBreak: "break-word",
-                    overflowWrap: "anywhere",
-                    margin: 0,
-                    padding: 0
-                  }}>
-                    <strong>Всего мест:</strong>  {count}
-                  </p>
-                </div>
-                <div className={styles.modal__info_direction}
-                  style={{ border: "1px solid black", borderRadius: "10px", padding: "10px", margin: "10px 5px", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }}>
-                  <p className={styles.modal__info_title}>
+              <div className={styles.modal__info}  >
+                <div className={styles.modal__info_characteristics} >
+                  <p className={styles.modal__info_title}  >
                     <strong>Направление: </strong>
                   </p>
 
-                  <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+                  <div className={styles.modal__info_directionDetails}  >
                     {
                       fromCountryObj && fromCityObj ?
-                        <div className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
-                          <p className={styles.modal__info_text} style={{
-                            display: "block",
-                            alignSelf: "stretch",
-                            width: "100%",
-                            textAlign: "center",
-                            wordBreak: "break-word",
-                            overflowWrap: "anywhere",
-                            margin: 0,
-                            padding: 0
-                          }}>
+                        <div className={styles.modal__info_block}  >
+                          <p className={styles.modal__info_text}  >
                             {fromCountryObj?.name}
                           </p>
-                          <p className={styles.modal__info_text} style={{
-                            display: "block",
-                            alignSelf: "stretch",
-                            width: "100%",
-                            textAlign: "center",
-                            wordBreak: "break-word",
-                            overflowWrap: "anywhere",
-                            margin: 0,
-                            padding: 0
-                          }}>
+                          <p className={styles.modal__info_text}  >
                             ▼
                           </p>
-                          <p className={styles.modal__info_text} style={{
-                            display: "block",
-                            alignSelf: "stretch",
-                            width: "100%",
-                            textAlign: "center",
-                            wordBreak: "break-word",
-                            overflowWrap: "anywhere",
-                            margin: 0,
-                            padding: 0
-                          }}>
+                          <p className={styles.modal__info_text}  >
                             {fromCityObj?.name}
                           </p>
                         </div>
                         :
-                        <p className={styles.modal__info_text} style={{
-                          display: "block",
-                          alignSelf: "stretch",
-                          width: "100%",
-                          textAlign: "center",
-                          wordBreak: "break-word",
-                          overflowWrap: "anywhere",
-                          margin: 0,
-                          padding: 0
-                        }}> {fromCountryObj?.name} </p>
+                        <p className={styles.modal__info_text}  > {fromCountryObj?.name} </p>
                     }
-                    <p className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>   ▼   ▼   ▼  </p>
+                    <p className={styles.modal__info_block}>   ▼   ▼   ▼  </p>
                     {
                       whereCountryObj && whereCityObj ?
-                        <div className={styles.modal__info_block} style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
-                          <p className={styles.modal__info_text} style={{
-                            display: "block",
-                            alignSelf: "stretch",
-                            width: "100%",
-                            textAlign: "center",
-                            wordBreak: "break-word",
-                            overflowWrap: "anywhere",
-                            margin: 0,
-                            padding: 0
-                          }}>
+                        <div className={styles.modal__info_block} >
+                          <p className={styles.modal__info_text}  >
                             {whereCountryObj?.name}
                           </p>
-                          <p className={styles.modal__info_text} style={{
-                            display: "block",
-                            alignSelf: "stretch",
-                            width: "100%",
-                            textAlign: "center",
-                            wordBreak: "break-word",
-                            overflowWrap: "anywhere",
-                            margin: 0,
-                            padding: 0
-                          }}>
+                          <p className={styles.modal__info_text}  >
                             ▼
                           </p>
-                          <p className={styles.modal__info_text} style={{
-                            display: "block",
-                            alignSelf: "stretch",
-                            width: "100%",
-                            textAlign: "center",
-                            wordBreak: "break-word",
-                            overflowWrap: "anywhere",
-                            margin: 0,
-                            padding: 0
-                          }}>
+                          <p className={styles.modal__info_text}  >
                             {whereCityObj?.name}
                           </p>
                         </div>
                         :
-                        <p className={styles.modal__info_text} style={{
-                          display: "block",
-                          alignSelf: "stretch",
-                          width: "100%",
-                          textAlign: "center",
-                          wordBreak: "break-word",
-                          overflowWrap: "anywhere",
-                          margin: 0,
-                          padding: 0
-                        }}>
+                        <p className={styles.modal__info_text}  >
                           {whereCountryObj?.name}
                         </p>
                     }
                   </div>
                 </div>
-              </div>
-              <form onSubmit={handleSubmit(onSubmit)} className={styles.modal__form}
-                style={{ margin: "10px 5px" }}>
+                <div className={styles.modal__info_characteristics}  >
+                  <div    >
+                    <p className={styles.modal__info_title}
+                    >
+                      < strong > Характеристики отправления:</strong>
+                    </p>
+                  </div>
+                  <p className={styles.modal__info_text}  >
+                    <strong>Итого:</strong> {Math.ceil(price)} ₽
+                  </p>
+                  <p className={styles.modal__info_text}  >
+                    <strong>Всего мест:</strong>  {count}
+                  </p>
+                </div>
 
+              </div>
+              <form onSubmit={handleSubmit(onSubmit)} className={styles.modal__form}>
                 <label className={errors.name ? styles.label_error : styles.label}>
                   Ф.И.О.
                   <input {...register("name")} className={`${styles.input} ${errors.name ? styles.error : ""}`} placeholder="Ваше имя"

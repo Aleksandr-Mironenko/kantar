@@ -6,12 +6,25 @@
 
   &__container {
     margin-left: 20%;
+
+    @media (min-width: 812px) {
+      // margin: 0;+
+
+    }
   }
 
   &__title {
     font-size: 56px;
     font-weight: 800;
     max-width: 600px;
+
+    @media (max-width: 650px) {
+  font-size: 42px;
+}
+
+@media (max-width: 400px) {
+  font-size: 37px;
+}
   }
 
 
@@ -36,5 +49,9 @@
     &:hover {
       background: #bf0f15;
     }
+  }
+
+  @media (min-width: 812px) {
+    width: 100vw;
   }
 }

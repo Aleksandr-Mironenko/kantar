@@ -23,7 +23,7 @@ export default function Header() {
             <a className={styles.header__nav_link} href="#services">
               УСЛУГИ
             </a>
-            <a className={styles.header__nav_link} href="#about">
+            <a className={styles.header__nav_link} href="#advantages">
               О НАС
             </a>
             <a className={styles.header__nav_link} href="#contacts">
@@ -31,7 +31,7 @@ export default function Header() {
             </a>
 
 
-            <a href="#count" className={styles.header__nav_button}>
+            <a href="#calculator" className={styles.header__nav_button}>
               <div className={styles.header__nav_button_content}>
                 <span>КАЛЬКУЛЯТОР</span>
               </div>

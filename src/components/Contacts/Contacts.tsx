@@ -3,7 +3,7 @@ import styles from './Contacts.module.scss'
 
 export default function Contacts() {
   return (
-    <section id="contacts" className={styles.contacts}>
+    <section id="contacts" className={styles.contacts}  >
       <div className={styles.contacts__container} >
         <h1
           className={styles.contacts__title}

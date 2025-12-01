@@ -515,7 +515,7 @@ export default function CalkSend() {
 
 
   return (
-    <div className={styles.calculator} >
+    <div className={styles.calculator} id="calculator" >
       {/* Контейнер */}
       < div className={styles.calculator__left} >
         {/* Заголовок */}

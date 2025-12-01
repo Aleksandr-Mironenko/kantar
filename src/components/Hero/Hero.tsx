@@ -14,10 +14,10 @@ export default function Hero() {
           Быстрая и безопасная доставка грузов по России и всему миру.
         </p>
 
-        <a className={styles.hero__button} href="#services">
+        <a href="#calculator" className={styles.hero__button} >
           Рассчитать доставку
         </a>
-        <a className={styles.hero__button} href="#services">
+        <a className={styles.hero__button} href="#advantages">
           О нас
         </a>
       </div>

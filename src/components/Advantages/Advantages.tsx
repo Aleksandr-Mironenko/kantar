@@ -2,7 +2,7 @@ import styles from "./Advantages.module.scss";
 
 export default function Advantages() {
   return (
-    <section className={styles.advantages}>
+    <section className={styles.advantages} id="advantages">
       <h2 className={styles.advantages__title}>Почему мы?</h2>
 
       <div className={styles.advantages__list}>

@@ -6,11 +6,17 @@ import * as yup from "yup";
 import { IMaskInput } from "react-imask";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { OrderModalProps, FormValues } from "../DTO/DTO"
+import { OrderModalProps, FileObj, FormValues } from "../DTO/DTO"
+import DownloadButton from "../DownloadButton/DownloadButton"
+
+
+
+
 
 const schema = yup.object({
-  name: yup.string().required("Имя обязательно"),
-  phone: yup
+  nameFrom: yup.string().required("Имя обязательно"),
+  nameWhere: yup.string().required("Имя обязательно"),
+  phoneFrom: yup
     .string()
     .required("Телефон обязателен")
     .test("valid-phone", "Введите корректный номер", (value) => {
@@ -18,7 +24,22 @@ const schema = yup.object({
       const digits = value.replace(/\D/g, "");
       return digits.length === 10;
     }),
-  email: yup
+  phoneWhere: yup
+    .string()
+    .required("Телефон обязателен")
+    .test("valid-phone", "Введите корректный номер", (value) => {
+      if (!value) return false;
+      const digits = value.replace(/\D/g, "");
+      return digits.length === 10;
+    }),
+  emailFrom: yup
+    .string()
+    .required("Email обязателен")
+    .matches(
+      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+      "Введите корректный email"
+    ),
+  emailWhere: yup
     .string()
     .required("Email обязателен")
     .matches(
@@ -31,14 +52,20 @@ const schema = yup.object({
 });
 
 
+
 export default function OrderModal({ initialData, isOpen, onClose }: OrderModalProps) {
 
-  const { fromCountryObj, fromCityObj, whereCountryObj, whereCityObj, price, count } = initialData;
+  const { document, isFinalHeft, fromCountryObj, fromCityObj, whereCountryObj, whereCityObj, price, count } = initialData;
 
   const [from, setFrom] = useState<string>("")
   const [where, setWhere] = useState<string>("")
   const [indexWhere, setIndexWhere] = useState<string>("")
   const [indexFrom, setIndexFrom] = useState<string>("")
+  const [client, setClient] = useState<"sender" | "recipient">("sender")
+
+  const [invoiceFiles, setInvoiceFiles] = useState<FileObj[] | []>([{ file: null, id: 0 }]);
+  const [showInvois, setShowInvois] = useState<boolean>(false)
+
 
   const { register, handleSubmit, control, formState: { errors, isValid, }, setValue, trigger, watch } = useForm<FormValues>({
     resolver: yupResolver(schema),
@@ -47,10 +74,13 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
     criteriaMode: "all",
     shouldUnregister: false,
     defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
+      nameFrom: "",
+      phoneFrom: "",
+      emailFrom: "",
       adressFrom: from,
+      nameWhere: "",
+      phoneWhere: "",
+      emailWhere: "",
       adressWhere: where,
       agree: true,
     },
@@ -89,6 +119,102 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
     const iW = indexFrom ? `${indexFrom}, ` : "";
     setFrom(`${iW}${country}${comma}${city}, `);
   }, [fromCountryObj, fromCityObj, indexFrom]);
+
+
+
+
+  const delInvoiceFiles = (id) => {
+    const indexUpdate = invoiceFiles.findIndex(invoiceFile => invoiceFile.id === id)
+    setInvoiceFiles(prev => [
+      ...prev.slice(0, indexUpdate), ...prev.slice((indexUpdate + 1))//invoiceFiles, setInvoiceFiles
+    ]);
+  };
+
+  const addInvoiceFiles = () => {
+    setInvoiceFiles(prev => [
+      ...prev,
+      {
+        file: null,
+        id: prev.length > 0 ? Math.max(...prev.map(p => p.id)) + 1 : 0
+      }
+    ]);
+  };
+
+  const addFilesInInvoiceFiles = (file: File, id: number) => {
+    const indexUpdate = invoiceFiles.findIndex(invoiceFile => invoiceFile.id === id)
+
+
+    const newInvoiceFile = invoiceFiles[indexUpdate]
+    newInvoiceFile.file = file
+    setInvoiceFiles(prev => [
+      ...prev.slice(0, indexUpdate),
+      newInvoiceFile,
+      ...prev.slice(indexUpdate + 1)
+    ]);
+  };
+
+
+  const mapAddFile = invoiceFiles.map((el, index) => (
+    <li key={el.id} className={styles.whoAmI__item}>
+      < label htmlFor="invoise"
+        className={styles.whoAmI__label} >
+        <input
+          type="file"
+          id="invoise"
+          autoComplete=""
+          className={styles.whoAmI__input}
+          onChange={(e) => {  // добавляем сами файлы
+            const file = e.target.files?.[0] || null;
+            e.stopPropagation()
+            if (file) {
+              addFilesInInvoiceFiles(file, el.id);
+            }
+          }}
+        />
+
+
+
+      </label >
+      {invoiceFiles.length - 1 === index && <button // только добавляем возможность добавить файлы
+        onClick={() => addInvoiceFiles()}
+        className={styles.whoAmI__add}>
+        +
+      </button>}
+      {invoiceFiles.length > 1 && (< button
+        onClick={() => delInvoiceFiles(el.id)}
+        className={styles.whoAmI__delete}>
+        x
+      </button>)}
+    </li >
+  ))
+
+
+  const invois = (<>
+    <div className={styles.goods__invoise}>
+      <div className={styles.goods__download}  >
+        <DownloadButton
+          filename="i.docx"
+          fileUrl="/i.docx">
+          Скачайте бланк
+        </DownloadButton>
+      </div>
+      <div className={styles.goods__loadBack}>
+        <h4 className={styles.goods__loadBack_header}>Загрузите файлы</h4>
+        <ol className={styles.whoAmI}  >
+          {mapAddFile}
+        </ol>
+      </div>
+    </div>
+  </>)
+
+  const buttonShow = (
+    < button
+      className={styles.buttonShow}
+      onClick={(e) => {
+        e.preventDefault()
+        setShowInvois(!showInvois)
+      }}> {showInvois ? "Скрыть документы" : "Подгрузите документы"}
+    </button>)
 
   return (
     <>
@@ -149,32 +275,61 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   </div>
                 </div>
                 <div className={styles.modal__info_characteristics}  >
-                  <div    >
-                    <p className={styles.modal__info_title}
-                    >
-                      < strong > Характеристики отправления:</strong>
+
+                  <p className={styles.modal__info_title}
+                  >
+                    < strong > Характеристики отправления:</strong>
+                  </p>
+
+                  <div className={styles.modal__info_details} >
+                    <p className={styles.modal__info_text}  >
+                      <strong>Всего мест:</strong>  {count}
+                    </p>
+                    <p className={styles.modal__info_text}  >
+                      <strong>Рассчетный вес:</strong>  {isFinalHeft}
+                    </p>
+                    <p className={styles.modal__info_text}  >
+                      <strong>Стоимость:</strong> {Math.ceil(price)} ₽
                     </p>
                   </div>
-                  <p className={styles.modal__info_text}  >
-                    <strong>Итого:</strong> {Math.ceil(price)} ₽
-                  </p>
-                  <p className={styles.modal__info_text}  >
-                    <strong>Всего мест:</strong>  {count}
-                  </p>
                 </div>
-
               </div>
               <form onSubmit={handleSubmit(onSubmit)} className={styles.modal__form}>
-                <label className={errors.name ? styles.label_error : styles.label}>
-                  Ф.И.О.
-                  <input {...register("name")} className={`${styles.input} ${errors.name ? styles.error : ""}`} placeholder="Ваше имя"
+                <div className={styles.radioButton}>
+                  <label className={styles.radio}>
+                    <input
+                      className={styles.radioButtonChenge}
+                      type="radio"
+                      name="type"
+                      value="sender"
+                      checked={client === "sender"}
+                      onChange={(e) => setClient(e.target.value as "sender")}
+                    /> Я отправитель
+                  </label>
+                  <label className={styles.radio}>
+                    <input
+                      className={styles.radioButtonChenge}
+                      type="radio"
+                      name="type"
+                      value="recipient"
+                      checked={client === "recipient"}
+                      onChange={(e) => setClient(e.target.value as "recipient")}
+                    /> Я получатель
+                  </label >
+                </div>
+                <label className={errors.nameFrom ? styles.label_error : styles.label}>
+                  Ф.И.О. отправителя
+                  <input {...register("nameFrom")} className={`${styles.input} ${errors.nameFrom ? styles.error : ""}`} placeholder="Ф.И.О. отправителя"
                   />
-                  {errors.name && <p className={styles.errmsg}>{errors.name.message}</p>}
+
+                  {errors.nameFrom && <p className={styles.errmsg}>{errors.nameFrom.message}</p>}
                 </label>
-                <label className={errors.phone ? styles.label_error : styles.label}>
+
+
+                <label className={errors.phoneFrom ? styles.label_error : styles.label}>
                   Телефон
                   <Controller
-                    name="phone"
+                    name="phoneFrom"
                     control={control}
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                       <IMaskInput
@@ -189,28 +344,30 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                         }}
                         onBlur={onBlur}
                         inputRef={ref}
-                        className={`${styles.input} ${errors.phone ? styles.error : ""}`}
+                        className={`${styles.input} ${errors.phoneFrom ? styles.error : ""}`}
                       />
                     )}
                   />
 
-                  {errors.phone && (
-                    <p className={styles.errmsg}>{errors.phone.message}</p>
+                  {errors.phoneFrom && (
+                    <p className={styles.errmsg}>{errors.phoneFrom.message}</p>
                   )}
 
 
                 </label>
 
-                <label className={errors.email ? styles.label_error : styles.label}>
+                <label className={errors.emailFrom ? styles.label_error : styles.label}>
                   Эл. почта
-                  <input {...register("email")} className={`${styles.input} ${errors.email ? styles.error : ""}`} placeholder="example@mail.ru"
+                  <input {...register("emailFrom")} className={`${styles.input} ${errors.emailFrom ? styles.error : ""}`} placeholder="example@mail.ru"
                   />
-                  {errors.email && <p className={styles.errmsg}>{errors.email.message}</p>}
+                  {errors.emailFrom && <p className={styles.errmsg}>{errors.emailFrom.message}</p>}
                 </label>
 
-                <label className={errors.adressFrom ? styles.label_error : styles.label}>
+                <label htmlFor="adressFrom" className={errors.adressFrom ? styles.label_error : styles.label}>
                   Адрес отправителя
                   <input
+                    id="adressFrom"
+                    autoComplete=""
                     {...register("adressFrom")}
                     className={`${styles.input} ${errors.adressFrom ? styles.error : ""}`}
                     placeholder="Нужен полный адрес"
@@ -218,18 +375,68 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   {errors.adressFrom && <p className={styles.errmsg}>{errors.adressFrom.message}</p>}
                 </label>
 
-                < label className={styles.label}>
+                < label htmlFor="indexIdressFrom" className={styles.label}>
                   Индекс отправителя
                   <input
+                    id="indexIdressFrom"
+                    autoComplete=""
                     placeholder="Укажите индекс отправителя"
                     value={indexFrom}
                     onChange={e => setIndexFrom(e.target.value)}
+                    className={styles.input}
                   />
                 </label>
+                <label className={errors.nameWhere ? styles.label_error : styles.label}>
+                  Ф.И.О. получателя
+                  <input {...register("nameWhere")} className={`${styles.input} ${errors.nameWhere ? styles.error : ""}`} placeholder="Ф.И.О. получателя"
+                  />
 
-                <label className={errors.adressWhere ? styles.label_error : styles.label}>
+                  {errors.nameWhere && <p className={styles.errmsg}>{errors.nameWhere.message}</p>}
+                </label>
+
+
+                <label className={errors.phoneWhere ? styles.label_error : styles.label}>
+                  Телефон
+                  <Controller
+                    name="phoneWhere"
+                    control={control}
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <IMaskInput
+                        mask="+7 (000) 000-00-00"
+                        placeholder="+7 (___) ___-__-__"
+                        value={value ?? ""}
+                        onAccept={(formatted) => {
+
+                          const digits = formatted.replace(/\D/g, "");
+                          const withoutFirst7 = digits.slice(1);
+                          onChange(withoutFirst7);
+                        }}
+                        onBlur={onBlur}
+                        inputRef={ref}
+                        className={`${styles.input} ${errors.phoneWhere ? styles.error : ""}`}
+                      />
+                    )}
+                  />
+
+                  {errors.phoneWhere && (
+                    <p className={styles.errmsg}>{errors.phoneWhere.message}</p>
+                  )}
+
+
+                </label>
+
+                <label className={errors.emailWhere ? styles.label_error : styles.label}>
+                  Эл. почта
+                  <input {...register("emailWhere")} className={`${styles.input} ${errors.emailWhere ? styles.error : ""}`} placeholder="example@mail.ru"
+                  />
+                  {errors.emailWhere && <p className={styles.errmsg}>{errors.emailWhere.message}</p>}
+                </label>
+
+                <label htmlFor="adressWhere" className={errors.adressWhere ? styles.label_error : styles.label}>
                   Адрес получателя
                   <input
+                    id="adressWhere"
+                    autoComplete=""
                     {...register("adressWhere")}
                     className={`${styles.input} ${errors.adressWhere ? styles.error : ""}`}
                     placeholder="Нужен полный адрес"
@@ -237,15 +444,21 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   {errors.adressWhere && <p className={styles.errmsg}>{errors.adressWhere.message}</p>}
                 </label>
 
-                < label className={styles.label}>
+                < label htmlFor="indexIdressWhere" className={styles.label}>
                   Индекс получателя
                   <input
+                    id="indexIdressWhere"
+                    autoComplete=""
                     placeholder="Укажите индекс получателя"
                     value={indexWhere}
                     onChange={e => setIndexWhere(e.target.value)}
+                    className={styles.input}
                   />
                 </label>
-
+                {/* Инвойс */}
+                {document === "goods" && buttonShow
+                }
+                {showInvois && invois}
 
                 <label className={styles.modal__checkbox}>
                   <input
@@ -254,6 +467,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   />
                   <span>Согласен с обработкой персональных данных</span>
                 </label>
+
                 {errors.agree && <p className={styles.errmsg}>Согласие обязательно</p>}
                 <button
                   disabled={!isValid} className={styles.modal__submit} type="submit" >
@@ -266,5 +480,4 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
       }
     </>
   )
-}
-//обновление
+} 

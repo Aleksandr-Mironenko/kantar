@@ -160,9 +160,9 @@
    }
 
    @media (max-width: 415px) {
-   font-size: 20px;
+     font-size: 20px;
 
- }
+   }
  }
 
  .place {
@@ -256,7 +256,7 @@
 
 
  .field__block {
-   // *****
+
    display: flex;
    flex-direction: row;
    justify-content: space-between;
@@ -379,7 +379,6 @@
  .place__label {}
 
  .place__title {
-   // ****** 
    margin: 20px auto;
    font-size: 20px;
 

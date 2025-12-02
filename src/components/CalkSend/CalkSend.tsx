@@ -14,7 +14,6 @@ export default function CalkSend() {
   const [price, setPrice] = useState<number>(0);
   const [document, setDocument] = useState<"document" | "goods">("document");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [places, setPlaces] = useState<Place[]>([
     {
       heft: 0.5,
@@ -366,6 +365,7 @@ export default function CalkSend() {
 
         //выбираем больший вес - фактический или объемный
         const totalWeight = heft * el.places;
+
         let calcWeight = totalWeight;
 
         // Округление вверх до 0.5 кг
@@ -399,7 +399,6 @@ export default function CalkSend() {
             price = koefficient * fsRF * (base + Math.ceil(excessWeight) * excessPerKg);
           }
         }
-
         totalPrice += price;
       });
     }
@@ -472,7 +471,20 @@ export default function CalkSend() {
     return acc + el.places;
   }, 0);
 
+  const totalVolume = places.reduce((acc, el) => {
+    return acc + el.volume;
+  }, 0)
+
+  const totalHeft =
+    places.reduce((acc, el) => {
+      return acc + el.heft * el.places;
+    }, 0)
+
+  const isFinalHeft = totalVolume > totalHeft ? totalVolume : totalHeft
+
   const orderData = {
+    document,
+    isFinalHeft,
     isModalOpen,
     fromCountryObj,
     fromCityObj,
@@ -480,7 +492,7 @@ export default function CalkSend() {
     whereCityObj,
     price,
     count: totalPlaces,
-    onClose: () => { setIsModalOpen(false) }   //нужна ли вообще функция
+    onClose: () => { setIsModalOpen(false) }
   }
 
 
@@ -601,7 +613,7 @@ export default function CalkSend() {
                 value="document"
                 checked={document === "document"}
                 onChange={(e) => setDocument(e.target.value as "document")}
-                defaultChecked /> Документы
+              /> Документы
             </label >
           </div>
         </div>
@@ -640,18 +652,4 @@ export default function CalkSend() {
       </div>
     </div >
   );
-}
-
-
-// const orderData = {
-//   isModalOpen,
-//   fromCountryObj,
-//   fromCityObj,
-//   whereCountryObj,
-//   whereCityObj,
-//   price,
-//   count: totalPlaces,
-//   onClose: () => { setIsModalOpen(false) }   //нужна ли вообще функция
-// }
-
-
+} 

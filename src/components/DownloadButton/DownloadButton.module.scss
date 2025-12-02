@@ -1,0 +1,11 @@
+.download {
+  border: none;
+  font-size: 18px;
+
+
+  &:hover {
+    transform: scale(1.05);
+    font-weight: 700;
+    transition: (transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1), font-weight 0.4s cubic-bezier(0.075, 0.82, 0.165, 1));
+  }
+}

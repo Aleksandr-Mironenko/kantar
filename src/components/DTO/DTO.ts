@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface Place {
   heft: number;
   length: number;
@@ -30,6 +32,8 @@ export interface InitialData {
   whereCityObj: City | null,
   price: number
   count: number
+  document: "document" | "goods"
+  isFinalHeft: number
 }
 export interface OrderModalProps {
   initialData: InitialData,
@@ -38,10 +42,26 @@ export interface OrderModalProps {
 }
 
 export interface FormValues {
-  name: string;
-  phone: string;
-  email: string;
+  nameFrom: string;
+  nameWhere: string;
+  phoneFrom: string;
+  phoneWhere: string;
+  emailFrom: string;
+  emailWhere: string;
   adressFrom: string;
   adressWhere: string;
   agree: boolean;
+}
+
+
+export interface FileObj {
+  file: File | null,
+  id: number
+}
+
+export interface DownloadButtonProps {
+  filename: string,
+  content?: string | Blob,
+  fileUrl?: string,
+  children?: React.ReactNode
 }

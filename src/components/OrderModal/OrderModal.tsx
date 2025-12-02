@@ -123,7 +123,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
 
 
 
-  const delInvoiceFiles = (id) => {
+  const delInvoiceFiles = (id: number) => {
     const indexUpdate = invoiceFiles.findIndex(invoiceFile => invoiceFile.id === id)
     setInvoiceFiles(prev => [
       ...prev.slice(0, indexUpdate), ...prev.slice((indexUpdate + 1))//invoiceFiles, setInvoiceFiles

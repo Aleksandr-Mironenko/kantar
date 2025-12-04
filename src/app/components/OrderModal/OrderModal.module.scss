@@ -323,7 +323,7 @@
   font-size: 12px;
   color: #e31e24;
   position: absolute;
-  top: 33px;
+  top: 13px;
   right: 18px;
   opacity: 1;
   pointer-events: none;
@@ -331,6 +331,10 @@
 
   &.visible {
     opacity: 0;
+  }
+
+  @media (max-width: 507px) {
+    top: 33px;
   }
 }
 

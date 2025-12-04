@@ -7,21 +7,17 @@
 }
 
 html {
-  /* Главное — всегда показывать вертикальный скролл (чтобы не было прыжка при появлении контента) */
-  overflow-y: scroll;           /* ← КЛЮЧЕВАЯ СТРОКА */
+  overflow-y: scroll;      
   overflow-x: hidden;
-  scroll-behavior: smooth;      /* ← плавный скролл к якорям */
-  
-  /* Полностью скрываем скроллбар */
-  scrollbar-width: none;        /* Firefox */
-  -ms-overflow-style: none;     /* IE и старый Edge */
+  scroll-behavior: smooth;     
+  scrollbar-width: none;    
+  -ms-overflow-style: none;  
 }
 
 html::-webkit-scrollbar {
-  display: none;                /* Chrome, Safari, Edge, Opera */
+  display: none;            
 }
-
-/* body */
+ 
 body {
   margin: 0;
   min-width: 350px;
@@ -29,17 +25,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
-  color: #000;
-
-  /* Фон */
+  color: #000; 
   background: rgb(185, 49, 37);
   background-image: url('/imgi_14_photo_2025-06-20_13-.jpg.webp');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  background-attachment: fixed;
-
-  /* Дублируем скрытие скроллбара — надёжность 100% */
+  background-attachment: fixed; 
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -47,22 +39,19 @@ body {
 body::-webkit-scrollbar {
   display: none;
 }
-
-/* Ссылки */
+ 
 a {
-  color: inherit;               /* ← лучше чем просто black */
+  color: inherit;  
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-/* Убираем синие вспышки при тапе на мобильных */
 *,
 *::before,
 *::after {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Опционально: убираем outline только если сам делаешь красивый фокус */
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,

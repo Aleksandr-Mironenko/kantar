@@ -680,6 +680,10 @@
     bottom: -15px;
     right: 20px;
     font-weight: 700;
+
+    @media (max-width: 421px) {
+      font-size: 9px;
+    }
   }
 
   &:hover::after {

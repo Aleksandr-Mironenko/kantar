@@ -359,7 +359,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                 <div className={styles.label__wrapper}  >
                   <label className={errors.nameFrom ? styles.label_error : styles.label}>
                     Ф.И.О. отправителя
-                    <input {...register("nameFrom")} className={`${styles.input} ${errors.nameFrom ? styles.error : ""}`} placeholder="Ф.И.О. отправителя"
+                    <input autoComplete="given-name" {...register("nameFrom")} className={`${styles.input} ${errors.nameFrom ? styles.error : ""}`} placeholder="Ф.И.О. отправителя"
                     />
 
                     {errors.nameFrom && <p className={styles.errmsg}>{errors.nameFrom.message}</p>}
@@ -373,6 +373,8 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                       control={control}
                       render={({ field: { onChange, onBlur, value, ref } }) => (
                         <IMaskInput
+                          id="phoneFrom"
+                          autoComplete="tel"
                           mask="+7 (000) 000-00-00"
                           placeholder="+7 (___) ___-__-__"
                           value={value ?? ""}
@@ -399,7 +401,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                 <div className={styles.label__wrapper} >
                   <label className={errors.emailFrom ? styles.label_error : styles.label}>
                     Эл. почта отправителя
-                    <input {...register("emailFrom")} className={`${styles.input} ${errors.emailFrom ? styles.error : ""}`} placeholder="example@mail.ru"
+                    <input autoComplete="email" {...register("emailFrom")} className={`${styles.input} ${errors.emailFrom ? styles.error : ""}`} placeholder="example@mail.ru"
                     />
                     {errors.emailFrom && <p className={styles.errmsg}>{errors.emailFrom.message}</p>}
                   </label>
@@ -409,7 +411,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     Адрес отправителя
                     <input
                       id="adressFrom"
-                      autoComplete=""
+                      autoComplete="street-address"
                       {...register("adressFrom")}
                       className={`${styles.input} ${styles.adress} ${errors.adressFrom ? styles.error : ""}`}
                       placeholder="Нужен полный адрес"
@@ -421,10 +423,10 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   < label htmlFor="indexIdressFrom" className={`${styles.index} ${styles.label}`}>
                     Индекс отправителя
                     <input
+                      autoComplete="postal-code"
                       id="indexIdressFrom"
-                      autoComplete=""
                       placeholder="Укажите индекс отправителя"
-                      value={indexFrom}
+                      value={indexFrom ?? ""}
                       onChange={e => setIndexFrom(e.target.value)}
                       className={styles.input}
                     />
@@ -433,7 +435,10 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                 <div className={styles.label__wrapper}  >
                   <label className={errors.nameWhere ? styles.label_error : styles.label}>
                     Ф.И.О. получателя
-                    <input {...register("nameWhere")} className={`${styles.input} ${errors.nameWhere ? styles.error : ""}`} placeholder="Ф.И.О. получателя"
+                    <input
+                      autoComplete="given-name"
+                      {...register("nameWhere")}
+                      className={`${styles.input} ${errors.nameWhere ? styles.error : ""}`} placeholder="Ф.И.О. получателя"
                     />
 
                     {errors.nameWhere && <p className={styles.errmsg}>{errors.nameWhere.message}</p>}
@@ -447,6 +452,8 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                       control={control}
                       render={({ field: { onChange, onBlur, value, ref } }) => (
                         <IMaskInput
+                          id="phoneWhere"
+                          autoComplete="tel"
                           mask="+7 (000) 000-00-00"
                           placeholder="+7 (___) ___-__-__"
                           value={value ?? ""}
@@ -473,7 +480,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                 <div className={styles.label__wrapper} >
                   <label className={errors.emailWhere ? styles.label_error : styles.label}>
                     Эл. почта получателя
-                    <input {...register("emailWhere")} className={`${styles.input} ${errors.emailWhere ? styles.error : ""}`} placeholder="example@mail.ru"
+                    <input autoComplete="email" {...register("emailWhere")} className={`${styles.input} ${errors.emailWhere ? styles.error : ""}`} placeholder="example@mail.ru"
                     />
                     {errors.emailWhere && <p className={styles.errmsg}>{errors.emailWhere.message}</p>}
                   </label>
@@ -484,7 +491,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     Адрес получателя
                     <input
                       id="adressWhere"
-                      autoComplete=""
+                      autoComplete="street-address"
                       {...register("adressWhere")}
                       className={`${styles.input} ${errors.adressWhere ? styles.error : ""}`}
                       placeholder="Нужен полный адрес"
@@ -497,9 +504,9 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     Индекс получателя
                     <input
                       id="indexIdressWhere"
-                      autoComplete=""
+                      autoComplete="postal-code"
                       placeholder="Укажите индекс получателя"
-                      value={indexWhere}
+                      value={indexWhere ?? ""}
                       onChange={e => setIndexWhere(e.target.value)}
                       className={styles.input}
                     />

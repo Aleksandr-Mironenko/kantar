@@ -95,7 +95,7 @@ export default function CalkSend() {
   const listCountries = (
     <datalist id="countries">
       {coutriesZoneObject.map(c => (
-        <option key={c.id} value={c.name} />
+        <option key={c.id} value={c.name ?? ""} />
       ))}
     </datalist>
   );
@@ -104,7 +104,7 @@ export default function CalkSend() {
   const listCities = (
     <datalist id="cities">
       {citiesZoneObject.map(c => (
-        <option key={c.id} value={c.name} />
+        <option key={c.id} value={c.name ?? ""} />
       ))}
     </datalist>
   );
@@ -193,7 +193,7 @@ export default function CalkSend() {
                   type="number"
                   min="0.2"
                   step="0.01"
-                  value={place.volume}
+                  value={place.volume ?? ""}
                   onChange={e => updatePlace(place.id, "volume", e.target.value)}
                   style={{ backgroundColor: "transparent" }}
                   className={styles.volumeField__input}
@@ -214,7 +214,7 @@ export default function CalkSend() {
                   step="1"
                   className={styles.place__input}
                   placeholder="Длина"
-                  value={place.length}
+                  value={place.length ?? ""}
                   onChange={e => updatePlace(place.id, "length", e.target.value)}
                 />
                 <p>см</p>
@@ -232,7 +232,7 @@ export default function CalkSend() {
                   step="1"
                   className={styles.place__input}
                   placeholder="Ширина"
-                  value={place.width}
+                  value={place.width ?? ""}
                   onChange={e => updatePlace(place.id, "width", e.target.value)}
                 />
                 <p>см</p>
@@ -249,7 +249,7 @@ export default function CalkSend() {
                   min="1"
                   step="1"
                   className={styles.place__input}
-                  value={place.height}
+                  value={place.height ?? ""}
                   onChange={e => updatePlace(place.id, "height", e.target.value)}
                   placeholder="Высота"
                 />
@@ -268,7 +268,7 @@ export default function CalkSend() {
                   step="0.1"
                   className={styles.place__input}
                   placeholder="Ввести"
-                  value={changeValue(place.heft)}
+                  value={changeValue(place.heft ?? "")}
                   onChange={e => updatePlace(place.id, "heft", e.target.value)}
                 />
                 <p>кг</p>
@@ -285,7 +285,7 @@ export default function CalkSend() {
                   min="1"
                   step="1"
                   onChange={e => updatePlace(place.id, "places", e.target.value)}
-                  value={place.places}
+                  value={place.places ?? ""}
                   className={styles.place__input}
                   placeholder="Ввести" />
                 <p>шт</p>
@@ -540,24 +540,30 @@ export default function CalkSend() {
               <div className={styles.calculator__fieldRow}>
                 <label htmlFor="fromCountry" className={styles.calculator__countryLabel}>Откуда</label>
                 <input
+                  autoComplete="country-name"
                   name="fromCountry"
                   id="fromCountry"
                   className={styles.calculator__select}
                   list="countries"
                   placeholder="Страна отправления"
                   onChange={selectFromCountry}
-                  value={fromCountryObj?.name}
+                  value={fromCountryObj?.name ?? ""}
                 />
                 {listCountries}
 
                 {fromCountryObj?.name === "Россия" && <>
-                  <input
-                    className={styles.calculator__select}
-                    list="cities"
-                    placeholder="Город отправления"
-                    onChange={selectFromCity}
-                    value={fromCityObj?.name}
-                  />
+                  <label htmlFor="fromCity" className={styles.calculator__cityLabel} >
+                    <input
+                      id="fromCity"
+                      name="fromCity"
+                      autoComplete="address-level2"
+                      className={styles.calculator__select}
+                      list="cities"
+                      placeholder="Город отправления"
+                      onChange={selectFromCity}
+                      value={fromCityObj?.name ?? ""}
+                    />
+                  </label>
                   {listCities}
                 </>}
               </div>
@@ -571,23 +577,29 @@ export default function CalkSend() {
               <div className={styles.calculator__fieldRow}>
                 <label htmlFor="whereCountry" className={styles.calculator__countryLabel}>Куда</label>
                 <input
+                  autoComplete="country-name"
                   name="whereCountry"
                   id="whereCountry"
                   className={styles.calculator__select}
                   list="countries"
                   placeholder="Страна получения"
                   onChange={selectWhereCountry}
-                  value={whereCountryObj?.name}
+                  value={whereCountryObj?.name ?? ""}
                 />
                 {listCountries}
                 {whereCountryObj?.name === "Россия" && <>
-                  <input
-                    className={styles.calculator__select}
-                    list="cities"
-                    placeholder="Город получения"
-                    onChange={selectWhereCity}
-                    value={whereCityObj?.name}
-                  />
+                  <label htmlFor="whereCity" className={styles.calculator__cityLabel}  >
+                    <input
+                      id="whereCity"
+                      name="whereCity"
+                      autoComplete="address-level2"
+                      className={styles.calculator__select}
+                      list="cities"
+                      placeholder="Город получения"
+                      onChange={selectWhereCity}
+                      value={whereCityObj?.name ?? ""}
+                    />
+                  </label>
                   {listCities}
                 </>
                 }

@@ -140,7 +140,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
     ]);
   };
 
-  const addFilesInInvoiceFiles = (file: File, id: number) => {
+  const addFilesInInvoiceFiles = (file: File | null, id: number) => {
     const indexUpdate = invoiceFiles.findIndex(invoiceFile => invoiceFile.id === id)
 
 
@@ -153,14 +153,20 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
     ]);
   };
 
+  const whatInFilesInInvoiceFiles = (id: number) => {
+    const res = invoiceFiles.find(el => el.id === id)
+    if (res) {
+      return res.file
+    }
+  }
 
   const mapAddFile = invoiceFiles.map((el, index) => (
     <li key={el.id} className={styles.whoAmI__item}>
-      < label htmlFor="invoise"
+      < label htmlFor={`invoise_${el.id}`}
         className={styles.whoAmI__label} >
         <input
           type="file"
-          id="invoise"
+          id={`invoise_${el.id}`}
           autoComplete=""
           className={styles.whoAmI__input}
           onChange={(e) => {  // добавляем сами файлы
@@ -168,23 +174,47 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
             e.stopPropagation()
             if (file) {
               addFilesInInvoiceFiles(file, el.id);
+
             }
           }}
         />
-
-
-
+        <div className={styles.whoAmI__buttonСhoice}>
+          Приложить файл
+        </div>
       </label >
-      {invoiceFiles.length - 1 === index && <button // только добавляем возможность добавить файлы
-        onClick={() => addInvoiceFiles()}
-        className={styles.whoAmI__add}>
-        +
-      </button>}
-      {invoiceFiles.length > 1 && (< button
-        onClick={() => delInvoiceFiles(el.id)}
-        className={styles.whoAmI__delete}>
-        ⨯
-      </button>)}
+      {/* Имя файла — под кнопкой */}
+      {whatInFilesInInvoiceFiles(el.id) && (() => {
+        const file = whatInFilesInInvoiceFiles(el.id);//получаем файл функцией
+        console.log(file)
+        if (file != null) {
+          return (
+            <div className={styles.whoAmI__fileName} >
+              {file.name}
+              < button onClick={(e) => {
+                e.stopPropagation()
+                addFilesInInvoiceFiles(null, el.id)
+              }} >
+                ×
+              </button>
+            </div >)
+        }
+      })
+        ()}
+
+      {
+        invoiceFiles.length - 1 === index && <button // добавляем возможность добавить файлы
+          onClick={() => addInvoiceFiles()}
+          className={styles.whoAmI__add}>
+          +
+        </button>
+      }
+      {
+        invoiceFiles.length > 1 && (< button // добавляем возможность удалить файлы
+          onClick={() => delInvoiceFiles(el.id)}
+          className={styles.whoAmI__delete}>
+          ⨯
+        </button>)
+      }
     </li >
   ))
 

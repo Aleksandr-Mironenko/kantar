@@ -276,6 +276,10 @@
   font-size: 18px;
   font-weight: 500;
   color: #333;
+
+  &__wrapper {
+    position: relative
+  }
 }
 
 .label__wrapper {

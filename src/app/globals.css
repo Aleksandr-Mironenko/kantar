@@ -52,10 +52,10 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible,
+/* button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
   outline: 2px solid #e31e24;
-  outline-offset: 2px;
-}
+  outline-offset: 0px;
+} */

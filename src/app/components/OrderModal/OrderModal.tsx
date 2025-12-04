@@ -94,6 +94,11 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
   }, [watch, trigger]);
 
 
+
+
+
+  //найти
+
   const onSubmit = (data: FormValues) => console.log("FORM DATA:", data);//сюда к дате можно добавить еще значения которые были на страничке до этого и файл который прикладывает клиент
 
   useEffect(() => {
@@ -351,7 +356,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     /> Я получатель
                   </label >
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   <label className={errors.nameFrom ? styles.label_error : styles.label}>
                     Ф.И.О. отправителя
                     <input {...register("nameFrom")} className={`${styles.input} ${errors.nameFrom ? styles.error : ""}`} placeholder="Ф.И.О. отправителя"
@@ -360,7 +365,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     {errors.nameFrom && <p className={styles.errmsg}>{errors.nameFrom.message}</p>}
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper} >
                   <label className={`${styles.phone} ${errors.phoneFrom ? styles.label_error : styles.label}`}>
                     Телефон отправителя
                     <Controller
@@ -391,7 +396,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
 
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper} >
                   <label className={errors.emailFrom ? styles.label_error : styles.label}>
                     Эл. почта отправителя
                     <input {...register("emailFrom")} className={`${styles.input} ${errors.emailFrom ? styles.error : ""}`} placeholder="example@mail.ru"
@@ -399,7 +404,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     {errors.emailFrom && <p className={styles.errmsg}>{errors.emailFrom.message}</p>}
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   <label htmlFor="adressFrom" className={`${styles.adress} ${errors.adressFrom ? styles.label_error : styles.label}`}>
                     Адрес отправителя
                     <input
@@ -412,7 +417,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     {errors.adressFrom && <p className={styles.errmsg}>{errors.adressFrom.message}</p>}
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   < label htmlFor="indexIdressFrom" className={`${styles.index} ${styles.label}`}>
                     Индекс отправителя
                     <input
@@ -425,7 +430,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     />
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   <label className={errors.nameWhere ? styles.label_error : styles.label}>
                     Ф.И.О. получателя
                     <input {...register("nameWhere")} className={`${styles.input} ${errors.nameWhere ? styles.error : ""}`} placeholder="Ф.И.О. получателя"
@@ -434,7 +439,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     {errors.nameWhere && <p className={styles.errmsg}>{errors.nameWhere.message}</p>}
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   <label className={`${styles.phone} ${errors.phoneWhere ? styles.label_error : styles.label}`}>
                     Телефон получателя
                     <Controller
@@ -465,7 +470,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
 
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper} >
                   <label className={errors.emailWhere ? styles.label_error : styles.label}>
                     Эл. почта получателя
                     <input {...register("emailWhere")} className={`${styles.input} ${errors.emailWhere ? styles.error : ""}`} placeholder="example@mail.ru"
@@ -473,7 +478,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     {errors.emailWhere && <p className={styles.errmsg}>{errors.emailWhere.message}</p>}
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   <label htmlFor="adressWhere" className={`${styles.adress} ${errors.adressWhere ? styles.label_error : styles.label
                     }`}>
                     Адрес получателя
@@ -487,7 +492,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     {errors.adressWhere && <p className={styles.errmsg}>{errors.adressWhere.message}</p>}
                   </label>
                 </div>
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   < label htmlFor="indexIdressWhere" className={`${styles.index} ${styles.label}`}>
                     Индекс получателя
                     <input

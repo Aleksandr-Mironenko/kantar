@@ -671,7 +671,7 @@
 
 .adress {
   &::after {
-    content: "ВАЖНО УКАЗАТЬ ПОЛНЫЙ АДРЕС";
+    content: "УКАЖИТЕ ПОЛНЫЙ АДРЕС";
     font-size: 12px;
     opacity: 0;
     margin-left: 8px;
@@ -693,7 +693,7 @@
 
 .index {
   &::after {
-    content: "ИНДЕКС ВАЖЕН ДЛЯ ТОЧНОСТИ";
+    content: "ВАЖНО ДЛЯ ТОЧНОСТИ";
     font-size: 12px;
     opacity: 0;
     margin-left: 8px;
@@ -702,6 +702,10 @@
     bottom: -15px;
     right: 20px;
     font-weight: 700;
+
+    @media (max-width: 421px) {
+      font-size: 9px;
+    }
   }
 
   &:hover::after {
@@ -724,6 +728,10 @@
     bottom: -15px;
     right: 20px;
     font-weight: 700;
+
+    @media (max-width: 421px) {
+      font-size: 9px;
+    }
   }
 
   &:hover::after {
@@ -746,6 +754,10 @@
     bottom: 2px;
     right: 20px;
     font-weight: 700;
+
+    @media (max-width: 421px) {
+      font-size: 9px;
+    }
   }
 
   &:hover::after {

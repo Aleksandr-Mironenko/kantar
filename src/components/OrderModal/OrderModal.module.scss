@@ -43,7 +43,19 @@
     border: none;
     cursor: pointer;
     color: #999;
+    transform: scale(1);
+    font-weight: 400;
+    transform: scale(1);
+    display: inline-block;
+    transition: (transform 1s cubic-bezier(0.075, 0.82, 0.165, 1),
+        font-weight 1s cubic-bezier(0.075, 0.82, 0.165, 1));
 
+
+
+    &:hover {
+      transform: scale(1.15);
+      font-weight: 700;
+    }
   }
 
   &__title {
@@ -72,6 +84,8 @@
       border-radius: 8px;
       font-size: 16px;
     }
+
+
   }
 
 
@@ -199,8 +213,15 @@
     border-radius: 8px;
     font-size: 18px;
     font-weight: 600;
-    cursor: pointer;
     margin-top: 12px;
+    transform: scale(1);
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+    &:not(:disabled):hover {
+      transform: scale(1.03);
+    }
 
     &:disabled {
       opacity: 0.6;
@@ -254,6 +275,11 @@
   color: #333;
 }
 
+.label__wrapper {
+  position: "relative";
+  margin-top: 10px;
+}
+
 .label_error {
   display: flex;
   flex-direction: column;
@@ -287,11 +313,11 @@
 .errmsg {
   margin-top: 6px;
   margin-left: 10px;
-  font-size: 10px;
+  font-size: 12px;
   color: #e31e24;
-  position: relative;
-  top: -20px;
-  left: 20px;
+  position: absolute;
+  top: 13px;
+  right: 18px;
   opacity: 1;
   pointer-events: none;
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -407,6 +433,8 @@
         transform: translate(-50%, -50%);
       }
     }
+
+    //
   }
 
   @media (max-width: 875px) {
@@ -469,8 +497,14 @@
     border: none;
     position: absolute;
     padding: 10px;
-    top: -10px;
+    top: -11px;
     left: -45px;
+    transform: scale(1);
+
+    &:hover {
+      transform: scale(1.2);
+      font-weight: 700;
+    }
   }
 
   &__add {
@@ -488,16 +522,14 @@
     border-top: 3px solid red;
     border-bottom: 3px solid red;
     border-radius: 15px 15px 15px 15px;
+
+    &:hover {
+      transform: scale(1.1);
+      font-weight: 700;
+    }
   }
-
-
-
-
 }
 
-// input[type="file"] {
-//   color: transparent; // ← ВСЁ! Это убирает текст "Файл не выбран"
-// }
 
 .goods {
   &__invoise {}
@@ -536,5 +568,134 @@
   align-self: start;
   font-size: 18px;
   margin-bottom: 7px;
-  font-weight: 700;
+  font-weight: 400;
+  transform: scale(1);
+  cursor: pointer;
+  display: inline-block;
+
+  transition: (transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1),
+      font-weight 0.4s cubic-bezier(0.075, 0.82, 0.165, 1));
+
+  &:hover {
+    transform: scale(1.05);
+    font-weight: 700;
+  }
 }
+
+
+
+//  &::after {
+//     content: "Нажми меня!";
+//     font-size: 10px;
+//     opacity: 0;
+//     margin-left: 8px;
+//     transition: opacity 0.3s ease;
+//     position: relative;
+
+//   }
+
+//   &:hover::after {
+//     opacity: 1;
+//   }
+
+.adress {
+  &::after {
+    content: "ВАЖНО УКАЗАТЬ ПОЛНЫЙ АДРЕС";
+    font-size: 12px;
+    opacity: 0;
+    margin-left: 8px;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    bottom: -15px;
+    right: 20px;
+    font-weight: 700;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
+  &:has(input:focus)::after {
+    opacity: 1;
+  }
+}
+
+.index {
+  &::after {
+    content: "ИНДЕКС ВАЖЕН ДЛЯ ТОЧНОСТИ";
+    font-size: 12px;
+    opacity: 0;
+    margin-left: 8px;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    bottom: -15px;
+    right: 20px;
+    font-weight: 700;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
+  &:has(input:focus)::after {
+    opacity: 1;
+  }
+}
+
+.phone {
+  &::after {
+    content: "ЕСЛИ НЕ РФ - УКАЖИТЕ ПОВТОРНО РФ";
+    font-size: 12px;
+    opacity: 0;
+    margin-left: 8px;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    bottom: -15px;
+    right: 20px;
+    font-weight: 700;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
+  &:has(input:focus)::after {
+    opacity: 1;
+  }
+}
+
+.phoneError {
+  &::after {
+    content: "ЕСЛИ НЕ РФ - УКАЖИТЕ ПОВТОРНО РФ";
+    font-size: 12px;
+    opacity: 0;
+    margin-left: 8px;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    bottom: 2px;
+    right: 20px;
+    font-weight: 700;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
+  &:has(input:focus)::after {
+    opacity: 1;
+  }
+}
+
+// font-weight: 400;
+//   transform: scale(1);
+//   cursor: pointer;
+//   display: inline-block;
+//   transition: (transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1),
+//       font-weight 0.4s cubic-bezier(0.075, 0.82, 0.165, 1));
+
+
+
+//   &:hover {
+//     transform: scale(1.05);
+//     font-weight: 700;
+//   }

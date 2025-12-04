@@ -1,7 +1,11 @@
 "use client";
 import styles from "./CalkSend.module.scss";
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
-import { fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, excess70RF, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key, funcExcess70, funcExcess300, costIsHigher70, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF, funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey } from './data'
+import { useState, useEffect, useCallback } from "react"
+import {
+  fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key,
+  funcExcess70, funcExcess300, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF,
+  funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey
+} from './data'
 import Image from "next/image";
 import OrderModal from "../OrderModal/OrderModal"
 import { Place, Country, City } from "../DTO/DTO"
@@ -31,25 +35,23 @@ export default function CalkSend() {
 
   const changeValue = (value: number | string): number => {
     const str = String(value).trim();
-
     // Если дробное — оставляем как есть
     if (str.includes(".")) {
       const num = Number(str);
       return isNaN(num) ? 0.5 : num;
     }
-
     // Если целое и начинается с 0 (и длиннее 1 символа) — убираем нули
     if (str.length > 1 && str.startsWith("0")) {
       const cleaned = str.replace(/^0+/, "");
       const result = cleaned === "" ? 0.5 : Number(cleaned);
       return result;
     }
-
     // Иначе — просто число
     const num = Number(str);
     return isNaN(num) ? 0.5 : num;
   };
 
+  //функция обновления значений характеристик отправления
   const updatePlace = (id: number, field: keyof Place, value: string | number) => {
     setPlaces(prev => prev.map(p => {
       if (p.id !== id) return p;
@@ -61,34 +63,28 @@ export default function CalkSend() {
     }));
   };
 
-
-
-
-
-  //поиск страны отправления в списке
+  //функция поиска страны отправления в списке
   const selectFromCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const found = coutriesZoneObject.find(el => el.name === value) || null
     setFromCountryObj(found)
   };
 
-  //поиск города отправления в списке
+  //функция поиска города отправления в списке
   const selectFromCity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-
     const found = citiesZoneObject.find(el => el.name === value) || null
-
     setFromCityObj(found)
   }
 
-  //поиск страны назначения в списке
+  //функция поиска страны назначения в списке
   const selectWhereCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const found = coutriesZoneObject.find(el => el.name === value) || null
     setWhereCountryObj(found)
   };
 
-  //поиск города назначения в списке
+  //функция поискагорода назначения в списке
   const selectWhereCity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const found = citiesZoneObject.find(el => el.name === value) || null
@@ -113,7 +109,7 @@ export default function CalkSend() {
     </datalist>
   );
 
-  //удаление строки характеристик отправления
+  //функция удаления блока характеристик отправления
   const delPlace = (id: number) => {
     const indexUpdate = places.findIndex(place => place.id === id)
     setPlaces(prev => [
@@ -121,7 +117,7 @@ export default function CalkSend() {
     ]);
   };
 
-  //добаление строки характеристик отправления
+  //функция добаления блока характеристик отправления
   const addPlace = () => {
     setPlaces(prev => [
       ...prev,
@@ -138,7 +134,7 @@ export default function CalkSend() {
     ]);
   };
 
-  //изменение значений полей характеристик отправления по кнопкам +/-
+  //функция изменения значений полей характеристик отправления по кнопкам +/-
   const handleChange = (place: Place, e: React.MouseEvent<HTMLButtonElement>, action: string,) => {
     const parentElement = e.currentTarget.parentElement;
     const grandParentElement = parentElement?.parentElement;
@@ -160,6 +156,7 @@ export default function CalkSend() {
     }
   };
 
+  //функция кнопки управления значением характеристик отправления
   const control = (place: Place) => {
     return (<div className={styles.place__controls}>
       <button
@@ -179,7 +176,6 @@ export default function CalkSend() {
     </div>
     )
   }
-
 
   //поля ввода характеристик отправления из массива places
   const mapPlaces = places.map((place, index) => (
@@ -303,7 +299,7 @@ export default function CalkSend() {
         <button
           onClick={() => delPlace(place.id)}
           className={styles.place__delete}
-        > x
+        > ⨯
         </button>
       }
       {
@@ -312,8 +308,6 @@ export default function CalkSend() {
         > + </button>}
     </div >
   ))
-  // const memoSetPrice = useMemo(() => { setPrice(0) }, [setPrice]);
-
 
   // определение стоимости мест, в зависимости от страны и города отправления и назначения
   useEffect(() => {
@@ -378,7 +372,9 @@ export default function CalkSend() {
         if (document === "document" && totalWeight <= 2) {
           const key = `${result}-${calcWeight}`;
           if (key in smallDoc) {
-            price = koefficient * fsRF * funcSmallDoc(key as SmallDocKey);
+            const price0 = funcSmallDoc(key as SmallDocKey)
+            // price = fsRF * price0 - ((1 - koefficient) * price0);
+            price = fsRF * price0 * (1 - koefficient)
           }
         } else {//большой вес и/или груз
           let excessPerKg = 0;
@@ -395,8 +391,9 @@ export default function CalkSend() {
 
           const key = `${result}-${calcWeight}`;
           if (key in bigDoc) {
-            const base = funcBigDoc(key as BigDocKey);
-            price = koefficient * fsRF * (base + Math.ceil(excessWeight) * excessPerKg);
+            const price0 = funcBigDoc(key as BigDocKey);
+            // price = fsRF * (price0 + Math.ceil(excessWeight) * excessPerKg) - ((1 - koefficient) * price0);
+            price = fsRF * (price0 + Math.ceil(excessWeight) * excessPerKg) * (1 - koefficient)
           }
         }
         totalPrice += price;
@@ -427,8 +424,9 @@ export default function CalkSend() {
         const key = `${result}-${calcWeight}`;
 
         if (key in rfBigDoc) {
-          const base = funcRfBigDoc(key as RfBigDocKey);
-          price = koefficient * fs * (base + Math.ceil(excessWeight) * excessPerKg);
+          const price0 = funcRfBigDoc(key as RfBigDocKey);
+          // price = fs * (price0 + Math.ceil(excessWeight) * excessPerKg) - ((1 - koefficient) * price0);
+          price = fs * (price0 + Math.ceil(excessWeight) * excessPerKg) * (1 - koefficient)
         }
         totalPrice += price;
       });
@@ -444,26 +442,27 @@ export default function CalkSend() {
     koefficient
   ]);
 
-  //автоматическа подстановка города
+  //автоматическа подстановка города в отправитель
   useEffect(() => {
     if (!fromCountryObj) return;
     const name = fromCountryObj.name;
     const arrCountries = coutriesZoneObject.map(el => el.name);
     if (arrCountries.includes(name) && name !== "Россия") {
-      setWhereCountryObj({ name: "Россия", zone: 1, id: 0 });//..найти
+      setWhereCountryObj({ name: "Россия", zone: 1, id: 0 });
     }
   }, [fromCountryObj]);
 
-  //автоматическа подстановка города
+  //автоматическа подстановка города в получатель
   useEffect(() => {
     if (!whereCountryObj) return;
     const name = whereCountryObj.name;
     const arrCountries = coutriesZoneObject.map(el => el.name);
     if (arrCountries.includes(name) && name !== "Россия") {
-      setFromCountryObj({ name: "Россия", zone: 1, id: 0 });//..найти
+      setFromCountryObj({ name: "Россия", zone: 1, id: 0 });
     }
   }, [whereCountryObj]);
 
+  //рассчеты стоимости и ее детали
   const nds = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 0.2 : 0;
   const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 1.2 : price;
 
@@ -475,13 +474,14 @@ export default function CalkSend() {
     return acc + el.volume;
   }, 0)
 
+  //рассчет общего веса для формы заявки
   const totalHeft =
     places.reduce((acc, el) => {
       return acc + el.heft * el.places;
     }, 0)
-
   const isFinalHeft = totalVolume > totalHeft ? totalVolume : totalHeft
 
+  //формируем пропс для передачи в форму заявки
   const orderData = {
     document,
     isFinalHeft,
@@ -495,12 +495,12 @@ export default function CalkSend() {
     onClose: () => { setIsModalOpen(false) }
   }
 
-
-
+  //функция закрытия модального окна
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
 
+  //функция перестановки мест отправителя и получателя
   const changeFromwhere = () => {
     const tempFromCountry = fromCountryObj;
     const tempFromCity = fromCityObj;
@@ -513,6 +513,7 @@ export default function CalkSend() {
     setWhereCityObj(tempFromCity);
   }
 
+  //проверка заполнения нужных форм
   const isFormInvalid = () => {
     const fromIsRussia = fromCountryObj?.name === "Россия";
     const toIsRussia = whereCountryObj?.name === "Россия";
@@ -631,7 +632,9 @@ export default function CalkSend() {
             <div>Цена: {Math.ceil(price)} ₽</div>
           </div>
           <div className={styles.total__time}>5-10 дней</div>
-          <button disabled={isFormInvalid()} onClick={() => setIsModalOpen(true)}
+          <button
+            disabled={isFormInvalid()} onClick={() => setIsModalOpen(true)}
+            type="submit"
             className={styles.total__button}>Отправить заявку</button>
           <div className={styles.total__phone}>
             <p>Или оставьте заявку по номеру: </p>

@@ -275,14 +275,21 @@
    background: none;
    border: none;
    font-weight: 600;
-
-
-
    position: absolute;
-   bottom: 25px;
-   right: -30px;
- }
+   bottom: -30px;
+   left: 10px;
+   transform: scale(1);
+   cursor: pointer;
+   display: inline-block;
+   transition: transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
 
+   &:hover {
+     transform: scale(1.05);
+     font-weight: 800;
+     bottom: -32px;
+     left: 9px;
+   }
+ }
 
  .place__delete {
    font-size: 30px;
@@ -290,14 +297,21 @@
    cursor: pointer;
    background: none;
    border: none;
-   font-weight: 600;
-
-
+   font-weight: 500;
    border: none;
-
    position: absolute;
    bottom: 0px;
-   right: -30px;
+   right: -32px;
+   transform: scale(1);
+   cursor: pointer;
+   display: inline-block;
+   transition: (transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1),
+       font-weight 0.4s cubic-bezier(0.075, 0.82, 0.165, 1));
+
+   &:hover {
+     transform: scale(1.05);
+     font-weight: 700;
+   }
  }
 
  .place__header {
@@ -327,7 +341,6 @@
    &:focus-visible {
      border: none;
      outline: none;
-
    }
 
    &::-webkit-inner-spin-button,
@@ -345,10 +358,7 @@
    width: 100%;
 
    @media (max-width: 875px) {
-     //  flex-direction: column;
      flex-wrap: wrap;
-
-
    }
  }
 
@@ -366,14 +376,12 @@
    justify-content: space-between;
    background-color: #fff;
    border-radius: 10px;
-
  }
 
  .place__field label {
    margin-left: 10px;
    color: rgba(0, 0, 0, 0.8);
    font-weight: 100;
-
  }
 
  .place__label {}
@@ -381,7 +389,6 @@
  .place__title {
    margin: 20px auto;
    font-size: 20px;
-
  }
 
  .place__card {
@@ -392,10 +399,7 @@
 
    @media (max-width: 875px) {
      justify-content: center;
-
    }
-
-
  }
 
  .field_s {
@@ -410,7 +414,6 @@
    background: 2px solid #ac0901;
    border-radius: 10px;
    background-color: #fff;
-
  }
 
  .place__inputGroup p {
@@ -451,8 +454,7 @@
    flex-direction: row;
    background-color: rgba(255, 255, 255, 0.5);
    border-radius: 45px;
-   box-shadow:
-     0 0 20px rgba(255, 255, 255, 0.8),
+   box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
      0 0 20px rgba(255, 255, 255, 0.4);
 
    @media (max-width: 875px) {
@@ -466,24 +468,18 @@
    display: flex;
    flex-direction: row;
    align-items: center;
-
-
  }
-
-
 
  .volumeField__wrapper p {
    margin: 0;
    padding: 0;
    margin-left: 5px;
-
  }
 
  .volumeField__input {
    width: 40px;
    border: none;
    border-color: transparent;
-   ;
    text-align: right;
 
    &:active {
@@ -499,12 +495,23 @@
    &:focus-visible {
      border: none;
      outline: none;
-
    }
 
    &::-webkit-inner-spin-button,
    ::-webkit-outer-spin-button {
      -webkit-appearance: none;
      margin: 0;
+   }
+ }
+
+
+ .total__button {
+   transform: scale(1);
+   cursor: pointer;
+   display: inline-block;
+   transition: transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+   &:not(:disabled):hover {
+     transform: scale(1.03);
    }
  }

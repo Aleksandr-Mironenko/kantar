@@ -183,7 +183,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
       {invoiceFiles.length > 1 && (< button
         onClick={() => delInvoiceFiles(el.id)}
         className={styles.whoAmI__delete}>
-        x
+        ⨯
       </button>)}
     </li >
   ))
@@ -317,158 +317,170 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     /> Я получатель
                   </label >
                 </div>
-                <label className={errors.nameFrom ? styles.label_error : styles.label}>
-                  Ф.И.О. отправителя
-                  <input {...register("nameFrom")} className={`${styles.input} ${errors.nameFrom ? styles.error : ""}`} placeholder="Ф.И.О. отправителя"
-                  />
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label className={errors.nameFrom ? styles.label_error : styles.label}>
+                    Ф.И.О. отправителя
+                    <input {...register("nameFrom")} className={`${styles.input} ${errors.nameFrom ? styles.error : ""}`} placeholder="Ф.И.О. отправителя"
+                    />
 
-                  {errors.nameFrom && <p className={styles.errmsg}>{errors.nameFrom.message}</p>}
-                </label>
+                    {errors.nameFrom && <p className={styles.errmsg}>{errors.nameFrom.message}</p>}
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label className={`${styles.phone} ${errors.phoneFrom ? styles.label_error : styles.label}`}>
+                    Телефон отправителя
+                    <Controller
+                      name="phoneFrom"
+                      control={control}
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <IMaskInput
+                          mask="+7 (000) 000-00-00"
+                          placeholder="+7 (___) ___-__-__"
+                          value={value ?? ""}
+                          onAccept={(formatted) => {
 
+                            const digits = formatted.replace(/\D/g, "");
+                            const withoutFirst7 = digits.slice(1);
+                            onChange(withoutFirst7);
+                          }}
+                          onBlur={onBlur}
+                          inputRef={ref}
+                          className={`${styles.input} ${errors.phoneFrom ? styles.error : ""}`}
+                        />
+                      )}
+                    />
 
-                <label className={errors.phoneFrom ? styles.label_error : styles.label}>
-                  Телефон
-                  <Controller
-                    name="phoneFrom"
-                    control={control}
-                    render={({ field: { onChange, onBlur, value, ref } }) => (
-                      <IMaskInput
-                        mask="+7 (000) 000-00-00"
-                        placeholder="+7 (___) ___-__-__"
-                        value={value ?? ""}
-                        onAccept={(formatted) => {
-
-                          const digits = formatted.replace(/\D/g, "");
-                          const withoutFirst7 = digits.slice(1);
-                          onChange(withoutFirst7);
-                        }}
-                        onBlur={onBlur}
-                        inputRef={ref}
-                        className={`${styles.input} ${errors.phoneFrom ? styles.error : ""}`}
-                      />
+                    {errors.phoneFrom && (
+                      <p className={styles.errmsg}>{errors.phoneFrom.message}</p>
                     )}
-                  />
-
-                  {errors.phoneFrom && (
-                    <p className={styles.errmsg}>{errors.phoneFrom.message}</p>
-                  )}
 
 
-                </label>
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label className={errors.emailFrom ? styles.label_error : styles.label}>
+                    Эл. почта отправителя
+                    <input {...register("emailFrom")} className={`${styles.input} ${errors.emailFrom ? styles.error : ""}`} placeholder="example@mail.ru"
+                    />
+                    {errors.emailFrom && <p className={styles.errmsg}>{errors.emailFrom.message}</p>}
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label htmlFor="adressFrom" className={`${styles.adress} ${errors.adressFrom ? styles.label_error : styles.label}`}>
+                    Адрес отправителя
+                    <input
+                      id="adressFrom"
+                      autoComplete=""
+                      {...register("adressFrom")}
+                      className={`${styles.input} ${styles.adress} ${errors.adressFrom ? styles.error : ""}`}
+                      placeholder="Нужен полный адрес"
+                    />
+                    {errors.adressFrom && <p className={styles.errmsg}>{errors.adressFrom.message}</p>}
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  < label htmlFor="indexIdressFrom" className={`${styles.index} ${styles.label}`}>
+                    Индекс отправителя
+                    <input
+                      id="indexIdressFrom"
+                      autoComplete=""
+                      placeholder="Укажите индекс отправителя"
+                      value={indexFrom}
+                      onChange={e => setIndexFrom(e.target.value)}
+                      className={styles.input}
+                    />
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label className={errors.nameWhere ? styles.label_error : styles.label}>
+                    Ф.И.О. получателя
+                    <input {...register("nameWhere")} className={`${styles.input} ${errors.nameWhere ? styles.error : ""}`} placeholder="Ф.И.О. получателя"
+                    />
 
-                <label className={errors.emailFrom ? styles.label_error : styles.label}>
-                  Эл. почта
-                  <input {...register("emailFrom")} className={`${styles.input} ${errors.emailFrom ? styles.error : ""}`} placeholder="example@mail.ru"
-                  />
-                  {errors.emailFrom && <p className={styles.errmsg}>{errors.emailFrom.message}</p>}
-                </label>
+                    {errors.nameWhere && <p className={styles.errmsg}>{errors.nameWhere.message}</p>}
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label className={`${styles.phone} ${errors.phoneWhere ? styles.label_error : styles.label}`}>
+                    Телефон получателя
+                    <Controller
+                      name="phoneWhere"
+                      control={control}
+                      render={({ field: { onChange, onBlur, value, ref } }) => (
+                        <IMaskInput
+                          mask="+7 (000) 000-00-00"
+                          placeholder="+7 (___) ___-__-__"
+                          value={value ?? ""}
+                          onAccept={(formatted) => {
 
-                <label htmlFor="adressFrom" className={errors.adressFrom ? styles.label_error : styles.label}>
-                  Адрес отправителя
-                  <input
-                    id="adressFrom"
-                    autoComplete=""
-                    {...register("adressFrom")}
-                    className={`${styles.input} ${errors.adressFrom ? styles.error : ""}`}
-                    placeholder="Нужен полный адрес"
-                  />
-                  {errors.adressFrom && <p className={styles.errmsg}>{errors.adressFrom.message}</p>}
-                </label>
+                            const digits = formatted.replace(/\D/g, "");
+                            const withoutFirst7 = digits.slice(1);
+                            onChange(withoutFirst7);
+                          }}
+                          onBlur={onBlur}
+                          inputRef={ref}
+                          className={`${styles.input} ${errors.phoneWhere ? styles.error : ""}`}
+                        />
+                      )}
+                    />
 
-                < label htmlFor="indexIdressFrom" className={styles.label}>
-                  Индекс отправителя
-                  <input
-                    id="indexIdressFrom"
-                    autoComplete=""
-                    placeholder="Укажите индекс отправителя"
-                    value={indexFrom}
-                    onChange={e => setIndexFrom(e.target.value)}
-                    className={styles.input}
-                  />
-                </label>
-                <label className={errors.nameWhere ? styles.label_error : styles.label}>
-                  Ф.И.О. получателя
-                  <input {...register("nameWhere")} className={`${styles.input} ${errors.nameWhere ? styles.error : ""}`} placeholder="Ф.И.О. получателя"
-                  />
-
-                  {errors.nameWhere && <p className={styles.errmsg}>{errors.nameWhere.message}</p>}
-                </label>
-
-
-                <label className={errors.phoneWhere ? styles.label_error : styles.label}>
-                  Телефон
-                  <Controller
-                    name="phoneWhere"
-                    control={control}
-                    render={({ field: { onChange, onBlur, value, ref } }) => (
-                      <IMaskInput
-                        mask="+7 (000) 000-00-00"
-                        placeholder="+7 (___) ___-__-__"
-                        value={value ?? ""}
-                        onAccept={(formatted) => {
-
-                          const digits = formatted.replace(/\D/g, "");
-                          const withoutFirst7 = digits.slice(1);
-                          onChange(withoutFirst7);
-                        }}
-                        onBlur={onBlur}
-                        inputRef={ref}
-                        className={`${styles.input} ${errors.phoneWhere ? styles.error : ""}`}
-                      />
+                    {errors.phoneWhere && (
+                      <p className={styles.errmsg}>{errors.phoneWhere.message}</p>
                     )}
-                  />
-
-                  {errors.phoneWhere && (
-                    <p className={styles.errmsg}>{errors.phoneWhere.message}</p>
-                  )}
 
 
-                </label>
-
-                <label className={errors.emailWhere ? styles.label_error : styles.label}>
-                  Эл. почта
-                  <input {...register("emailWhere")} className={`${styles.input} ${errors.emailWhere ? styles.error : ""}`} placeholder="example@mail.ru"
-                  />
-                  {errors.emailWhere && <p className={styles.errmsg}>{errors.emailWhere.message}</p>}
-                </label>
-
-                <label htmlFor="adressWhere" className={errors.adressWhere ? styles.label_error : styles.label}>
-                  Адрес получателя
-                  <input
-                    id="adressWhere"
-                    autoComplete=""
-                    {...register("adressWhere")}
-                    className={`${styles.input} ${errors.adressWhere ? styles.error : ""}`}
-                    placeholder="Нужен полный адрес"
-                  />
-                  {errors.adressWhere && <p className={styles.errmsg}>{errors.adressWhere.message}</p>}
-                </label>
-
-                < label htmlFor="indexIdressWhere" className={styles.label}>
-                  Индекс получателя
-                  <input
-                    id="indexIdressWhere"
-                    autoComplete=""
-                    placeholder="Укажите индекс получателя"
-                    value={indexWhere}
-                    onChange={e => setIndexWhere(e.target.value)}
-                    className={styles.input}
-                  />
-                </label>
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label className={errors.emailWhere ? styles.label_error : styles.label}>
+                    Эл. почта получателя
+                    <input {...register("emailWhere")} className={`${styles.input} ${errors.emailWhere ? styles.error : ""}`} placeholder="example@mail.ru"
+                    />
+                    {errors.emailWhere && <p className={styles.errmsg}>{errors.emailWhere.message}</p>}
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label htmlFor="adressWhere" className={`${styles.adress} ${errors.adressWhere ? styles.label_error : styles.label
+                    }`}>
+                    Адрес получателя
+                    <input
+                      id="adressWhere"
+                      autoComplete=""
+                      {...register("adressWhere")}
+                      className={`${styles.input} ${errors.adressWhere ? styles.error : ""}`}
+                      placeholder="Нужен полный адрес"
+                    />
+                    {errors.adressWhere && <p className={styles.errmsg}>{errors.adressWhere.message}</p>}
+                  </label>
+                </div>
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  < label htmlFor="indexIdressWhere" className={`${styles.index} ${styles.label}`}>
+                    Индекс получателя
+                    <input
+                      id="indexIdressWhere"
+                      autoComplete=""
+                      placeholder="Укажите индекс получателя"
+                      value={indexWhere}
+                      onChange={e => setIndexWhere(e.target.value)}
+                      className={styles.input}
+                    />
+                  </label>
+                </div>
                 {/* Инвойс */}
                 {document === "goods" && buttonShow
                 }
                 {showInvois && invois}
+                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                  <label className={styles.modal__checkbox}>
+                    <input
+                      type="checkbox"
+                      {...register("agree")}
+                    />
+                    <span>Согласен с обработкой персональных данных</span>
+                  </label>
+                  {errors.agree && <p className={styles.errmsg}>Согласие обязательно</p>}
+                </div>
 
-                <label className={styles.modal__checkbox}>
-                  <input
-                    type="checkbox"
-                    {...register("agree")}
-                  />
-                  <span>Согласен с обработкой персональных данных</span>
-                </label>
-
-                {errors.agree && <p className={styles.errmsg}>Согласие обязательно</p>}
                 <button
                   disabled={!isValid} className={styles.modal__submit} type="submit" >
                   отправить

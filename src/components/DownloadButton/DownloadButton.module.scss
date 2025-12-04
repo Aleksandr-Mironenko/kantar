@@ -1,15 +1,20 @@
 .download {
   border: none;
   font-size: 18px;
-  font-weight: 400;
-  transform: scale(1);
-  transition: (transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1),
-      font-weight 0.4s cubic-bezier(0.075, 0.82, 0.165, 1));
   cursor: pointer;
   display: inline-block;
+  background: #e31e24;
+  color: white;
+  padding: 10px;
+  margin: 0;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+  transition: background 0.3s;
+  border: 2px dashed transparent;
+
 
   &:hover {
-    transform: scale(1.05);
-    font-weight: 700;
+    background: #c41a1e;
   }
 }

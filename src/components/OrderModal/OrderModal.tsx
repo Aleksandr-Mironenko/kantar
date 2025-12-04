@@ -238,13 +238,17 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
   </>)
 
   const buttonShow = (
-    < button
-      className={styles.buttonShow}
-      onClick={(e) => {
-        e.preventDefault()
-        setShowInvois(!showInvois)
-      }}> {showInvois ? "Скрыть документы" : "Подгрузите документы"}
-    </button>)
+    <div className={styles.buttonShow__wrapper}>
+      <button
+        className={styles.buttonShow}
+        onClick={(e) => {
+          e.preventDefault()
+          setShowInvois(!showInvois)
+        }}>
+        {showInvois ? "Скрыть документы" : "Подгрузите документы"}
+      </button>
+      {showInvois && invois}
+    </div>)
 
   return (
     <>
@@ -499,7 +503,6 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                 {/* Инвойс */}
                 {document === "goods" && buttonShow
                 }
-                {showInvois && invois}
                 <div className={styles.label__wrapper} style={{ position: "relative" }}>
                   <label className={styles.modal__checkbox}>
                     <input

@@ -317,6 +317,23 @@
 
 }
 
+.agreeErrmsg {
+  margin-top: 6px;
+  margin-left: 10px;
+  font-size: 12px;
+  color: #e31e24;
+  position: absolute;
+  top: 33px;
+  right: 18px;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.visible {
+    opacity: 0;
+  }
+}
+
 .errmsg {
   margin-top: 6px;
   margin-left: 10px;
@@ -626,7 +643,7 @@
   align-self: flex-end;
   margin-right: auto;
   border: none;
-  font-size: 18px;
+  font-size: 17px;
   cursor: pointer;
   display: inline-block;
   background: #e31e24;

@@ -250,7 +250,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
           e.preventDefault()
           setShowInvois(!showInvois)
         }}>
-        {showInvois ? "Скрыть документы" : "Подгрузите документы"}
+        {showInvois ? "Скрыть документы" : "Добавить документы"}
       </button>
       {showInvois && invois}
     </div>)
@@ -508,7 +508,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                 {/* Инвойс */}
                 {document === "goods" && buttonShow
                 }
-                <div className={styles.label__wrapper} style={{ position: "relative" }}>
+                <div className={styles.label__wrapper}  >
                   <label className={styles.modal__checkbox}>
                     <input
                       type="checkbox"
@@ -516,7 +516,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     />
                     <span>Согласен с обработкой персональных данных</span>
                   </label>
-                  {errors.agree && <p className={styles.errmsg}>Согласие обязательно</p>}
+                  {errors.agree && <p className={styles.agreeErrmsg}>Согласие обязательно</p>}
                 </div>
 
                 <button

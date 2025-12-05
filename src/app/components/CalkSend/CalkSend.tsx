@@ -547,7 +547,7 @@ export default function CalkSend() {
                   list="countries"
                   placeholder="Страна отправления"
                   onChange={selectFromCountry}
-                  value={fromCountryObj?.name ?? ""}
+                  value={fromCountryObj?.name}
                 />
                 {listCountries}
 
@@ -561,7 +561,7 @@ export default function CalkSend() {
                       list="cities"
                       placeholder="Город отправления"
                       onChange={selectFromCity}
-                      value={fromCityObj?.name ?? ""}
+                      value={fromCityObj?.name}
                     />
                   </label>
                   {listCities}
@@ -584,7 +584,7 @@ export default function CalkSend() {
                   list="countries"
                   placeholder="Страна получения"
                   onChange={selectWhereCountry}
-                  value={whereCountryObj?.name ?? ""}
+                  value={whereCountryObj?.name}
                 />
                 {listCountries}
                 {whereCountryObj?.name === "Россия" && <>
@@ -597,7 +597,7 @@ export default function CalkSend() {
                       list="cities"
                       placeholder="Город получения"
                       onChange={selectWhereCity}
-                      value={whereCityObj?.name ?? ""}
+                      value={whereCityObj?.name}
                     />
                   </label>
                   {listCities}

@@ -128,7 +128,7 @@ export default function CalkSend() {
         height: 10,
         places: 1,
         price: 0,
-        volume: 0,
+        volume: 0.2,
         id: prev.length > 0 ? Math.max(...prev.map(p => p.id)) + 1 : 0
       }
     ]);
@@ -302,7 +302,7 @@ export default function CalkSend() {
         > ⨯
         </button>
       }
-      {
+      {price !== 0 &&
         places.length - 1 === index &&
         < button onClick={addPlace} className={styles.calculator__addButton}
         > + </button>}
@@ -315,7 +315,7 @@ export default function CalkSend() {
     const where = whereCountryObj?.name?.trim().toLowerCase() || "";
     let rf
     if (!fromCountryObj || !whereCountryObj) {
-      setPrice(0); ///..найти
+      setPrice(0);
       return;
     }
     let result: string | undefined;
@@ -483,6 +483,9 @@ export default function CalkSend() {
 
   //формируем пропс для передачи в форму заявки
   const orderData = {
+    fs,
+    fsRF,
+    koefficient,
     document,
     isFinalHeft,
     isModalOpen,
@@ -492,6 +495,7 @@ export default function CalkSend() {
     whereCityObj,
     price,
     count: totalPlaces,
+    places: places,
     onClose: () => { setIsModalOpen(false) }
   }
 
@@ -636,7 +640,7 @@ export default function CalkSend() {
       </div >
       {/* Правая колонка */}
       < div className={styles.calculator__sidebar} >
-        <div className={styles.total}>
+        {price !== 0 ? <div className={styles.total}>
           <div className={styles.total__title}>Итого:</div>
           <div className={styles.total__price}>{Math.ceil(fullPrice)} ₽</div>
           <div className={styles.total__details}>
@@ -652,7 +656,15 @@ export default function CalkSend() {
             <p>Или оставьте заявку по номеру: </p>
             <a href="tel:+79101056423">+7 910 105 64 23</a>
           </div>
-        </div>
+        </div> :
+          <>
+            <div className={styles.total__notPrice}>Выберите направление отправки</div>
+            <div className={styles.total__phone}>
+              <p>Или оставьте заявку по номеру: </p>
+              <a href="tel:+79101056423">+7 910 105 64 23</a>
+            </div>
+          </>
+        }
         <p className={styles.calculator__note}>
           Транзитное время является ориентировочным. Фактическое время может отличаться.
         </p>

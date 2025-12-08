@@ -26,6 +26,9 @@ export interface City {
 }
 
 export interface InitialData {
+  fs: number;
+  fsRF: number;
+  koefficient: number;
   fromCountryObj: Country | null,
   fromCityObj: City | null,
   whereCountryObj: Country | null,
@@ -34,6 +37,7 @@ export interface InitialData {
   count: number
   document: "document" | "goods"
   isFinalHeft: number
+  places: Place[]
 }
 export interface OrderModalProps {
   initialData: InitialData,

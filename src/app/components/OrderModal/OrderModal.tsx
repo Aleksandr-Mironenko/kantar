@@ -55,16 +55,29 @@ const schema = yup.object({
 
 export default function OrderModal({ initialData, isOpen, onClose }: OrderModalProps) {
 
-  const { document, isFinalHeft, fromCountryObj, fromCityObj, whereCountryObj, whereCityObj, price, count } = initialData;
+  const {
+    fs, //рассчетный транспортный налог не РФ
+    fsRF, //рассчетный транспортный налог РФ
+    koefficient, //скидка
+    document, //документ или груз
+    places,//массив характеристик отправлений 
+    isFinalHeft, //вес по которому рассчет 
+    fromCountryObj, // объект страны откуда
+    fromCityObj, // объект города откуда
+    whereCountryObj, // объект страны куда
+    whereCityObj, // объект города куда
+    price, // полная стоимость отправления
+    count // количество мест
+  } = initialData;
 
-  const [from, setFrom] = useState<string>("")
-  const [where, setWhere] = useState<string>("")
-  const [indexWhere, setIndexWhere] = useState<string>("")
-  const [indexFrom, setIndexFrom] = useState<string>("")
-  const [client, setClient] = useState<"sender" | "recipient">("sender")
+  const [from, setFrom] = useState<string>("") //полная строка откуда
+  const [where, setWhere] = useState<string>("") //полная строка куда
+  const [indexFrom, setIndexFrom] = useState<string>("") //индекс откуда
+  const [indexWhere, setIndexWhere] = useState<string>("") //индекс куда
+  const [client, setClient] = useState<"sender" | "recipient">("sender") //отправитель или получатель
 
-  const [invoiceFiles, setInvoiceFiles] = useState<FileObj[] | []>([{ file: null, id: 0 }]);
-  const [showInvois, setShowInvois] = useState<boolean>(false)
+  const [invoiceFiles, setInvoiceFiles] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
+  const [showInvois, setShowInvois] = useState<boolean>(false) //открыты ли файлы флаг
 
 
   const { register, handleSubmit, control, formState: { errors, isValid, }, setValue, trigger, watch } = useForm<FormValues>({
@@ -93,13 +106,64 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
+  const onSubmit = async (data: FormValues) => {
+    const formData = new FormData();
+    formData.append("nameFrom", data.nameFrom);
+    formData.append("nameWhere", data.nameWhere);
+    formData.append("phoneFrom", data.phoneFrom);
+    formData.append("phoneWhere", data.phoneWhere);
+    formData.append("emailFrom", data.emailFrom);
+    formData.append("emailWhere", data.emailWhere);
+    formData.append("adressFrom", data.adressFrom);
+    formData.append("adressWhere", data.adressWhere);
+    formData.append("agree", data.agree ? "1" : "0");
+    formData.append("document", document);
+    formData.append("isFinalHeft", String(isFinalHeft))
+    formData.append("price", String(price))
+    formData.append("count", String(count))
+    formData.append("fs", String(fs));
+    formData.append("fsRF", String(fsRF));
+    formData.append("koefficient", String(koefficient));
+    formData.append("fromCountryObj", JSON.stringify(fromCountryObj))
+    formData.append("fromCityObj", JSON.stringify(fromCityObj))
+    formData.append("whereCountryObj", JSON.stringify(whereCountryObj))
+    formData.append("whereCityObj", JSON.stringify(whereCityObj))
+    formData.append("from", from)
+    formData.append("where", where)
+    formData.append("indexFrom", indexFrom)
+    formData.append("indexWhere", indexWhere)
+    formData.append("client", client)
+    formData.append("showInvois", showInvois ? "1" : "0")
+    formData.append("places", JSON.stringify(places))
+    invoiceFiles.forEach((el: {
+      id: number;
+      file: File | null;
+    }) => {
+      if (el.file) {
+        formData.append(`files[${el.id}]`, el.file as File);
+      }
+    });
 
 
+    const response = await fetch("/api/send-message", {
+      method: "POST", body: formData,
+    });
+    if (!response.ok) {
+      throw new Error("Ошибка отправки")
+
+    } else {
+      const res = await response.json()
+      console.log(res, 163)
+
+      onClose()
+    }
+
+  };//при отправке обнуление очистить поля формы и закрыть ее
+
+  console.log(fsRF, fs,
+    koefficient)
 
 
-  //найти
-
-  const onSubmit = (data: FormValues) => console.log("FORM DATA:", data);//сюда к дате можно добавить еще значения которые были на страничке до этого и файл который прикладывает клиент
 
   useEffect(() => {
     setValue("adressFrom", from);
@@ -131,7 +195,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
   const delInvoiceFiles = (id: number) => {
     const indexUpdate = invoiceFiles.findIndex(invoiceFile => invoiceFile.id === id)
     setInvoiceFiles(prev => [
-      ...prev.slice(0, indexUpdate), ...prev.slice((indexUpdate + 1))//invoiceFiles, setInvoiceFiles
+      ...prev.slice(0, indexUpdate), ...prev.slice((indexUpdate + 1))
     ]);
   };
 
@@ -174,7 +238,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
           id={`invoise_${el.id}`}
           autoComplete=""
           className={styles.whoAmI__input}
-          onChange={(e) => {  // добавляем сами файлы
+          onChange={(e) => {
             const file = e.target.files?.[0] || null;
             e.stopPropagation()
             if (file) {
@@ -189,8 +253,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
       </label >
       {/* Имя файла — под кнопкой */}
       {whatInFilesInInvoiceFiles(el.id) && (() => {
-        const file = whatInFilesInInvoiceFiles(el.id);//получаем файл функцией
-        console.log(file)
+        const file = whatInFilesInInvoiceFiles(el.id);
         if (file != null) {
           return (
             <div className={styles.whoAmI__fileName} >
@@ -407,19 +470,6 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   </label>
                 </div>
                 <div className={styles.label__wrapper}  >
-                  <label htmlFor="adressFrom" className={`${styles.adress} ${errors.adressFrom ? styles.label_error : styles.label}`}>
-                    Адрес отправителя
-                    <input
-                      id="adressFrom"
-                      autoComplete="street-address"
-                      {...register("adressFrom")}
-                      className={`${styles.input} ${styles.adress} ${errors.adressFrom ? styles.error : ""}`}
-                      placeholder="Нужен полный адрес"
-                    />
-                    {errors.adressFrom && <p className={styles.errmsg}>{errors.adressFrom.message}</p>}
-                  </label>
-                </div>
-                <div className={styles.label__wrapper}  >
                   < label htmlFor="indexIdressFrom" className={`${styles.index} ${styles.label}`}>
                     Индекс отправителя
                     <input
@@ -430,6 +480,19 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                       onChange={e => setIndexFrom(e.target.value)}
                       className={styles.input}
                     />
+                  </label>
+                </div>
+                <div className={styles.label__wrapper}  >
+                  <label htmlFor="adressFrom" className={`${styles.adress} ${errors.adressFrom ? styles.label_error : styles.label}`}>
+                    Адрес отправителя
+                    <input
+                      id="adressFrom"
+                      autoComplete="street-address"
+                      {...register("adressFrom")}
+                      className={`${styles.input} ${styles.adress} ${errors.adressFrom ? styles.error : ""}`}
+                      placeholder="Нужен полный адрес"
+                    />
+                    {errors.adressFrom && <p className={styles.errmsg}>{errors.adressFrom.message}</p>}
                   </label>
                 </div>
                 <div className={styles.label__wrapper}  >
@@ -486,6 +549,19 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   </label>
                 </div>
                 <div className={styles.label__wrapper}  >
+                  < label htmlFor="indexIdressWhere" className={`${styles.index} ${styles.label}`}>
+                    Индекс получателя
+                    <input
+                      id="indexIdressWhere"
+                      autoComplete="postal-code"
+                      placeholder="Укажите индекс получателя"
+                      value={indexWhere ?? ""}
+                      onChange={e => setIndexWhere(e.target.value)}
+                      className={styles.input}
+                    />
+                  </label>
+                </div>
+                <div className={styles.label__wrapper}  >
                   <label htmlFor="adressWhere" className={`${styles.adress} ${errors.adressWhere ? styles.label_error : styles.label
                     }`}>
                     Адрес получателя
@@ -497,19 +573,6 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                       placeholder="Нужен полный адрес"
                     />
                     {errors.adressWhere && <p className={styles.errmsg}>{errors.adressWhere.message}</p>}
-                  </label>
-                </div>
-                <div className={styles.label__wrapper}  >
-                  < label htmlFor="indexIdressWhere" className={`${styles.index} ${styles.label}`}>
-                    Индекс получателя
-                    <input
-                      id="indexIdressWhere"
-                      autoComplete="postal-code"
-                      placeholder="Укажите индекс получателя"
-                      value={indexWhere ?? ""}
-                      onChange={e => setIndexWhere(e.target.value)}
-                      className={styles.input}
-                    />
                   </label>
                 </div>
                 {/* Инвойс */}

@@ -153,8 +153,8 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
       throw new Error("Ошибка отправки")
 
     } else {
-      const res = await response.json()
-      console.log(res, 163)
+      // const res = await response.json()
+      // console.log(res, 163)
       setFrom("")
       setWhere("")
       setIndexFrom("")

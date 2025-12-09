@@ -246,6 +246,69 @@ export async function POST(req: Request) {
     filesWithId.map(f => f.file)
   );
 
+
+  await sendEmail(//отправка сообщения администратору
+    "udink7405@gmail.com",
+    "Новая заявка",
+    `
+  <div style="font-size:15px"> 
+  <p style="margin: 5px"><b>${client === "sender" ? nameFrom : nameWhere}</b> в ${createTime} создал новую заявку.</p>
+  <p style="margin: 5px"><b>${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}</b></p>
+  <p style="margin: 5px">Заказчик <b style="font-size:15px">${client === "sender" ? "отправитель" : "получатель"}</b></p>
+  <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
+  <p style="margin: 5px">Полная стоимость: <b>${Math.ceil(price)} р.</b></p>
+  <p style="margin: 5px">Всего мест: <b>${count}</b> </p>
+  <p style="margin: 5px">В рассчете учтены: </p>
+   ${(fromCityObj && !whereCityObj) || (!fromCityObj && whereCityObj) ?
+      `<p style="margin: 5px; margin-left:12px">Транспортный налог(РФ): <b>${fsRF * 100 - 100} %</b></p>` :
+      `<p style="margin: 5px; margin-left:12px">Транспортный налог(не РФ): <b>${fs * 100 - 100} %</b></p>`
+    }
+
+  <p style="margin: 5px; margin-left:12px">Скидка: <b>${koefficient * 100}% </b></p > 
+
+  <div style="display:flex; justify-content:space-between; flex-direction:row">
+<div style="border:3px solid red; margin-right:20%; padding:15px; border-radius:15px">
+  <p style="margin: 5px; font-size:25px; border-bottom:3px solid red">Отправитель</p>
+  <p style="margin: 5px"><b>${nameFrom}</b></p>
+  <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:+7${phoneFrom}">+7${phoneFrom}</a></b></p> 
+  <p style="margin: 5px">Эл.почта: <b><a style="font-size:15px; padding:7px" href="mailto:${emailFrom}">${emailFrom}</a></b></p>
+  <p style="margin: 5px">Полный адрес:</p>
+  <p style="margin: 5px"><b>${adressFrom}</b></p>
+  <a href="${yandexMapsLinkWhere}"
+     style="background:#e31e24; color:white; padding:12px 24px; border-radius:10px; text-decoration:none; font-weight:600; display:inline-block;"
+     target="_blank">
+     Получатель на Яндекс.Картах
+  </a> 
+  <p style="margin: 5px">Страна: <b>${fromCountryObj.name}</b></p>
+  <p style="margin: 5px">Индекс: <b>${indexFrom}</b></p>
+  ${fromCityObj ? `<p style="margin: 5px">Город: <b>${fromCityObj.name}</b> </p>` : ""}
+</div>
+
+<div style="border:3px solid red; padding:15px; border-radius:15px">
+  <p style="margin: 5px; font-size:25px; border-bottom:3px solid red">Получатель </p>
+  <p style="margin: 5px"><b>${nameWhere}</b></p>
+  <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:+7${phoneWhere}">+7${phoneWhere}</a></b></p> 
+  <p style="margin: 5px">Эл.почта: <b><a style="font-size:15px; padding:7px" href="mailto:${emailWhere}">${emailWhere}</a></b></p>  
+  <p style="margin: 5px">Полный адрес:</p>
+  <p style="margin: 5px"><b>${adressWhere}</b></p>
+   <a href="${yandexMapsLinkFrom}"
+     style="background:#e31e24; color:white; padding:12px 24px; border-radius:10px; text-decoration:none; font-weight:600; display:inline-block;"
+     target="_blank">
+     Отправитель на Яндекс.Картах
+  </a>
+  <p style="margin: 5px">Страна: <b>${whereCountryObj.name}</b> </p>
+  <p style="margin: 5px">Индекс: <b>${indexWhere}</b> </p>
+  ${whereCityObj ? `<p style="margin: 5px">Город: <b>${whereCityObj.name}</b> </p>` : ""}
+</div>
+</div>
+  <ol style="list-style: none">
+    ${mapPlaces}
+  </ol> 
+</div>
+  `, "НОВАЯ ЗАЯВКА KANTAR",
+    filesWithId.map(f => f.file)
+  );
+
   await sendEmail(//отправка сообщения создателю заявки
     client === "sender" ? emailFrom : emailWhere,
     "Вы создали заявку на отправление груза KANTAR",

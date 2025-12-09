@@ -160,7 +160,7 @@ export async function POST(req: Request) {
     <div style="font-size:15px"> 
       <p style="margin: 5px"><b>${client === "sender" ? nameFrom : nameWhere}</b> в ${createTime} создал новую заявку.</p>
       <p style="margin: 5px"><b>${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}</b></p>
-      <p style="margin: 5px">Описание груза: <b>${descriptionOfCargo}</b></p>
+      <p style="margin: 5px; text-decoration: underline">Описание груза: <b>${descriptionOfCargo}</b></p>
       <p style="margin: 5px">Заказчик <b style="font-size:15px">${client === "sender" ? "отправитель" : "получатель"}</b></p>
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
       <p style="margin: 5px">Полная стоимость: <b>${Math.ceil(price)} р.</b></p>
@@ -212,7 +212,7 @@ export async function POST(req: Request) {
     <div style="font-size:15px"> 
       <p style="margin: 5px"><b>${client === "sender" ? nameFrom : nameWhere}</b> в ${createTime} создал новую заявку.</p>
       <p style="margin: 5px"><b>${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}</b></p>
-      <p style="margin: 5px">Описание груза: <b>${descriptionOfCargo}</b></p>
+      <p style="margin: 5px; text-decoration: underline">Описание груза: <b>${descriptionOfCargo}</b></p>
       <p style="margin: 5px">Заказчик <b style="font-size:15px">${client === "sender" ? "отправитель" : "получатель"}</b></p>
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
       <p style="margin: 5px">Полная стоимость: <b>${Math.ceil(price)} р.</b></p>

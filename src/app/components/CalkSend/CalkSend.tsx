@@ -654,14 +654,25 @@ export default function CalkSend() {
             className={styles.total__button}>Отправить заявку</button>
           <div className={styles.total__phone}>
             <p>Или оставьте заявку по номеру: </p>
-            <a href="tel:+79101056423">+7 910 105 64 23</a>
+            {!price ? null : <a href="tel:+79101056423">+7 910 105 64 23</a>}
           </div>
         </div> :
           <>
             <div className={styles.total__notPrice}>Выберите направление отправки</div>
             <div className={styles.total__phone}>
               <p>Или оставьте заявку по номеру: </p>
-              <a href="tel:+79101056423">+7 910 105 64 23</a>
+              {!price ? null :
+                <a href="tel:+79101056423">+7 910 105 64 23</a>}
+              {!price ?
+                <a href="tel:+79101056423">
+                  <div
+                    // disabled={0()}
+                    className={styles.total__buttonPhone}>
+                    <p>+7 910 105 64 23</p>
+                  </div>
+                </a> :
+                null
+              }
             </div>
           </>
         }

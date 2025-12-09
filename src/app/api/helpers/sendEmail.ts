@@ -10,13 +10,9 @@ export async function sendEmail(to: string, subject: string, html: string, from:
       pass: process.env.SMTP_PASS,
     },
     tls: {
-      rejectUnauthorized: false,  // важно для Vercel
+      rejectUnauthorized: false,
     }
-    // connectionTimeout: 10000, // 10 сек
-    // greetingTimeout: 5000,
-    // socketTimeout: 10000,
   });
-
 
   const emailAttachments = await Promise.all(
     attachments.map(async (file) => {

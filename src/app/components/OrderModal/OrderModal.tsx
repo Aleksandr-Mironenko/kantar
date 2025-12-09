@@ -78,9 +78,9 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
 
   const [invoiceFiles, setInvoiceFiles] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showInvois, setShowInvois] = useState<boolean>(false) //открыты ли файлы флаг
+  const [descriptionOfCargo, setDescriptionOfCargo] = useState<string>("")
 
-
-  const { register, handleSubmit, control, formState: { errors, isValid, }, setValue, trigger, watch } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors, isValid, }, setValue, trigger, watch, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
     reValidateMode: "onChange",//"onChange",
@@ -118,6 +118,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
     formData.append("adressWhere", data.adressWhere);
     formData.append("agree", data.agree ? "1" : "0");
     formData.append("document", document);
+    formData.append("descriptionOfCargo", descriptionOfCargo);
     formData.append("isFinalHeft", String(isFinalHeft))
     formData.append("price", String(price))
     formData.append("count", String(count))
@@ -154,16 +155,19 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
     } else {
       const res = await response.json()
       console.log(res, 163)
-
+      setFrom("")
+      setWhere("")
+      setIndexFrom("")
+      setIndexWhere("")
+      setClient("sender")
+      setInvoiceFiles([{ file: null, id: 0 }])
+      setShowInvois(false)
+      setDescriptionOfCargo("")
+      reset()
       onClose()
     }
 
   };//при отправке обнуление очистить поля формы и закрыть ее
-
-  console.log(fsRF, fs,
-    koefficient)
-
-
 
   useEffect(() => {
     setValue("adressFrom", from);
@@ -285,7 +289,6 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
       }
     </li >
   ))
-
 
   const invois = (<>
     <div className={styles.goods__invoise}>
@@ -474,6 +477,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                     Индекс отправителя
                     <input
                       autoComplete="postal-code"
+                      name="indexIdressFrom"
                       id="indexIdressFrom"
                       placeholder="Укажите индекс отправителя"
                       value={indexFrom ?? ""}
@@ -552,6 +556,7 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                   < label htmlFor="indexIdressWhere" className={`${styles.index} ${styles.label}`}>
                     Индекс получателя
                     <input
+                      name="indexIdressWhere"
                       id="indexIdressWhere"
                       autoComplete="postal-code"
                       placeholder="Укажите индекс получателя"
@@ -578,6 +583,23 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
                 {/* Инвойс */}
                 {document === "goods" && buttonShow
                 }
+                {document === "goods" &&
+                  <div className={styles.label__wrapper}  >
+                    < label htmlFor="descriptionOfCargo" className={`${styles.index} ${styles.label}`}>
+                      Описание груза
+                      <input
+                        autoComplete="off"
+                        name="descriptionOfCargo"
+                        id="descriptionOfCargo"
+                        placeholder="Описание и код ТНВЭД"
+                        value={descriptionOfCargo ?? ""}
+                        onChange={e => setDescriptionOfCargo(e.target.value)}
+                        className={styles.input}
+                      />
+                    </label>
+                  </div>
+                }
+
                 <div className={styles.label__wrapper}  >
                   <label className={styles.modal__checkbox}>
                     <input

@@ -185,7 +185,7 @@ export async function POST(req: Request) {
   )}`;
 
   await sendEmail(//отправка сообщения администратору
-    ["sanek.miron2@gmail.com", "udink7405@gmail.com"],
+    "sanek.miron2@gmail.com",
     "Новая заявка",
     `
   <div style="font-size:15px"> 
@@ -247,7 +247,7 @@ export async function POST(req: Request) {
   );
 
   await sendEmail(//отправка сообщения создателю заявки
-    client === "sender" ? [emailFrom] : [emailWhere],
+    client === "sender" ? emailFrom : emailWhere,
     "Вы создали заявку на отправление груза KANTAR",
     `
 <div style="font-size:15px"> 
@@ -296,7 +296,7 @@ export async function POST(req: Request) {
   if (emailWhere !== emailFrom) {//отправка сообщения второй стороне
     if (client === "sender" ? emailWhere : emailFrom) {
       await sendEmail(
-        client === "sender" ? [emailWhere] : [emailFrom],
+        client === "sender" ? emailWhere : emailFrom,
         client === "sender" ? "Вы указаны получателем" : "Вы указаны отправителем",
         `
 <div style="font-size:15px"> 

@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export async function sendEmail(to: string[], subject: string, html: string, from: string, attachments: File[] = []): Promise<void> {
+export async function sendEmail(to: string, subject: string, html: string, from: string, attachments: File[] = []): Promise<void> {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
@@ -24,7 +24,7 @@ export async function sendEmail(to: string[], subject: string, html: string, fro
 
   await transporter.sendMail({
     from: `${from} <${process.env.SMTP_USER}>`,
-    to: to.map(el => el),
+    to,
     subject,
     html,
     attachments: emailAttachments

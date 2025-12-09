@@ -2,8 +2,8 @@ import nodemailer from "nodemailer";
 
 export async function sendEmail(to: string, subject: string, html: string, from: string, attachments: File[] = []): Promise<void> {
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
+    host: "smtp.gmail.com",
+    port: 587,
     secure: false,
     auth: {
       user: process.env.SMTP_USER,

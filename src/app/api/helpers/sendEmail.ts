@@ -9,6 +9,12 @@ export async function sendEmail(to: string, subject: string, html: string, from:
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
+    tls: {
+      rejectUnauthorized: false,  // важно для Vercel
+    }
+    // connectionTimeout: 10000, // 10 сек
+    // greetingTimeout: 5000,
+    // socketTimeout: 10000,
   });
 
 
@@ -29,5 +35,6 @@ export async function sendEmail(to: string, subject: string, html: string, from:
     html,
     attachments: emailAttachments
   });
+  await transporter.close();
 }
 

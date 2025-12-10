@@ -3,7 +3,7 @@
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
 import WhoWeAre from './components/WhoWeAre/WhoWeAre';
-import Services from './components/Services/Services';
+// import Services from './components/Services/Services';
 import Advantages from './components/Advantages/Advantages';
 import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
@@ -19,7 +19,7 @@ export default function Home() {
       <Header />
       <Hero />
       <WhoWeAre />
-      <Services />
+      {/* <Services /> */}
       <Advantages />
       <FormCalc />
       <Contacts />

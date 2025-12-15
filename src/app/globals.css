@@ -21,9 +21,9 @@ html::-webkit-scrollbar {
 body {
   margin: 0;
   min-width: 350px;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; 
   line-height: 1.5;
   color: #000; 
   background: rgb(185, 49, 37);

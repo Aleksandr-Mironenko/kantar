@@ -69,3 +69,61 @@ export interface DownloadButtonProps {
   fileUrl?: string,
   children?: React.ReactNode
 }
+
+export type DownloadFileProps = {
+  invoiceFiles: FileObj[];
+  setInvoiceFiles: React.Dispatch<React.SetStateAction<FileObj[]>>;
+  showInvois: boolean;
+  setShowInvois: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export interface IPFields {
+  name: string;
+  phone: string;
+  email: string;
+  ipName: string;
+  realAddressIp: string;
+  innip: string;
+  ogrnip: string;
+  rss: string;
+  bik: string;
+  kss: string;
+  comment: string;
+  agree: boolean;
+}
+
+
+export interface PrivateIndividualFields {
+  name: string;
+  phone: string;
+  email: string;
+  passport: string;
+  comment: string;
+  agree: boolean;
+}
+
+export interface OOOFields {
+  name: string;
+  phone: string;
+  email: string;
+  companyName: string;
+  nameGD: string;
+  legalAddress: string;
+  realAddress: string;
+  innOoo: string;
+  kpp: string;
+  ogrn: string;
+  rss: string;
+  bik: string;
+  kss: string;
+  comment: string;
+  agree: boolean;
+}
+
+export interface ValuesFromCalc {
+  name: string;
+  phone: string;
+  email: string;
+  comment: string;
+  agree: boolean
+}

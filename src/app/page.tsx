@@ -10,6 +10,7 @@ import Footer from './components/Footer/Footer';
 import FormCalc from './components/FormCalc/FormCalc'
 import CalkSend from './components/CalkSend/CalkSend'
 import ThirdPartyFix from './components/ThirdPartyFix/ThirdPartyFix';
+import CooperationRequestForm from './components/CooperationRequestForm/CooperationRequestForm'
 export default function Home() {
 
 
@@ -24,6 +25,7 @@ export default function Home() {
       <FormCalc />
       <Contacts />
       <CalkSend />
+      <CooperationRequestForm />
       <Footer />
     </>
   );

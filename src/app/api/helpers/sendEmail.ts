@@ -33,4 +33,3 @@ export async function sendEmail(to: string, subject: string, html: string, from:
   });
   await transporter.close();
 }
-

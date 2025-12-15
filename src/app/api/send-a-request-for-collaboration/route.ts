@@ -200,13 +200,13 @@ export async function POST(req: Request) {
   // )}`;
 
   if (agree) {
-    // await sendEmail(//отправка сообщения администратору Кирилл
-    //   "udink7405@gmail.com",
-    //   "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
-    //   bodyTextMessage,
-    //   "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
-    //   filesWithId.map(f => f.file)
-    // );
+    await sendEmail(//отправка сообщения администратору Кирилл
+      "udink7405@gmail.com",
+      "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
+      bodyTextMessage,
+      "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
+      filesWithId.map(f => f.file)
+    );
 
     await sendEmail(//отправка сообщения администратору
       "sanek.miron2@gmail.com",
@@ -238,4 +238,5 @@ export async function POST(req: Request) {
 
   return response;
   // return NextResponse.json({ success: true })
+
 }

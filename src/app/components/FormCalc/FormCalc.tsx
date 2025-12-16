@@ -8,7 +8,7 @@ import { FileObj, ValuesFromCalc } from "../DTO/DTO"
 import styles from "./FormCalc.module.scss";
 import { useState } from "react";
 import DownloadFile from "../Helpers/DownloadFile";
-import { sendSMS } from "@/app/api/sms-message/lib/route";
+import { sendSMS } from "@/app/api/sms-message/lib/sendSms";
 
 
 const schema = yup.object({

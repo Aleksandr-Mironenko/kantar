@@ -153,7 +153,7 @@ export async function POST(req: Request) {
         <p>Фактический адрес: ${realAddress} </p>
         <p>Реквизиты:</p>
         <p>ИНН: ${innOoo} 
-        <p>КПП:${kpp}  </p>
+        <p>КПП: ${kpp}  </p>
         <p>ОРГН: ${ogrn}   </p>
         <p>Рассчетный счет: ${rss} </p>
         <p>БИК: ${bik}</p>
@@ -240,11 +240,11 @@ export async function POST(req: Request) {
   let messageAdmin
   if (client === "ooo") {
     messageAdmin = `(ООО)
-ФИО:${name},
+ФИО: ${name},
 
-Телефон:${phone},
+Телефон: ${phone},
 
-Почта:${email},
+Почта: ${email},
 
 Комментарий:
 ${comment},
@@ -261,27 +261,27 @@ ${legalAddress},
 Факт адрес:
 ${realAddress},
 
-ИНН:${innOoo},
+ИНН: ${innOoo},
 
-КПП:${kpp},
+КПП: ${kpp},
 
-ОГРН:${ogrn},
+ОГРН: ${ogrn},
 
 Рассчетный счет:
 ${rss},
 
-БИК:${bik},
+БИК: ${bik},
 
 Корр счет:
 ${kss}`
 
   } else if (client === "ip") {
     messageAdmin = `(ИП)
-ФИО:${name},
+ФИО: ${name},
 
-Телефон:${phone},
+Телефон: ${phone},
 
-Почта:${email},
+Почта: ${email},
 
 Комментарий:
 ${comment},
@@ -292,7 +292,7 @@ ${ipName},
 Адрес регистрации:
 ${realAddressIp},
 
-ИНН:${innip},
+ИНН: ${innip},
 
 ОГРН:
 ${ogrnip},
@@ -300,7 +300,7 @@ ${ogrnip},
 Рассчетный счет:
 ${rss},
 
-БИК:${bik},
+БИК: ${bik},
 
 Корр счет:
 ${kss}`
@@ -309,13 +309,13 @@ ${kss}`
     messageAdmin = `
 Частное лицо
 
-ФИО:${name},
+ФИО: ${name},
 
-Паспорт:${passport},
+Паспорт: ${passport},
  
-Телефон:${phone},
+Телефон: ${phone},
 
-Почта:${email},
+Почта: ${email},
 
 Комментарий:
 ${comment}

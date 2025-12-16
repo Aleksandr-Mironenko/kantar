@@ -349,8 +349,8 @@ ${adressFrom}
     ▼
 ${adressWhere}, 
 
-Вес:${isFinalHeft}, 
-Цена:${Math.ceil(price)}, 
+Вес: ${isFinalHeft}, 
+Цена: ${Math.ceil(price)}, 
 Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `);
 
 
@@ -363,8 +363,8 @@ ${adressFrom}
     ▼
 ${adressWhere}, 
 
-Вес:${isFinalHeft}, 
-Цена:${Math.ceil(price)}, 
+Вес: ${isFinalHeft}, 
+Цена: ${Math.ceil(price)}, 
 Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `);
 
 

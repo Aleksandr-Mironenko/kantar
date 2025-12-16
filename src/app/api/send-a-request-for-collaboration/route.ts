@@ -240,99 +240,104 @@ export async function POST(req: Request) {
   let messageAdmin
   if (client === "ooo") {
     messageAdmin = `(ООО)
-    ФИО:${name},
+ФИО:${name},
 
-    Телефон:${phone},
+Телефон:${phone},
 
-    Почта:${email},
+Почта:${email},
 
-    Комментарий:
-    ${comment},
+Комментарий:
+${comment},
 
-    Название:
-    ${companyName},
+Название:
+${companyName},
 
-    ФИО Ген Директора:
-    ${nameGD},
+ФИО Ген Директора:
+${nameGD},
 
-    Юр. адрес:
-    ${legalAddress},
+Юр. адрес:
+${legalAddress},
 
-    Факт адрес:
-    ${realAddress},
+Факт адрес:
+${realAddress},
 
-    ИНН:${innOoo},
+ИНН:${innOoo},
 
-    КПП:${kpp},
+КПП:${kpp},
 
-    ОГРН:${ogrn},
+ОГРН:${ogrn},
 
-    Рассчетный счет:
-    ${rss},
+Рассчетный счет:
+${rss},
 
-    БИК:${bik},
+БИК:${bik},
 
-    Корр счет:
-    ${kss}`
+Корр счет:
+${kss}`
 
   } else if (client === "ip") {
     messageAdmin = `(ИП)
-    ФИО:${name},
+ФИО:${name},
 
-    Телефон:${phone},
+Телефон:${phone},
 
-    Почта:${email},
+Почта:${email},
 
-    Комментарий:
-    ${comment},
+Комментарий:
+${comment},
 
-    Имя ИП:
-    ${ipName},
+Имя ИП:
+${ipName},
 
-    адрес регистрации:
-    ${realAddressIp},
+Адрес регистрации:
+${realAddressIp},
 
-    ИНН:${innip},
+ИНН:${innip},
 
-    ОГРН:
-    ${ogrnip},
+ОГРН:
+${ogrnip},
 
-    Рассчетный счет:
-    ${rss},
+Рассчетный счет:
+${rss},
 
-    БИК:${bik},
+БИК:${bik},
 
-    Корр счет:
-    ${kss}`
+Корр счет:
+${kss}`
   }
   else if (client === "private") {
     messageAdmin = `
-    Частное лицо
+Частное лицо
 
-    ФИО:${name},
+ФИО:${name},
 
-    Паспорт:${passport},
+Паспорт:${passport},
  
-    Телефон:${phone},
+Телефон:${phone},
 
-    Почта:${email},
+Почта:${email},
 
-    Комментарий:
-    ${comment}
+Комментарий:
+${comment}
     `
   }
 
 
   //отправка админу Кириллу
-  await sendSMS("+79991386191", `Офромлена заявка 
-    на ПОДПИСАНИЕ ДОГОВОРА!${messageAdmin}`);
+  await sendSMS("+79991386191",
+    `Оформлена заявка 
+на ПОДПИСАНИЕ ДОГОВОРА!${messageAdmin}`);
 
   //отправка админу
-  await sendSMS("+79030404804", `Офромлена заявка 
-    на ПОДПИСАНИЕ ДОГОВОРА!${messageAdmin}`);
+  await sendSMS("+79030404804",
+    `Оформлена заявка 
+на ПОДПИСАНИЕ ДОГОВОРА!${messageAdmin}`);
 
   //отправка клиенту
-  await sendSMS(`+7${phone}`, "Запрос на подписание договора отправлен. Ожидайте звонка сотрудника. Контактный номер телефона +79101056423");
+  await sendSMS(`+7${phone}`,
+    `Запрос на подписание договора отправлен.
+Ожидайте звонка сотрудника. 
+Контактный номер телефона +79101056423`);
 
   return response;
   // return NextResponse.json({ success: true })

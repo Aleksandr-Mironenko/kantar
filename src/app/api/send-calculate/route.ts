@@ -342,37 +342,37 @@ export async function POST(req: Request) {
 
   //отправка админу Кириллу
   await sendSMS("+79991386191",
-    `Офромлена ЭКСПРЕСС ДОСТАВКА! 
-    ${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}. 
+    `Оформлена ЭКСПРЕСС ДОСТАВКА! 
+${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}. 
 
-    ${adressFrom}
+${adressFrom}
     ▼
-    ${adressWhere}, 
+${adressWhere}, 
 
-    Вес:${isFinalHeft}, 
-    Цена:${Math.ceil(price)}, 
-    Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `);
+Вес:${isFinalHeft}, 
+Цена:${Math.ceil(price)}, 
+Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `);
 
 
   //отправка админу мне
   await sendSMS("+79030404804",
-    `Офромлена ЭКСПРЕСС ДОСТАВКА! 
-    ${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}. 
+    `Оформлена ЭКСПРЕСС ДОСТАВКА! 
+${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}. 
     
-    ${adressFrom}
+${adressFrom}
     ▼
-    ${adressWhere}, 
+${adressWhere}, 
 
-    Вес:${isFinalHeft}, 
-    Цена:${Math.ceil(price)}, 
-    Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `);
+Вес:${isFinalHeft}, 
+Цена:${Math.ceil(price)}, 
+Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `);
 
 
   //отправка клиенту
   await sendSMS(`+7${client === "sender" ? phoneFrom : phoneWhere}`,
     `Экспресс доставка оформлена. 
-    Ожидайте звонка сотрудника для подтверждения. 
-    Контактный номер телефона +79101056423`);
+Ожидайте звонка сотрудника для подтверждения. 
+Контактный номер телефона +79101056423`);
 
   return response;
   // return NextResponse.json({ success: true })

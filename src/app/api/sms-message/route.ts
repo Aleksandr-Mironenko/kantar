@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Твой секрет из TextBee (для проверки подлинности)
-const TEXTBEE_SECRET = process.env.TEXTBEE_SECRET || "твой-секрет";
+const TEXTBEE_SECRET = process.env.TEXTBEE_SECRET;
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("x-textbee-signature");
@@ -19,33 +19,42 @@ export async function POST(req: NextRequest) {
 
 
 
-  //  Определение типа события  
-  switch (body.type) {
 
-    // Входящее SMS
-    case "message.received":
-      console.log("Входящее SMS:", body);
 
-      // Обработка - запись в БД
+
+
+  console.log("TextBee webhook:", body); // отладки
+
+
+
+  switch (body.webhookEvent) {
+    case "MESSAGE_RECEIVED":
+      console.log("Входящее SMS от:", body.sender);
+      console.log("Текст:", body.message);
+      console.log("Время:", body.receivedAt);
+      //  Сохранение в БД 
       break;
 
-    // Успешно отправлено
-    case "message.sent":
-      console.log("Отправлено:", body.message_id);
+    case "MESSAGE_SENT":
+      console.log("SMS отправлено (ID:", body.smsId + ")");
+      console.log("Получатель:", body.recipient);
+      // Обнови статус в своей БД на "отправлено"
       break;
 
-    // Не доставлено
-    case "message.failed":
-      console.log("Ошибка доставки:", body);
+    case "MESSAGE_DELIVERED":
+      console.log("SMS доставлено (ID:", body.smsId + ")");
+      console.log("Время доставки:", body.deliveredAt);
+      // Обнови статус на "доставлено"
       break;
 
-    // Отчёт о доставке
-    case "delivery.receipt":
-      console.log("Доставлено:", body);
+    case "MESSAGE_FAILED":
+      console.log("SMS НЕ доставлено (ID:", body.smsId + ")");
+      console.log("Ошибка:", body.errorCode, body.errorMessage);
+      // Уведоми админа, попробуй переотправить
       break;
 
     default:
-      console.log("Неизвестное событие:", body.type);
+      console.log("Неизвестное событие TextBee:", body.webhookEvent);
   }
 
   // 200 OK — для TextBee

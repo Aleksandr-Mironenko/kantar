@@ -1,46 +1,166 @@
  .formcalc {
    width: 100%;
    padding: 60px 20px;
-   background-image: url('/imgi_16_Thermografisches-Mon.jpg.webp');
-   background-repeat: no-repeat;
-   background-size: cover;
+   background-color: rgba(0, 0, 0, 0.3);
+   //  background-image: url('/imgi_16_Thermografisches-Mon.jpg.webp');
+   //  background-repeat: no-repeat;
+   //  background-size: cover;
    //  background-image: radial-gradient(rgba(0, 0, 0, 0.5), rgba(191, 15, 21, 0.01));
+
+
 
    &__container {
      width: 100%;
-     max-width: 660px;
+     max-width: 860px;
      margin: 0 auto;
      display: flex;
      flex-direction: column;
-     align-items: center;
+     align-items: stretch;
+
+     @media (min-width: 411px) {}
    }
 
    &__title {
      font-size: 42px;
-     margin-bottom: 40px;
+     margin-bottom: 50px;
      font-weight: 700;
      text-align: center;
      color: #ffffff;
+
+     @media (max-width: 780px) {
+       font-size: 35px;
+     }
+
+     @media (max-width: 650px) {
+       font-size: 32px;
+     }
+
+     @media (max-width: 600px) {
+       font-size: 29px;
+     }
+
+     @media (max-width: 540px) {
+       font-size: 26px;
+     }
+
+     @media (max-width: 488px) {
+       font-size: 29px;
+       margin-bottom: 5px;
+     }
+
+     @media (max-width: 420px) {
+       font-size: 26px;
+     }
+
+     @media (max-width: 374px) {
+       font-size: 25px;
+     }
+
+     @media (max-width: 361px) {
+       font-size: 24px;
+     }
    }
 
-   &__form {
-     width: 100%;
-     display: flex;
-     flex-direction: column;
-     gap: 25px;
-   }
 
-   @media (min-width: 812px) {
-     width: 100%;
-   }
+
+   //  @media (min-width: 812px) {
+   //    width: 100%;
+   //  }
  }
 
- .label {
-   display: flex;
-   flex-direction: column;
-   font-size: 18px;
-   font-weight: 500;
-   color: #ffffff;
+ //  .label {
+ //    display: flex;
+ //    flex-direction: column;
+ //    font-size: 18px;
+ //    font-weight: 500;
+ //    color: #ffffff;
+ //  }
+
+ //  .label_error {
+ //    display: flex;
+ //    flex-direction: column;
+ //    font-size: 18px;
+ //    font-weight: 500;
+ //    color: #e31e24
+ //  }
+
+ //  .input {
+ //    margin-top: 10px;
+ //    padding: 14px 18px;
+ //    border: 1px solid #c7c7c7;
+ //    border-radius: 8px;
+ //    font-size: 18px;
+ //    outline: none;
+ //    background: #fff;
+ //    transition: 0.2s;
+
+ //    &:focus {
+ //      border-color: #e31e24;
+ //    }
+
+ //    @media (max-width: 650px) {
+ //      margin: 10px
+ //    }
+ //  }
+
+ //  .error {
+ //    border-color: #e31e24 !important;
+ //  }
+
+ //  .errmsg {
+ //    margin-top: 6px;
+ //    margin-left: 10px;
+ //    font-size: 10px;
+ //    color: #e31e24;
+ //  }
+
+ //  .submit {
+ //    margin-top: 10px;
+ //    width: 100%;
+ //    padding: 16px 20px;
+ //    font-size: 20px;
+ //    font-weight: 600;
+ //    color: #fff;
+ //    background: #e31e24;
+ //    border-radius: 10px;
+ //    border: none;
+ //    cursor: pointer;
+ //    transition: 0.2s;
+
+ //    &:hover {
+ //      opacity: 0.9;
+ //    }
+
+ //    &:disabled {
+ //      opacity: 0.5;
+ //      cursor: not-allowed;
+ //    }
+ //  }
+
+
+
+
+
+
+ .section {
+   margin-top: 10px;
+   padding: 10px;
+   border-radius: 7px;
+   background-color: rgba(255, 255, 255, 0.9);
+
+   max-width: 660px;
+   margin: 0 auto
+ }
+
+ .sectionTitle {
+   color: black;
+   margin: 5px 0 5px 20px;
+   font-size: 22px;
+   font-weight: 800;
+
+   @media (max-width: 364px) {
+     font-size: 20px;
+   }
  }
 
  .label_error {
@@ -48,11 +168,74 @@
    flex-direction: column;
    font-size: 18px;
    font-weight: 500;
-   color: #e31e24
+   color: #e31e24;
+   position: relative;
+   margin-top: 10px;
+ }
+
+ .label {
+   display: flex;
+   flex-direction: column;
+   font-size: 18px;
+   font-weight: 500;
+   color: #333;
+   margin-top: 10px;
+
+   &__wrapper {
+     position: relative
+   }
+
+   &__span {
+     margin-left: 20px;
+   }
+
+   &__checkbox {
+     margin: 10px 0 0;
+     display: flex;
+     align-items: center;
+     gap: 10px;
+     cursor: pointer;
+     user-select: none;
+     font-size: 14px;
+
+     input[type="checkbox"] {
+       appearance: none;
+       -webkit-appearance: none;
+       flex-shrink: 0;
+       width: 20px;
+       height: 20px;
+       border: 2px solid #ac0901;
+       border-radius: 50%;
+       margin: 0;
+       cursor: pointer;
+       position: relative;
+       background: white;
+
+       &:checked {
+         background-color: #ff0d01;
+         border-color: #ff0d01;
+
+         &::after {
+           content: "✓";
+           color: white;
+           font-weight: bold;
+           font-size: 15px;
+           position: absolute;
+           top: 50%;
+           left: 50%;
+           transform: translate(-50%, -50%);
+         }
+       }
+     }
+
+     span {
+       line-height: 1.4;
+       font-size: 14px;
+     }
+   }
  }
 
  .input {
-   margin-top: 10px;
    padding: 14px 18px;
    border: 1px solid #c7c7c7;
    border-radius: 8px;
@@ -60,14 +243,14 @@
    outline: none;
    background: #fff;
    transition: 0.2s;
+   margin: 10px;
+   margin-top: 3px;
 
    &:focus {
-     border-color: #e31e24;
+     border-color: rgb(78, 75, 75);
    }
 
-   @media (max-width: 650px) {
-     margin: 10px
-   }
+
  }
 
  .error {
@@ -77,8 +260,39 @@
  .errmsg {
    margin-top: 6px;
    margin-left: 10px;
-   font-size: 10px;
+   font-size: 12px;
    color: #e31e24;
+   position: absolute;
+   top: 11px;
+   right: 18px;
+   opacity: 1;
+   pointer-events: none;
+   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+   &.visible {
+     opacity: 0;
+   }
+ }
+
+ .agreeErrmsg {
+   margin-top: 6px;
+   margin-left: 10px;
+   font-size: 12px;
+   color: #e31e24;
+   position: absolute;
+   top: 8px;
+   right: 18px;
+   opacity: 1;
+   pointer-events: none;
+   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+   &.visible {
+     opacity: 0;
+   }
+
+   @media (max-width: 409px) {
+     top: 26px;
+   }
  }
 
  .submit {
@@ -100,6 +314,32 @@
 
    &:disabled {
      opacity: 0.5;
+     cursor: not-allowed;
+   }
+ }
+
+ .submit {
+   height: 52px;
+   background: #ff0d01;
+   color: white;
+   border: none;
+   border-radius: 8px;
+   font-size: 18px;
+   font-weight: 600;
+   margin-top: 12px;
+   transform: scale(1);
+   cursor: pointer;
+   display: inline-block;
+   transition: (transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1),
+       background 0.8s cubic-bezier(0.075, 0.82, 0.165, 1));
+
+   &:not(:disabled):hover {
+     transform: scale(1.03);
+     background: #c41a1e;
+   }
+
+   &:disabled {
+     opacity: 0.6;
      cursor: not-allowed;
    }
  }

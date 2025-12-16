@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { sendEmail } from "@/app/api/helpers/sendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
+import { sendSMS } from "@/app/components/Helpers/SendSms";
 
 export async function POST(req: Request) {
   const response = NextResponse.json({ success: true })
@@ -236,7 +237,53 @@ export async function POST(req: Request) {
     );
   }
 
+  let messageAdmin
+  if (client === "ooo") {
+    messageAdmin = `ООО
+    ФИО:${name},
+    телефон:${phone},
+    почта:${email},
+    коммент:${comment},
+    имя организации:${companyName},
+    ФИО Ген Директора:${nameGD},
+    юр. адрес:${legalAddress},
+    факт адрес:${realAddress},
+    ИНН:${innOoo},
+    КПП:${kpp},
+    ОГРН:${ogrn},
+    Рассчетный счет:${rss},
+    БИК:${bik},
+    Корр счет:${kss}`
+  } else if (client === "ip") {
+    messageAdmin = `ИП
+    ФИО:${name},
+    телефон:${phone},
+    почта:${email},
+    коммент:${comment},
+    имя ИП:${ipName},
+    адрес регистрации:${realAddressIp},
+    ИНН:${innip},
+    ОГРН:${ogrnip},
+    Рассчетный счет:${rss},
+    БИК:${bik},
+    Корр счет:${kss}`
+  }
+  else if (client === "private") {
+    messageAdmin = `Частное лицо
+    ФИО:${name},
+    телефон:${phone},
+    почта:${email},
+    коммент:${comment},
+    паспорт:${passport}
+    `
+  }
+
+  //отправка админу
+  await sendSMS("+79030404804", `Офромлена заявка на ПОДПИСАНИЕ ДОГОВОРА! ${messageAdmin}`);
+
+  //отправка клиенту
+  await sendSMS(`+7${phone}`, "Запрос на подписание договора отправлен. Ожидайте звонка сотрудника. Контактный номер телефона +79101056423");
+
   return response;
   // return NextResponse.json({ success: true })
-
 }

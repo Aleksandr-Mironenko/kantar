@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { sendEmail } from "@/app/api/helpers/sendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
+import { sendSMS } from "@/app/components/Helpers/SendSms";
 
 export async function POST(req: Request) {
   const response = NextResponse.json({ success: true })
@@ -111,7 +112,10 @@ export async function POST(req: Request) {
     );
   }
 
+  await sendSMS(`+7${phone}`, "Запрос на персональный рассчет отправлен. Ожидайте звонка сотрудника. Контактный номер телефона +79101056423");
+
+  await sendSMS("+79030404804", `Офромлена заявка на ПЕРСОНАЛЬНЫЙ РАССЧЕТ! ИМЯ:${name},   телефон:${phone},   почта:${email},   комментарий:${comment}`);
+
   return response;
   // return NextResponse.json({ success: true })
-
 }

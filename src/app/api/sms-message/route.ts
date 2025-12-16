@@ -13,19 +13,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-
-
   const body = await req.json();
 
-
-
-
-
-
-
   console.log("TextBee webhook:", body); // отладки
-
-
 
   switch (body.webhookEvent) {
     case "MESSAGE_RECEIVED":

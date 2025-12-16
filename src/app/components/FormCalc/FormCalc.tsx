@@ -8,7 +8,6 @@ import { FileObj, ValuesFromCalc } from "../DTO/DTO"
 import styles from "./FormCalc.module.scss";
 import { useState } from "react";
 import DownloadFile from "../Helpers/DownloadFile";
-import { sendSMS } from "../Helpers/SendSms";
 
 
 const schema = yup.object({
@@ -107,7 +106,7 @@ export default function FormCalc() {
     } else {
       setInvoiceFiles([{ file: null, id: 0 }])
       reset()
-      await sendSMS("+79030404804", "Сообщение");
+
     }
   }
 

@@ -343,7 +343,7 @@ export async function POST(req: Request) {
   await sendSMS("+79030404804", `Офромлена ЭКСПРЕСС ДОСТАВКА! ${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}. ${adressFrom}-${adressWhere}, ВЕС:${isFinalHeft}, ЦЕНА:${price}, оформил: +7${client === "sender" ? phoneFrom : phoneWhere} `);
 
   //отправка клиенту
-  await sendSMS(`+7${client === "sender" ? phoneFrom : phoneWhere}`, "Запрос на персональный рассчет отправлен. Ожидайте звонка сотрудника. Контактный номер телефона +79101056423");
+  await sendSMS(`+7${client === "sender" ? phoneFrom : phoneWhere}`, "Экспресс доставка оформлена. Ожидайте звонка сотрудника для подтверждения. Контактный номер телефона +79101056423");
 
   return response;
   // return NextResponse.json({ success: true })

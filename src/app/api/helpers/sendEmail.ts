@@ -1,3 +1,4 @@
+"use server"
 import nodemailer from "nodemailer";
 
 export async function sendEmail(to: string, subject: string, html: string, from: string, attachments: File[] = []): Promise<void> {

@@ -1,21 +1,3 @@
-// import axios from 'axios'
-// const BASE_URL = 'https://api.textbee.dev/api/v1'
-
-// // EXTBEE_DEVICE_ID = 69415ab1fa641934d138904f
-// // TEXTBEE_API_KEY = 3646594d - 14db - 425f - 8361 - b6e560b0fc95
-
-// export async function sendSMS(to: string, text: string) {
-//   const response = await axios.post(
-//     `${BASE_URL}/gateway/devices/69415ab1fa641934d138904f/send-sms`,
-//     {
-//       recipients: [to],
-//       message: text
-//     },
-//     { headers: { 'x-api-key': "3646594d-14db-425f-8361-b6e560b0fc95" } }
-//   )
-
-//   console.log(response.data)
-// }
 
 "use server";
 

@@ -43,6 +43,7 @@ export interface OrderModalProps {
   initialData: InitialData,
   isOpen: boolean,
   onClose: () => void;
+  alertNotification: (notification: PropsNotification) => void;
 }
 
 export interface FormValues {
@@ -126,4 +127,9 @@ export interface ValuesFromCalc {
   email: string;
   comment: string;
   agree: boolean
+}
+
+export interface PropsNotification {
+  titleAlert: string,
+  message: string
 }

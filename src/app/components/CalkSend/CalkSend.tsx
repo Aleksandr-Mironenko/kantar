@@ -8,7 +8,8 @@ import {
 } from './data'
 import Image from "next/image";
 import OrderModal from "../OrderModal/OrderModal"
-import { Place, Country, City } from "../DTO/DTO"
+import { Place, Country, City, PropsNotification } from "../DTO/DTO"
+import Notification from "@/app/components/NotificationAntd/NotificationAntd"
 
 export default function CalkSend() {
   const [fromCountryObj, setFromCountryObj] = useState<Country | null>(null);
@@ -18,6 +19,11 @@ export default function CalkSend() {
   const [price, setPrice] = useState<number>(0);
   const [document, setDocument] = useState<"document" | "goods">("document");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notification, setNotification] = useState<boolean>(false)
+  const [argsNotification, setArgsNotification] = useState<PropsNotification>({
+    titleAlert: "",
+    message: ""
+  })
   const [places, setPlaces] = useState<Place[]>([
     {
       heft: 0.5,
@@ -462,6 +468,15 @@ export default function CalkSend() {
     }
   }, [whereCountryObj]);
 
+  useEffect(() => {
+
+    if (notification) {
+      const timerId = setTimeout(() => {
+        setNotification(false)
+      }, 30000)
+      return () => clearTimeout(timerId)
+    }
+  }, [notification])
   //рассчеты стоимости и ее детали
   const nds = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 0.2 : 0;
   const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 1.2 : price;
@@ -530,6 +545,10 @@ export default function CalkSend() {
     );
   };
 
+  const alertNotification = ({ titleAlert, message }: PropsNotification) => {
+    setArgsNotification({ titleAlert, message })
+    setNotification(true)
+  }
 
   return (
     <div className={styles.calculator} id="calculator" >
@@ -686,8 +705,11 @@ export default function CalkSend() {
           initialData={orderData}
           isOpen={isModalOpen}
           onClose={closeModal}
+          alertNotification={alertNotification}
         />
       </div>
+      {notification && <Notification titleAlert={argsNotification.titleAlert}
+        message={argsNotification.message} />}
     </div >
   );
 } 

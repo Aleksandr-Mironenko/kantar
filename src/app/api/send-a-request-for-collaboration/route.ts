@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/api/helpers/sendEmail"
+import { sendEmail } from "@/app/api/helpers/SendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
-import { sendSMS } from "@/app/components/Helpers/SendSms";
+import { sendSMS } from "@/app/api/helpers/SendSms";
 
 export async function POST(req: Request) {
   const response = NextResponse.json({ success: true })
@@ -304,8 +304,7 @@ ${rss},
 
 Корр счет:
 ${kss}`
-  }
-  else if (client === "private") {
+  } else if (client === "private") {
     messageAdmin = `
 Частное лицо
 

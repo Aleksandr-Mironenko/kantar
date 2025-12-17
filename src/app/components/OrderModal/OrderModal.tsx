@@ -53,7 +53,7 @@ const schema = yup.object({
 
 
 
-export default function OrderModal({ initialData, isOpen, onClose }: OrderModalProps) {
+export default function OrderModal({ initialData, isOpen, onClose, alertNotification }: OrderModalProps) {
 
   const {
     fs, //рассчетный транспортный налог не РФ
@@ -153,8 +153,10 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
       throw new Error("Ошибка отправки")
 
     } else {
-      // const res = await response.json()
-      // console.log(res, 163)
+      alertNotification({
+        titleAlert: "Заявка на Экспресс Доставку отправлена",
+        message: "С вами свяжется сотрудник компании после обработки вашей заявки с целью забора посылки"
+      });
       setFrom("")
       setWhere("")
       setIndexFrom("")
@@ -166,7 +168,6 @@ export default function OrderModal({ initialData, isOpen, onClose }: OrderModalP
       reset()
       onClose()
     }
-
   };//при отправке обнуление очистить поля формы и закрыть ее
 
   useEffect(() => {

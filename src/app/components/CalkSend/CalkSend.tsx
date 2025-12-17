@@ -548,6 +548,7 @@ export default function CalkSend() {
   const alertNotification = ({ titleAlert, message }: PropsNotification) => {
     setArgsNotification({ titleAlert, message })
     setNotification(true)
+    console.log("alertNotification", titleAlert, message)
   }
 
   return (

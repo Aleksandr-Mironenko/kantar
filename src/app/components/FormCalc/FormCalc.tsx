@@ -8,6 +8,7 @@ import { FileObj, PropsNotification, ValuesFromCalc } from "../DTO/DTO"
 import styles from "./FormCalc.module.scss";
 import { useEffect, useState } from "react";
 import DownloadFile from "../Helpers/DownloadFile";
+import Notification from '../NotificationAntd/NotificationAntd'
 
 
 const schema = yup.object({
@@ -223,6 +224,8 @@ export default function FormCalc() {
                 Отправить запрос
               </button>
             </div>
+            {notification && <Notification titleAlert={argsNotification.titleAlert}
+              message={argsNotification.message} />}
           </div>
         </div>
       </form>

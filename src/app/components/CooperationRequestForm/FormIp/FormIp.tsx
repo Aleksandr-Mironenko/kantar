@@ -6,9 +6,8 @@ import * as yup from "yup";
 import { IMaskInput } from "react-imask";
 import { useState } from "react";
 import styles from "../FormAll.module.scss";
-import { CooperationProps, FileObj, IPFields } from "../../DTO/DTO";
+import { CooperationProps, FileObj, IPFields, PropsNotification } from "../../DTO/DTO";
 import DownloadFile from "../../Helpers/DownloadFile"
-
 
 const schema = yup.object({
 

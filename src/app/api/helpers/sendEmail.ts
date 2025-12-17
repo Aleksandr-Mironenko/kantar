@@ -1,7 +1,7 @@
 "use server"
 import nodemailer from "nodemailer";
 
-export async function SendEmail(to: string, subject: string, html: string, from: string, attachments: File[] = []): Promise<void> {
+export async function sendEmail(to: string, subject: string, html: string, from: string, attachments: File[] = []): Promise<void> {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,

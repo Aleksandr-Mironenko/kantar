@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { SendEmail } from "@/app/api/helpers/SendEmail"
+import { sendEmail } from "@/app/api/helpers/SendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
 import { sendSMS } from "@/app/api/helpers/SendSms";
@@ -201,7 +201,7 @@ export async function POST(req: Request) {
   // )}`;
 
   if (agree) {
-    await SendEmail(//отправка сообщения администратору Кирилл
+    await sendEmail(//отправка сообщения администратору Кирилл
       "udink7405@gmail.com",
       "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
       bodyTextMessage,
@@ -209,7 +209,7 @@ export async function POST(req: Request) {
       filesWithId.map(f => f.file)
     );
 
-    await SendEmail(//отправка сообщения администратору
+    await sendEmail(//отправка сообщения администратору
       "sanek.miron2@gmail.com",
       "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
       bodyTextMessage,
@@ -217,7 +217,7 @@ export async function POST(req: Request) {
       filesWithId.map(f => f.file)
     );
 
-    await SendEmail(//отправка сообщения создателю заявки
+    await sendEmail(//отправка сообщения создателю заявки
       email,
       "Заявление на заключение договора Kantar",
       `

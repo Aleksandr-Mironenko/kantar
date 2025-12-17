@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { IMaskInput } from "react-imask";
 import { useState } from "react";
 import styles from "../FormAll.module.scss";
-import { FileObj, OOOFields } from "../../DTO/DTO";
+import { CooperationProps, FileObj, OOOFields } from "../../DTO/DTO";
 import DownloadFile from "../../Helpers/DownloadFile"
 
 
@@ -114,7 +114,7 @@ const schema = yup.object({
 });
 
 
-export default function FormOOO() {
+export default function FormOOO({ alertNotification }: CooperationProps) {
   const [invoiceFiles, setInvoiceFiles] = useState<FileObj[]>([{ file: null, id: 0 }])
   const [showInvois, setShowInvois] = useState<boolean>(false)
 
@@ -186,6 +186,10 @@ export default function FormOOO() {
       throw new Error("Ошибка отправки")
 
     } else {
+      alertNotification({
+        titleAlert: "Заявка на заключение договора отправлена",
+        message: "С вами свяжется сотрудник компании с целью согласования даты и места встречи для подписания документов о сотрудничестве"
+      });
       setInvoiceFiles([{ file: null, id: 0 }])
       reset()
     }

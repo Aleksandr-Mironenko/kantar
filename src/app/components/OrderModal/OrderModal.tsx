@@ -154,7 +154,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
     } else {
       alertNotification({
-        titleAlert: "Заявка на Экспресс Доставку отправлена",
+        titleAlert: "Заявка на экспресс доставку отправлена",
         message: "С вами свяжется сотрудник компании после обработки вашей заявки с целью забора посылки"
       });
       setFrom("")

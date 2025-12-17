@@ -5,7 +5,6 @@ const API_KEY = process.env.TEXTBEE_API_KEY
 const DEVICE_ID = process.env.TEXTBEE_DEVICE_ID
 
 export async function sendSMS(to: string, text: string) {
-
   if (!API_KEY) {
     throw new Error("TEXTBEE_API_KEY не задан в .env");
   }

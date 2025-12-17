@@ -4,9 +4,9 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
-import { FileObj, ValuesFromCalc } from "../DTO/DTO"
+import { FileObj, PropsNotification, ValuesFromCalc } from "../DTO/DTO"
 import styles from "./FormCalc.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DownloadFile from "../Helpers/DownloadFile";
 
 
@@ -53,6 +53,11 @@ export default function FormCalc() {
   //   });
   const [invoiceFiles, setInvoiceFiles] = useState<FileObj[]>([{ file: null, id: 0 }])
   const [showInvois, setShowInvois] = useState<boolean>(false)
+  const [notification, setNotification] = useState<boolean>(false)
+  const [argsNotification, setArgsNotification] = useState<PropsNotification>({
+    titleAlert: "",
+    message: ""
+  })
 
   const { register, handleSubmit, control, formState: { errors, isValid, }, reset, setValue, trigger, watch } = useForm<ValuesFromCalc>({
     resolver: yupResolver(schema),
@@ -79,6 +84,24 @@ export default function FormCalc() {
   // }, [watch, trigger]);
 
 
+
+
+  const alertNotification = ({ titleAlert, message }: PropsNotification) => {
+    setArgsNotification({ titleAlert, message })
+    setNotification(true)
+    console.log("alertNotification", titleAlert, message)
+  }
+
+  //закрытие уведомления через 30 секунд
+  useEffect(() => {
+    if (notification) {
+      const timerId = setTimeout(() => {
+        setNotification(false)
+      }, 30000)
+      return () => clearTimeout(timerId)
+    }
+  }, [notification])
+
   const onSubmit = async (data: ValuesFromCalc) => {
     const formData = new FormData();
     formData.append("client", "ip");
@@ -104,12 +127,15 @@ export default function FormCalc() {
       throw new Error("Ошибка отправки")
 
     } else {
+      alertNotification({
+        titleAlert: "Заявка на индивидуальный рассчет отправлена",
+        message: "С вами свяжется сотрудник компании после обработки вашей заявки и подробно расскажет, каким способом отправка возможна, сколько это будет стоить и всех сопутствующих особенностях"
+      });
       setInvoiceFiles([{ file: null, id: 0 }])
       reset()
 
     }
   }
-
 
   return (
     <section className={styles.formcalc} >

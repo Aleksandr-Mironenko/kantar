@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/api/helpers/sendEmail"
+import { sendEmail } from "@/app/api/helpers/SendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
 import { Place, Country, City } from '@/app/components/DTO/DTO'

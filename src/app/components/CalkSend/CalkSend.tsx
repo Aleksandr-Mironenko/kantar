@@ -468,8 +468,8 @@ export default function CalkSend() {
     }
   }, [whereCountryObj]);
 
+  //закрытие уведомления через 30 секунд
   useEffect(() => {
-
     if (notification) {
       const timerId = setTimeout(() => {
         setNotification(false)
@@ -477,6 +477,7 @@ export default function CalkSend() {
       return () => clearTimeout(timerId)
     }
   }, [notification])
+
   //рассчеты стоимости и ее детали
   const nds = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 0.2 : 0;
   const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 1.2 : price;

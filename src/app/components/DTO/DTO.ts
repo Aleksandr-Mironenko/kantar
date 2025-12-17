@@ -133,3 +133,6 @@ export interface PropsNotification {
   titleAlert: string,
   message: string
 }
+export interface CooperationProps {
+  alertNotification: (notification: PropsNotification) => void;
+}

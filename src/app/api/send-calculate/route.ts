@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/api/helpers/SendEmail"
+import { SendEmail } from "@/app/api/helpers/SendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
 import { Place, Country, City } from '@/app/components/DTO/DTO'
@@ -153,7 +153,7 @@ export async function POST(req: Request) {
       .join(", ")
   )}`;
 
-  await sendEmail(//отправка сообщения администратору Кирилл
+  await SendEmail(//отправка сообщения администратору Кирилл
     "udink7405@gmail.com",
     "Новая заявка",
     `
@@ -205,7 +205,7 @@ export async function POST(req: Request) {
     filesWithId.map(f => f.file)
   );
 
-  await sendEmail(//отправка сообщения администратору
+  await SendEmail(//отправка сообщения администратору
     "sanek.miron2@gmail.com",
     "Новая заявка",
     `
@@ -257,7 +257,7 @@ export async function POST(req: Request) {
     filesWithId.map(f => f.file)
   );
 
-  await sendEmail(//отправка сообщения создателю заявки
+  await SendEmail(//отправка сообщения создателю заявки
     client === "sender" ? emailFrom : emailWhere,
     "Вы создали заявку на отправление груза KANTAR",
     `
@@ -305,7 +305,7 @@ export async function POST(req: Request) {
   if (emailWhere !== emailFrom) {//отправка сообщения второй стороне
     // if (client === "sender" ? emailWhere : emailFrom) {
     if (client !== "sender") {
-      await sendEmail(
+      await SendEmail(
         // client === "sender" ? emailWhere : emailFrom,
         emailFrom,
         // client === "sender" ? "Вы указаны получателем" : "Вы указаны отправителем",

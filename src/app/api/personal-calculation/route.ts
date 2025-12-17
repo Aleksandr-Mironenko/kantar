@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/api/helpers/SendEmail"
+import { sendEmail } from "@/app/api/helpers/sendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
-import { sendSMS } from "@/app/api/helpers/SendSms";
+import { sendSMS } from "@/app/api/helpers/sendSms";
 
 export async function POST(req: Request) {
   const response = NextResponse.json({ success: true })

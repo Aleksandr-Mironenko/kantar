@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/api/helpers/SendEmail"
+import { sendEmail } from "@/app/api/helpers/sendEmail"
 // import { readState, dataFile } from "../helpers/getState"; 
 // import { boolean } from "yup";
 import { sendSMS } from "@/app/api/helpers/SendSms";

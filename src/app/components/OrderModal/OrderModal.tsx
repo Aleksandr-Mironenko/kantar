@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./OrderModal.module.scss"
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
-import { useForm, Controller, useWatch, useFormContext } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { OrderModalProps, FileObj, FormValues } from "../DTO/DTO"
 // import DownloadButton from "../DownloadButton/DownloadButton"
@@ -80,7 +80,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const [showInvois, setShowInvois] = useState<boolean>(false) //открыты ли файлы флаг
   const [descriptionOfCargo, setDescriptionOfCargo] = useState<string>("")
 
-  const { register, handleSubmit, control, formState: { errors, /*isSubmitting,,*/isValid }, setValue, /*getValues,*/ trigger, watch, reset } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors, isValid }, setValue, trigger, watch, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
     reValidateMode: "onChange",//"onChange",
@@ -162,9 +162,9 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       setIndexFrom("")
       setIndexWhere("")
       setClient("sender")
-      // setInvoiceFiles([{ file: null, id: 0 }])
-      // setShowInvois(true)
-      // setDescriptionOfCargo("")
+      setInvoiceFiles([{ file: null, id: 0 }])
+      setShowInvois(true)
+      setDescriptionOfCargo("")
       reset()
       // setValue("nameFrom", "");
       // setValue("nameWhere", "");

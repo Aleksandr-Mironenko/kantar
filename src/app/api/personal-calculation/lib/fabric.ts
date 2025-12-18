@@ -71,20 +71,6 @@ export default async function fabric(formData: FormData) {
         </div>
    `
 
-
-  // const yandexMapsLinkFrom = `https://yandex.ru/maps/?text=${encodeURIComponent(
-  //   [adressFrom]
-  //     .filter(Boolean)
-  //     .join(", ")
-  // )}`;
-
-  // const yandexMapsLinkWhere = `https://yandex.ru/maps/?text=${encodeURIComponent(
-  //   [adressWhere]
-  //     .filter(Boolean)
-  //     .join(", ")
-  // )}`;
-
-
   const messageAdminSMS: string = `Оформлена заявка 
   на ПЕРСОНАЛЬНЫЙ РАССЧЕТ! 
   ФИО: ${name},

@@ -34,7 +34,6 @@ export default async function fabric(formData: FormData) {
   let koefficient: number = 0;
   let descriptionOfCargo: string = ""
 
-
   for (const [key, value] of formData.entries()) {
     const match = key.match(/^files\[(\d+)\]$/);
 
@@ -122,7 +121,7 @@ export default async function fabric(formData: FormData) {
   </li>
   `
   )
-  )
+  ).join('')
 
   const yandexMapsLinkFrom = `https://yandex.ru/maps/?text=${encodeURIComponent(
     [adressFrom]

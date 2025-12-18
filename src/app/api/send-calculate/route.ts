@@ -6,6 +6,8 @@ import fabric from "./lib/fabric";
 export async function POST(req: Request) {
   const response = NextResponse.json({ success: true })
   const formData = await req.formData();
+
+
   const {
     agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessaege
   } = await fabric(formData)

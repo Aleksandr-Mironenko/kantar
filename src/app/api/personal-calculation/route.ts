@@ -48,12 +48,11 @@ export async function POST(req: Request) {
         sms.messageAdminSMS),
 
       //уведомление клиенту
-      sendSMS(`+7${phone}`,
+      sendSMS(phone,
         sms.messageUserSMS)
 
     )
   }
-
 
   const results = await Promise.allSettled(tasks)
 

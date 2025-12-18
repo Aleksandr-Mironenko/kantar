@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
       // уведомление админу мне
       sendSMS("+79030404804",
-        sms.messageAdminSMS),
+        "48 sms.messageAdminSMS"),
 
       //уведомление клиенту
       sendSMS(phone,
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
   })
 
   await sendSMS(phone,
-    sms.messageUserSMS)
+    "66sms.messageUserSMS")
 
   return response;
 }

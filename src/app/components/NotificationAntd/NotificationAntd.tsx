@@ -18,13 +18,21 @@ const Notification = ({ titleAlert, message }: PropsNotification) => {
     const key = `open${Date.now()}`;
     const btn = (
       <Space>
-        <Button type="link" size="small" onClick={() => api.destroy()}>
-          Заакрыть все
+        <Button
+          type="link"
+          size="small"
+          style={{ backgroundColor: '#ff0d01', borderColor: '#ff0d01', color: 'white' }}
+          onClick={() => api.destroy()}>
+          Закрыть все
         </Button>
-        <Button type="primary" size="small" onClick={() => api.destroy(key)}>{/*добавить функцию*/}
+        <Button
+          type="primary"
+          size="small"
+          style={{ backgroundColor: '#e31e24', borderColor: '#e31e24', color: 'white' }}
+          onClick={() => api.destroy(key)}>{/*добавить функцию*/}
           Принять
         </Button>
-      </Space>
+      </Space >
     );
     api.open({
       message: titleAlert,

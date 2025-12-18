@@ -54,7 +54,7 @@ export async function POST(req: Request) {
 на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`),
 
       //отправка клиенту
-      sendSMS(`+7${phone}`,
+      sendSMS(phone,
         sms.messageUserSMS)
     )
   }

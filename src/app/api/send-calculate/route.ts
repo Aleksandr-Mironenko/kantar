@@ -51,7 +51,7 @@ export async function POST(req: Request) {
         sms.messageAdminSMS),
 
       //отправка клиенту
-      sendSMS(`+7${client === "sender" ? phoneFrom : phoneWhere}`,
+      sendSMS(`${client === "sender" ? phoneFrom : phoneWhere}`,
         sms.messageUserSMS),
     )
 

@@ -12,45 +12,53 @@ export async function POST(req: Request) {
     agree, phone, email, fileArray, sms, emailMessage
   } = await fabric(formData)
 
+  const tasks: Promise<unknown>[] = []
+
   if (agree) {
     //отправка сообщения администратору Кирилл
-    await sendEmail(
-      "udink7405@gmail.com",
-      "ПЕРСОНАЛЬНЫЙ РАССЧЕТ",
-      emailMessage.bodyTextMessage,
-      "ЗАПРОС НА ПЕРСОНАЛЬНЫЙ РАССЧЕТ KANTAR",
-      fileArray
-    );
+    tasks.push(
+      sendEmail(
+        "udink7405@gmail.com",
+        "ПЕРСОНАЛЬНЫЙ РАССЧЕТ",
+        emailMessage.bodyTextMessage,
+        "ЗАПРОС НА ПЕРСОНАЛЬНЫЙ РАССЧЕТ KANTAR",
+        fileArray),
 
-    //отправка сообщения администратору
-    await sendEmail(
-      "sanek.miron2@gmail.com",
-      "ПЕРСОНАЛЬНЫЙ РАССЧЕТ",
-      emailMessage.bodyTextMessage,
-      "ЗАПРОС НА ПЕРСОНАЛЬНЫЙ РАССЧЕТ KANTAR",
-      fileArray
-    );
+      //отправка сообщения администратору
+      sendEmail(
+        "sanek.miron2@gmail.com",
+        "ПЕРСОНАЛЬНЫЙ РАССЧЕТ",
+        emailMessage.bodyTextMessage,
+        "ЗАПРОС НА ПЕРСОНАЛЬНЫЙ РАССЧЕТ KANTAR",
+        fileArray),
 
-    //отправка сообщения создателю заявки
-    await sendEmail(
-      email,
-      "Заявка на персональный рассчет Kantar",
-      emailMessage.bodyTextMessageUser,
-      "KANTAR"
-    );
+      //отправка сообщения создателю заявки
+      sendEmail(
+        email,
+        "Заявка на персональный рассчет Kantar",
+        emailMessage.bodyTextMessageUser,
+        "KANTAR"),
+
+      // уведомление админу Кириллу
+      sendSMS("+79991386191",
+        sms.messageAdminSMS),
+
+      // уведомление админу мне
+      sendSMS("+79030404804",
+        sms.messageAdminSMS),
+
+      //уведомление клиенту
+      sendSMS(`+7${phone}`,
+        sms.messageUserSMS)
+
+    )
   }
+  try {
 
-  // уведомление админу Кириллу
-  await sendSMS("+79991386191",
-    sms.messageAdminSMS);
 
-  // уведомление админу мне
-  await sendSMS("+79030404804",
-    sms.messageAdminSMS);
-
-  //уведомление клиенту
-  await sendSMS(`+7${phone}`,
-    sms.messageUserSMS);
-
+    await Promise.allSettled(tasks)
+  } catch {
+    console.log("Ошибка есть")
+  }
   return response;
 }

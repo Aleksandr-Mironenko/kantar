@@ -162,18 +162,18 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       setIndexFrom("")
       setIndexWhere("")
       setClient("sender")
-      setInvoiceFiles([{ file: null, id: 0 }])
-      setShowInvois(false)
-      setDescriptionOfCargo("")
-      // reset()
-      setValue("nameFrom", "");
-      setValue("nameWhere", "");
-      setValue("phoneFrom", "");
-      setValue("phoneWhere", "");
-      setValue("emailFrom", "");
-      setValue("emailWhere", "");
-      setValue("adressFrom", from)
-      setValue("adressWhere", where);
+      // setInvoiceFiles([{ file: null, id: 0 }])
+      // setShowInvois(true)
+      // setDescriptionOfCargo("")
+      reset()
+      // setValue("nameFrom", "");
+      // setValue("nameWhere", "");
+      // setValue("phoneFrom", "");
+      // setValue("phoneWhere", "");
+      // setValue("emailFrom", "");
+      // setValue("emailWhere", "");
+      // setValue("adressFrom", from)
+      // setValue("adressWhere", where);
       onClose()
     }
   };//при отправке обнуление очистить поля формы и закрыть ее

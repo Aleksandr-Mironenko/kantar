@@ -1,4 +1,4 @@
-"use server";
+
 import { Place, Country, City } from '@/app/components/DTO/DTO'
 
 export default async function fabric(formData: FormData) {
@@ -105,7 +105,7 @@ export default async function fabric(formData: FormData) {
 
   const mapPlaces = places.map(el => (
     `
-  <li key={el.id} style="border:3px solid red; gap:20%; border-radius:15px; margin-top:10px; padding:15px"}} >
+  <li key={el.id} style="border:3px solid red; gap:20%; border-radius:15px; margin-top:10px; padding:15px" >
     <p style="margin: 10px 5px; border-bottom:3px solid red"} >Количество: ${el.places} </p>
     <div style="display: flex; gap:20%; justify-content: space-between; flex-direction:row">
       <div style="margin-right: 20%">

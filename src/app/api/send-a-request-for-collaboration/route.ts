@@ -12,46 +12,60 @@ export async function POST(req: Request) {
     agree, phone, email, fileArray, sms, emailMessage
   } = await fabric(formData)
 
+  const tasks: Promise<unknown>[] = []
+
   if (agree) {
-    //отправка сообщения администратору Кирилл
-    await sendEmail(
-      "udink7405@gmail.com",
-      "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
-      emailMessage.bodyTextMessage,
-      "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
-      fileArray
-    );
 
-    await sendEmail(
-      //отправка сообщения администратору
-      "sanek.miron2@gmail.com",
-      "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
-      emailMessage.bodyTextMessage,
-      "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
-      fileArray
-    );
+    tasks.push(
+      //отправка сообщения администратору Кирилл
+      sendEmail(
+        "udink7405@gmail.com",
+        "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
+        emailMessage.bodyTextMessage,
+        "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
+        fileArray
+      ),
 
-    await sendEmail(
-      //отправка сообщения создателю заявки
-      email,
-      "Заявление на заключение договора Kantar",
-      emailMessage.bodyTextMessageUser,
-      "KANTAR"
-    );
-    //отправка админу Кириллу
-    await sendSMS("+79991386191",
-      `Оформлена заявка 
-на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`);
+      sendEmail(
+        //отправка сообщения администратору
+        "sanek.miron2@gmail.com",
+        "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
+        emailMessage.bodyTextMessage,
+        "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
+        fileArray
+      ),
 
-    //отправка админу
-    await sendSMS("+79030404804",
-      `Оформлена заявка 
-на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`);
+      sendEmail(
+        //отправка сообщения создателю заявки
+        email,
+        "Заявление на заключение договора Kantar",
+        emailMessage.bodyTextMessageUser,
+        "KANTAR"
+      ),
 
-    //отправка клиенту
-    await sendSMS(`+7${phone}`,
-      sms.messageUserSMS);
+      //отправка админу Кириллу
+      sendSMS("+79991386191",
+        `Оформлена заявка 
+на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`),
+
+      //отправка админу
+      sendSMS("+79030404804",
+        `Оформлена заявка 
+на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`),
+
+      //отправка клиенту
+      sendSMS(`+7${phone}`,
+        sms.messageUserSMS)
+    )
   }
+
+  const results = await Promise.allSettled(tasks)
+
+  results.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.log("Task failed:", index, result.reason)
+    }
+  })
 
   return response;
 }

@@ -12,36 +12,54 @@ export async function POST(req: Request) {
     agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage
   } = await fabric(formData)
 
+  const tasks: Promise<unknown>[] = []
+
   if (agree) {
-    await sendEmail(//отправка сообщения администратору Кирилл
-      "udink7405@gmail.com",
-      "Новая заявка",
-      emailMessage.bodyTextMessage,
-      "НОВАЯ ЗАЯВКА KANTAR",
-      fileArray
-    );
+    tasks.push(
+      sendEmail(//отправка сообщения администратору Кирилл
+        "udink7405@gmail.com",
+        "Новая заявка",
+        emailMessage.bodyTextMessage,
+        "НОВАЯ ЗАЯВКА KANTAR",
+        fileArray
+      ),
 
-    await sendEmail(
       //отправка сообщения администратору
-      "sanek.miron2@gmail.com",
-      "Новая заявка",
-      emailMessage.bodyTextMessage,
-      "НОВАЯ ЗАЯВКА KANTAR",
-      fileArray
-    );
+      sendEmail(
+        "sanek.miron2@gmail.com",
+        "Новая заявка",
+        emailMessage.bodyTextMessage,
+        "НОВАЯ ЗАЯВКА KANTAR",
+        fileArray
+      ),
 
-    await sendEmail(//отправка сообщения создателю заявки
-      client === "sender" ? emailFrom : emailWhere,
-      "Вы создали заявку на отправление груза KANTAR",
-      emailMessage.bodyTextMessageUser
-      ,
-      "KANTAR"
-    );
+      //отправка сообщения создателю заявки
+      sendEmail(
+        client === "sender" ? emailFrom : emailWhere,
+        "Вы создали заявку на отправление груза KANTAR",
+        emailMessage.bodyTextMessageUser
+        ,
+        "KANTAR"
+      ),
 
-    if (emailWhere !== emailFrom) {//отправка сообщения второй стороне
+      //отправка админу Кириллу
+      sendSMS("+79991386191",
+        sms.messageAdminSMS),
+
+      //отправка админу мне
+      sendSMS("+79030404804",
+        sms.messageAdminSMS),
+
+      //отправка клиенту
+      sendSMS(`+7${client === "sender" ? phoneFrom : phoneWhere}`,
+        sms.messageUserSMS),
+    )
+
+    //отправка сообщения второй стороне
+    if (emailWhere !== emailFrom) {
       // if (client === "sender" ? emailWhere : emailFrom) {
       if (client !== "sender") {
-        await sendEmail(
+        tasks.push(sendEmail(
           // client === "sender" ? emailWhere : emailFrom,
           emailFrom,
           // client === "sender" ? "Вы указаны получателем" : "Вы указаны отправителем",
@@ -49,21 +67,18 @@ export async function POST(req: Request) {
           emailMessage.bodyTextMessageUser2
           ,
           "KANTAR"
-        );//нужно ли уведомлять отрпавителя о выбранных габаритах и весе(для соответствия)
+        ));
       }
     }
-
-    //отправка админу Кириллу
-    await sendSMS("+79991386191",
-      sms.messageAdminSMS);
-
-    //отправка админу мне
-    await sendSMS("+79030404804",
-      sms.messageAdminSMS);
-
-    //отправка клиенту
-    await sendSMS(`+7${client === "sender" ? phoneFrom : phoneWhere}`,
-      sms.messageUserSMS);
   }
+
+  const results = await Promise.allSettled(tasks)
+
+  results.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.log("Task failed:", index, result.reason)
+    }
+  })
+
   return response;
 }

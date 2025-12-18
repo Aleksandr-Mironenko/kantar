@@ -29,11 +29,14 @@ export async function sendSMS(to: string, text: string) {
 
   const data = await response.json();
 
+  // if (data.data.success !== true) {
+  //   console.error("Ошибка от TextBee:", data);
+  //   throw new Error(`TextBee error ${response.status}: ${data.error || data.message || "Неизвестная ошибка"}`);
+  // }
   if (!data.data.ok) {
     console.error("Ошибка от TextBee:", data);
     throw new Error(`TextBee error ${response.status}: ${data.error || data.message || "Неизвестная ошибка"}`);
   }
-
   // console.log("SMS успешно отправлено:", data);
   return data;
 }

@@ -116,6 +116,7 @@ export default function FormPrivate({ alertNotification }: CooperationProps) {
       reset({
         agree: true,
       });
+      await trigger();
     }
   }
 
@@ -228,4 +229,8 @@ export default function FormPrivate({ alertNotification }: CooperationProps) {
       </form >
     </>
   )
+}
+
+function trigger() {
+  throw new Error("Function not implemented.");
 }

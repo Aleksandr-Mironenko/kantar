@@ -132,6 +132,7 @@ export default function FormCalc() {
       reset({
         agree: true,
       });
+      await trigger();
     }
   }
 

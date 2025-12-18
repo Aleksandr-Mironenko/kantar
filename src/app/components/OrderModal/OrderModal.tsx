@@ -168,6 +168,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       reset({
         agree: true,
       });
+      await trigger();
       onClose()
     }
   };//при отправке обнуление очистить поля формы и закрыть ее

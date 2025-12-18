@@ -172,6 +172,7 @@ export default function FormIp({ alertNotification }: CooperationProps) {
       reset({
         agree: true,
       });
+      await trigger();
     }
   }
   return (
@@ -387,4 +388,8 @@ export default function FormIp({ alertNotification }: CooperationProps) {
       </form >
     </>
   )
+}
+
+function trigger() {
+  throw new Error("Function not implemented.");
 }

@@ -194,6 +194,7 @@ export default function FormOOO({ alertNotification }: CooperationProps) {
       reset({
         agree: true,
       });
+      await trigger();
     }
   }
   return (
@@ -447,4 +448,8 @@ export default function FormOOO({ alertNotification }: CooperationProps) {
       </form >
     </>
   )
+}
+
+function trigger() {
+  throw new Error("Function not implemented.");
 }

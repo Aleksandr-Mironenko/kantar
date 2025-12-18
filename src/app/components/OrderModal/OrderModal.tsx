@@ -99,12 +99,12 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     },
   });
 
-  // useEffect(() => {
-  //   const subscription = watch(() => {
-  //     trigger();
-  //   });
-  //   return () => subscription.unsubscribe();
-  // }, [watch, trigger]);
+  useEffect(() => {
+    const subscription = watch(() => {
+      trigger();
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
 
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();

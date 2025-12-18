@@ -108,7 +108,6 @@ export default function FormCalc() {
     formData.append("email", data.email);
     formData.append("comment", data.comment);
     formData.append("agree", data.agree ? "1" : "0");
-    console.log(data.phone)
     invoiceFiles.forEach((el: {
       id: number;
       file: File | null;

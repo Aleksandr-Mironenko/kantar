@@ -48,7 +48,7 @@ export async function POST(req: Request) {
         sms.messageAdminSMS),
 
       //уведомление клиенту
-      sendSMS(phone,
+      sendSMS(phone.replace(/[\s() -]/g, ''),
         sms.messageUserSMS)
 
     )

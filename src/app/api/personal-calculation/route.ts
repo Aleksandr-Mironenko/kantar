@@ -53,12 +53,17 @@ export async function POST(req: Request) {
 
     )
   }
-  try {
 
 
-    await Promise.allSettled(tasks)
-  } catch {
-    console.log("Ошибка есть")
-  }
+  const results = await Promise.allSettled(tasks)
+
+  results.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.log("Task failed:", index, result.reason)
+    }
+  })
+
+
+
   return response;
 }

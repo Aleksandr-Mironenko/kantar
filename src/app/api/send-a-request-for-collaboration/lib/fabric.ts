@@ -1,9 +1,6 @@
 "use server";
 
-
 export default async function fabric(formData: FormData) {
-
-
   const filesWithId: { id: number; file: File }[] = [];
   let agree: boolean = false;
   let client: 'ooo' | 'ip' | 'private' = 'private';
@@ -186,7 +183,6 @@ export default async function fabric(formData: FormData) {
          `) : ""
   )
 
-
   const bodyTextMessageUser = `
 <div style="font-size:15px"> 
       <p style="font-size:20px">Спасибо за Ваш выбор</p>
@@ -201,7 +197,6 @@ export default async function fabric(formData: FormData) {
         </div>
    `
 
-
   // const yandexMapsLinkFrom = `https://yandex.ru/maps/?text=${encodeURIComponent(
   //   [adressFrom]
   //     .filter(Boolean)
@@ -214,8 +209,8 @@ export default async function fabric(formData: FormData) {
   //     .join(", ")
   // )}`;
 
-
   let messageAdminSMS: string = ""
+
   if (client === "ooo") {
     messageAdminSMS = `(ООО)
 ФИО: ${name},
@@ -252,7 +247,6 @@ ${rss},
 
 Корр счет:
 ${kss}`
-
   } else if (client === "ip") {
     messageAdminSMS = `(ИП)
 ФИО: ${name},
@@ -299,11 +293,9 @@ ${comment}
     `
   }
 
-
   const messageUserSMS = `Запрос на подписание договора отправлен.
 Ожидайте звонка сотрудника. 
 Контактный номер телефона +79101056423`
-
 
   return { agree, phone, email, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessaege: { bodyTextMessageUser, bodyTextMessage } }
 }

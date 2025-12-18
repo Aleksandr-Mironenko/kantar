@@ -12,7 +12,6 @@ export async function POST(req: Request) {
     agree, phone, email, fileArray, sms, emailMessaege
   } = await fabric(formData)
 
-
   if (agree) {
     //отправка сообщения администратору Кирилл
     await sendEmail(
@@ -39,21 +38,20 @@ export async function POST(req: Request) {
       emailMessaege.bodyTextMessageUser,
       "KANTAR"
     );
+    //отправка админу Кириллу
+    await sendSMS("+79991386191",
+      `Оформлена заявка 
+на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`);
+
+    //отправка админу
+    await sendSMS("+79030404804",
+      `Оформлена заявка 
+на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`);
+
+    //отправка клиенту
+    await sendSMS(`+7${phone}`,
+      sms.messageUserSMS);
   }
-
-  //отправка админу Кириллу
-  await sendSMS("+79991386191",
-    `Оформлена заявка 
-на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`);
-
-  //отправка админу
-  await sendSMS("+79030404804",
-    `Оформлена заявка 
-на ПОДПИСАНИЕ ДОГОВОРА!${sms.messageAdminSMS}`);
-
-  //отправка клиенту
-  await sendSMS(`+7${phone}`,
-    sms.messageUserSMS);
 
   return response;
 }

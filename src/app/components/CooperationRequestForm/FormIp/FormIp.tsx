@@ -169,7 +169,9 @@ export default function FormIp({ alertNotification }: CooperationProps) {
         message: "С вами свяжется сотрудник компании с целью согласования даты и места встречи для подписания документов о сотрудничестве"
       });
       setInvoiceFiles([{ file: null, id: 0 }])
-      reset()
+      reset({
+        agree: true,
+      });
     }
   }
   return (

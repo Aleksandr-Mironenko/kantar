@@ -165,7 +165,9 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       setInvoiceFiles([{ file: null, id: 0 }])
       setShowInvois(false)
       setDescriptionOfCargo("")
-      reset()
+      reset({
+        agree: true,
+      });
       onClose()
     }
   };//при отправке обнуление очистить поля формы и закрыть ее

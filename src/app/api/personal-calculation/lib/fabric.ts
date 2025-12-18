@@ -83,5 +83,16 @@ export default async function fabric(formData: FormData) {
   Ожидайте звонка сотрудника. 
   Контактный номер телефона +79101056423`
 
-  return { agree, phone, email, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessage } }
+
+
+  const normalizedPhone =
+    phone.replace(/\D/g, '')
+      .replace(/^8/, '7')
+      .replace(/^7/, '+7')
+
+  console.log(messageUserSMS, 93)
+
+  console.log(messageAdminSMS, 95)
+
+  return { agree, phone: normalizedPhone, email, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessage } }
 }

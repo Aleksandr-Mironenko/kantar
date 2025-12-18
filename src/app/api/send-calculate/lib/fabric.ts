@@ -290,6 +290,15 @@ ${adressWhere},
 Ожидайте звонка сотрудника для подтверждения. 
 Контактный номер телефона +79101056423`
 
+  const normalizedPhone1 =
+    phoneFrom.replace(/\D/g, '')
+      .replace(/^8/, '7')
+      .replace(/^7/, '+7')
 
-  return { agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessageUser2, bodyTextMessage } }
+  const normalizedPhone2 =
+    phoneWhere.replace(/\D/g, '')
+      .replace(/^8/, '7')
+      .replace(/^7/, '+7')
+
+  return { agree, client, phoneFrom: normalizedPhone1, phoneWhere: normalizedPhone2, emailFrom, emailWhere, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessageUser2, bodyTextMessage } }
 }

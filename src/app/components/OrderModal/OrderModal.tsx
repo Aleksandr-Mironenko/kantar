@@ -80,7 +80,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const [showInvois, setShowInvois] = useState<boolean>(false) //открыты ли файлы флаг
   const [descriptionOfCargo, setDescriptionOfCargo] = useState<string>("")
 
-  const { register, handleSubmit, control, formState: { errors, /*isSubmitting,isValid,*/ }, setValue, getValues, trigger, watch, reset } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors, /*isSubmitting,,*/isValid }, setValue, /*getValues,*/ trigger, watch, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
     reValidateMode: "onChange",//"onChange",
@@ -196,31 +196,31 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
 
 
-  const requiredFields = useWatch({
-    control,
-    name: [
-      "nameFrom",
-      "nameWhere",
-      "phoneFrom",
-      "phoneWhere",
-      "emailFrom",
-      "emailWhere",
-      "adressFrom",
-      "adressWhere",
-    ],
-  });
+  // const requiredFields = useWatch({
+  //   control,
+  //   name: [
+  //     "nameFrom",
+  //     "nameWhere",
+  //     "phoneFrom",
+  //     "phoneWhere",
+  //     "emailFrom",
+  //     "emailWhere",
+  //     "adressFrom",
+  //     "adressWhere",
+  //   ],
+  // });
 
 
-  const agree = useWatch({ control, name: "agree" });
+  // const agree = useWatch({ control, name: "agree" });
 
-  // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
-  const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
+  // // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
+  // const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
 
-  // Проверяем, что в errors нет ошибок для обязательных полей
-  const noErrorsInRequiredFields = requiredFields.every(field => !errors[field as keyof typeof errors]);
+  // // Проверяем, что в errors нет ошибок для обязательных полей
+  // const noErrorsInRequiredFields = requiredFields.every(field => !errors[field as keyof typeof errors]);
 
-  const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && Boolean(agree)
-    && descriptionOfCargo && from && where && indexFrom && indexWhere && showInvois)
+  // const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && Boolean(agree)
+  //   && descriptionOfCargo && from && where && indexFrom && indexWhere && showInvois)
 
 
 
@@ -520,7 +520,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                 </div>
 
                 <button
-                  disabled={isFilled} className={styles.modal__submit} type="submit" >
+                  disabled={isValid} className={styles.modal__submit} type="submit" >
                   отправить
                 </button>
               </form>

@@ -48,10 +48,7 @@ export default function FormCalc() {
 
 
 
-  //   const { register, handleSubmit, control, formState: { errors, isValid } } = useForm<FormValues>({
-  //     resolver: yupResolver(schema),
-  //     mode: "onChange",
-  //   });
+
   const [invoiceFiles, setInvoiceFiles] = useState<FileObj[]>([{ file: null, id: 0 }])
   const [showInvois, setShowInvois] = useState<boolean>(false)
   const [notification, setNotification] = useState<boolean>(false)
@@ -134,7 +131,6 @@ export default function FormCalc() {
       });
       setInvoiceFiles([{ file: null, id: 0 }])
       reset()
-
     }
   }
 
@@ -224,8 +220,12 @@ export default function FormCalc() {
                 Отправить запрос
               </button>
             </div>
-            {notification && <Notification titleAlert={argsNotification.titleAlert}
-              message={argsNotification.message} />}
+            {notification && (
+              <Notification
+                titleAlert={argsNotification.titleAlert}
+                message={argsNotification.message}
+              />
+            )}
           </div>
         </div>
       </form>

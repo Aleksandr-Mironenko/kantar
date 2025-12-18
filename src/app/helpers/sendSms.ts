@@ -29,7 +29,7 @@ export async function sendSMS(to: string, text: string) {
 
   const data = await response.json();
 
-  if (data.data.success !== true) {
+  if (!data.data.ok) {
     console.error("Ошибка от TextBee:", data);
     throw new Error(`TextBee error ${response.status}: ${data.error || data.message || "Неизвестная ошибка"}`);
   }

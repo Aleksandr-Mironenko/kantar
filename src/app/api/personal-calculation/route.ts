@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
       // уведомление админу мне
       sendSMS("+79030404804",
-        "48 sms.messageAdminSMS"),
+        sms.messageAdminSMS),
 
       //уведомление клиенту
       sendSMS(phone,
@@ -61,9 +61,6 @@ export async function POST(req: Request) {
       console.log("Task failed:", index, result.reason)
     }
   })
-
-  await sendSMS(phone,
-    "66sms.messageUserSMS")
 
   return response;
 }

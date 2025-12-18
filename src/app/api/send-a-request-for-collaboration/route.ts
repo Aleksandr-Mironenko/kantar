@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   //функция парсинга данных и генерации сообщений
   const {
     agree, phone, email, fileArray, sms, emailMessaege
-  } = fabric(formData)
+  } = await fabric(formData)
 
 
   if (agree) {

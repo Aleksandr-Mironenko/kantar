@@ -291,5 +291,5 @@ ${adressWhere},
 Контактный номер телефона +79101056423`
 
 
-  return { agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessaege: { bodyTextMessageUser, bodyTextMessageUser2, bodyTextMessage } }
+  return { agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessageUser2, bodyTextMessage } }
 }

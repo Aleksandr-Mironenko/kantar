@@ -9,14 +9,14 @@ export async function POST(req: Request) {
 
 
   const {
-    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessaege
+    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage
   } = await fabric(formData)
 
   if (agree) {
     await sendEmail(//отправка сообщения администратору Кирилл
       "udink7405@gmail.com",
       "Новая заявка",
-      emailMessaege.bodyTextMessage
+      emailMessage.bodyTextMessage
       ,
 
       "НОВАЯ ЗАЯВКА KANTAR",
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     await sendEmail(//отправка сообщения администратору
       "sanek.miron2@gmail.com",
       "Новая заявка",
-      emailMessaege.bodyTextMessage
+      emailMessage.bodyTextMessage
       ,
       "НОВАЯ ЗАЯВКА KANTAR",
       fileArray
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     await sendEmail(//отправка сообщения создателю заявки
       client === "sender" ? emailFrom : emailWhere,
       "Вы создали заявку на отправление груза KANTAR",
-      emailMessaege.bodyTextMessageUser
+      emailMessage.bodyTextMessageUser
       ,
       "KANTAR"
     );
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
           emailFrom,
           // client === "sender" ? "Вы указаны получателем" : "Вы указаны отправителем",
           "Вы указаны отправителем",
-          emailMessaege.bodyTextMessageUser2
+          emailMessage.bodyTextMessageUser2
           ,
           "KANTAR"
         );//нужно ли уведомлять отрпавителя о выбранных габаритах и весе(для соответствия)

@@ -96,6 +96,6 @@ export default async function fabric(formData: FormData) {
   const messageUserSMS = `Запрос на персональный рассчет отправлен. 
   Ожидайте звонка сотрудника. 
   Контактный номер телефона +79101056423`
-  console.log(phone.replace(/[\s() -]/g, ''))
+
   return { agree, phone, email, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessage } }
 }

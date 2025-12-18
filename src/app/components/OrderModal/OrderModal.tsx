@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./OrderModal.module.scss"
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { OrderModalProps, FileObj, FormValues } from "../DTO/DTO"
 // import DownloadButton from "../DownloadButton/DownloadButton"
@@ -80,7 +80,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const [showInvois, setShowInvois] = useState<boolean>(false) //открыты ли файлы флаг
   const [descriptionOfCargo, setDescriptionOfCargo] = useState<string>("")
 
-  const { register, handleSubmit, control, formState: { errors, isValid, }, setValue, trigger, watch, reset } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors, isSubmitting,/*isValid,*/ }, setValue, getValues, trigger, watch, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
     reValidateMode: "onChange",//"onChange",
@@ -196,6 +196,31 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
 
 
+  const requiredFields = useWatch({
+    control,
+    name: [
+      "nameFrom",
+      "nameWhere",
+      "phoneFrom",
+      "phoneWhere",
+      "emailFrom",
+      "emailWhere",
+      "adressFrom",
+      "adressWhere",
+    ],
+  });
+
+  const agree = useWatch({
+    control,
+    name: "agree",
+  });
+
+  const isFilled =
+    requiredFields.every(
+      (value) =>
+        (typeof value === "string" || typeof value === "number") &&
+        String(value).trim().length > 0
+    ) && agree === true;
   return (
     <>
       {isOpen &&
@@ -491,7 +516,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                 </div>
 
                 <button
-                  disabled={!isValid} className={styles.modal__submit} type="submit" >
+                  disabled={isFilled} className={styles.modal__submit} type="submit" >
                   отправить
                 </button>
               </form>

@@ -6,16 +6,14 @@ import { PropsNotification } from "../DTO/DTO"
 
 
 const close = () => {
-  console.log(
-    'Уведомление было закрыто.',
-  );
+  //любые действия при закрытии уведомдения
 };
 
 const Notification = ({ titleAlert, message }: PropsNotification) => {
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = () => {
-    const key = `open${Date.now()}`;
+    const key = `open${Date.now()}`;    //кнопки будут нужны в админке
     // const btn = (
     //   <Space>
     //     <Button
@@ -39,7 +37,7 @@ const Notification = ({ titleAlert, message }: PropsNotification) => {
       description: message,
       // btn,
       key,
-      // duration: 0,
+      // duration: 0,   скрыто по умолчанию
       onClose: close,
     });
   };

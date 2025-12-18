@@ -34,6 +34,6 @@ export async function sendSMS(to: string, text: string) {
     throw new Error(`TextBee error ${response.status}: ${data.error || data.message || "Неизвестная ошибка"}`);
   }
 
-  console.log("SMS успешно отправлено:", data);
+  // console.log("SMS успешно отправлено:", data);
   return data;
 }

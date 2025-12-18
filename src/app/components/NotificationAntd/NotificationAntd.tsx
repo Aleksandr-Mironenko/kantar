@@ -16,28 +16,28 @@ const Notification = ({ titleAlert, message }: PropsNotification) => {
 
   const openNotification = () => {
     const key = `open${Date.now()}`;
-    const btn = (
-      <Space>
-        <Button
-          type="link"
-          size="small"
-          style={{ backgroundColor: '#ff0d01', borderColor: '#ff0d01', color: 'white' }}
-          onClick={() => api.destroy()}>
-          Закрыть все
-        </Button>
-        <Button
-          type="primary"
-          size="small"
-          style={{ backgroundColor: '#e31e24', borderColor: '#e31e24', color: 'white' }}
-          onClick={() => api.destroy(key)}>{/*добавить функцию*/}
-          Принять
-        </Button>
-      </Space >
-    );
+    // const btn = (
+    //   <Space>
+    //     <Button
+    //       type="link"
+    //       size="small"
+    //       style={{ backgroundColor: '#ff0d01', borderColor: '#ff0d01', color: 'white' }}
+    //       onClick={() => api.destroy()}>
+    //       Закрыть все
+    //     </Button>
+    //     <Button
+    //       type="primary"
+    //       size="small"
+    //       style={{ backgroundColor: '#e31e24', borderColor: '#e31e24', color: 'white' }}
+    //       onClick={() => api.destroy(key)}>{/*добавить функцию*/}
+    //       Принять
+    //     </Button>
+    //   </Space >
+    // );
     api.open({
       message: titleAlert,
       description: message,
-      btn,
+      // btn,
       key,
       // duration: 0,
       onClose: close,

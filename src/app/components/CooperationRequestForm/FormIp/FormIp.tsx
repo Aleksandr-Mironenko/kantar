@@ -169,10 +169,7 @@ export default function FormIp({ alertNotification }: CooperationProps) {
         message: "С вами свяжется сотрудник компании с целью согласования даты и места встречи для подписания документов о сотрудничестве"
       });
       setInvoiceFiles([{ file: null, id: 0 }])
-      reset({
-        agree: true,
-      });
-      await trigger();
+      reset()
     }
   }
   return (
@@ -388,8 +385,4 @@ export default function FormIp({ alertNotification }: CooperationProps) {
       </form >
     </>
   )
-}
-
-function trigger() {
-  throw new Error("Function not implemented.");
 }

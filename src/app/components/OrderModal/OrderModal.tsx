@@ -99,12 +99,12 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     },
   });
 
-  useEffect(() => {
-    const subscription = watch(() => {
-      trigger();
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, trigger]);
+  // useEffect(() => {
+  //   const subscription = watch(() => {
+  //     trigger();
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [watch, trigger]);
 
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
@@ -165,10 +165,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       setInvoiceFiles([{ file: null, id: 0 }])
       setShowInvois(false)
       setDescriptionOfCargo("")
-      reset({
-        agree: true,
-      });
-      await trigger();
+      reset()
       onClose()
     }
   };//при отправке обнуление очистить поля формы и закрыть ее
@@ -196,6 +193,8 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     const iW = indexFrom ? `${indexFrom}, ` : "";
     setFrom(`${iW}${country}${comma}${city}, `);
   }, [fromCountryObj, fromCityObj, indexFrom]);
+
+
 
   return (
     <>

@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
   //функция парсинга данных и генерации сообщений
   const {
-    agree, phone, email, fileArray, sms, emailMessaege
+    agree, phone, email, fileArray, sms, emailMessage
   } = await fabric(formData)
 
   if (agree) {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     await sendEmail(
       "udink7405@gmail.com",
       "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
-      emailMessaege.bodyTextMessage,
+      emailMessage.bodyTextMessage,
       "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
       fileArray
     );
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       //отправка сообщения администратору
       "sanek.miron2@gmail.com",
       "ЗАКЛЮЧЕНИЕ ДОГОВОРА",
-      emailMessaege.bodyTextMessage,
+      emailMessage.bodyTextMessage,
       "НОВЫЙ ПОСТОЯННЫЙ КЛИЕНТ KANTAR",
       fileArray
     );
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       //отправка сообщения создателю заявки
       email,
       "Заявление на заключение договора Kantar",
-      emailMessaege.bodyTextMessageUser,
+      emailMessage.bodyTextMessageUser,
       "KANTAR"
     );
     //отправка админу Кириллу

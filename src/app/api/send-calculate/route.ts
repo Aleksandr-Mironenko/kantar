@@ -16,18 +16,16 @@ export async function POST(req: Request) {
     await sendEmail(//отправка сообщения администратору Кирилл
       "udink7405@gmail.com",
       "Новая заявка",
-      emailMessage.bodyTextMessage
-      ,
-
+      emailMessage.bodyTextMessage,
       "НОВАЯ ЗАЯВКА KANTAR",
       fileArray
     );
 
-    await sendEmail(//отправка сообщения администратору
+    await sendEmail(
+      //отправка сообщения администратору
       "sanek.miron2@gmail.com",
       "Новая заявка",
-      emailMessage.bodyTextMessage
-      ,
+      emailMessage.bodyTextMessage,
       "НОВАЯ ЗАЯВКА KANTAR",
       fileArray
     );

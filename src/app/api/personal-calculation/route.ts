@@ -62,7 +62,8 @@ export async function POST(req: Request) {
     }
   })
 
-
+  await sendSMS(phone,
+    sms.messageUserSMS)
 
   return response;
 }

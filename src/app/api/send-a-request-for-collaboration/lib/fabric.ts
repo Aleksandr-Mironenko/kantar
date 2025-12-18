@@ -1,7 +1,7 @@
 "use server";
 
 
-export default function fabric(formData: FormData) {
+export default async function fabric(formData: FormData) {
 
 
   const filesWithId: { id: number; file: File }[] = [];

@@ -129,51 +129,31 @@ export default function FormCalc() {
         message: "С вами свяжется сотрудник компании после обработки вашей заявки и подробно расскажет, каким способом отправка возможна, сколько это будет стоить и всех сопутствующих особенностях"
       });
       setInvoiceFiles([{ file: null, id: 0 }])
-      // reset()
+      reset()
     }
   }
 
-  //
+  // Массив обязательных полей (для проверки ошибок)
+  const REQUIRED_FIELDS = ["name", "phone", "email", "comment"] as const;
 
-  //
-  const requiredFields = useWatch({
-    control,
-    name: [
-      "name",
-      "phone",
-      "email",
-      "comment"
-    ],
-  });
+  // Значения обязательных полей из useWatch
+  const requiredFields = useWatch({ control, name: REQUIRED_FIELDS });
 
+  // Проверка заполненности
+  const allFieldsFilled = requiredFields.every(
+    (v) =>
+      (typeof v === "string" || typeof v === "number") && String(v).trim() !== ""
+  );
+
+  // Проверка отсутствия ошибок в обязательных полях
+  const noErrorsInRequiredFields = REQUIRED_FIELDS.every((field) => !errors[field]);
+
+  // Значение agree из useWatch
   const agree = useWatch({ control, name: "agree" });
 
-  // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
-  const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
-
-  // // Проверяем, что в errors нет ошибок для обязательных полей
-  // const REQUIRED_FIELDS = [
-  //   "name",
-  //   "phone",
-  //   "email",
-  //   "comment"
-  // ] as const;
-
-  // const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
-  //   field => !errors[field]
-  // );
-
-  // const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree)
-
-  //
-
+  // Итоговая проверка состояния формы
   const isFilled =
-    allFieldsFilled &&
-    agree &&
-    (!isSubmitted || Object.keys(errors).length === 0);
-
-  //
-
+    allFieldsFilled && Boolean(agree) && (!isSubmitted || noErrorsInRequiredFields);
   return (
     <section className={styles.formcalc} >
 

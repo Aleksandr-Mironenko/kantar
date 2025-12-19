@@ -1,6 +1,6 @@
 
 import DownloadButton from "../DownloadButton/DownloadButton";
-import styles from "../OrderModal/OrderModal.module.scss";
+import styles from "./DownloadFile.module.scss";
 import { DownloadFileProps } from "../DTO/DTO"
 
 

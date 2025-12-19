@@ -225,7 +225,20 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
 
   // Проверяем, что в errors нет ошибок для обязательных полей
-  const noErrorsInRequiredFields = requiredFields.every((field: string) => !errors[field as keyof typeof errors]);
+  const REQUIRED_FIELDS = [
+    "nameFrom",
+    "nameWhere",
+    "phoneFrom",
+    "phoneWhere",
+    "emailFrom",
+    "emailWhere",
+    "adressFrom",
+    "adressWhere",
+  ] as const;
+
+  const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
+    field => !errors[field]
+  );
 
   const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree
     && descriptionOfCargo && from && where && indexFrom && indexWhere)

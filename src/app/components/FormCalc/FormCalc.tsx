@@ -133,27 +133,47 @@ export default function FormCalc() {
     }
   }
 
-  // Массив обязательных полей (для проверки ошибок)
-  const REQUIRED_FIELDS = ["name", "phone", "email", "comment"] as const;
+  //
 
-  // Значения обязательных полей из useWatch
-  const requiredFields = useWatch({ control, name: REQUIRED_FIELDS });
+  //
+  const requiredFields = useWatch({
+    control,
+    name: [
+      "name",
+      "phone",
+      "email",
+      "comment"
+    ],
+  });
 
-  // Проверка заполненности
-  const allFieldsFilled = requiredFields.every(
-    (v) =>
-      (typeof v === "string" || typeof v === "number") && String(v).trim() !== ""
-  );
-
-  // Проверка отсутствия ошибок в обязательных полях
-  const noErrorsInRequiredFields = REQUIRED_FIELDS.every((field) => !errors[field]);
-
-  // Значение agree из useWatch
   const agree = useWatch({ control, name: "agree" });
 
-  // Итоговая проверка состояния формы
+  // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
+  const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
+
+  // // Проверяем, что в errors нет ошибок для обязательных полей
+  // const REQUIRED_FIELDS = [
+  //   "name",
+  //   "phone",
+  //   "email",
+  //   "comment"
+  // ] as const;
+
+  // const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
+  //   field => !errors[field]
+  // );
+
+  // const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree)
+
+  //
+
   const isFilled =
-    allFieldsFilled && Boolean(agree) && (!isSubmitted || noErrorsInRequiredFields);
+    allFieldsFilled &&
+    agree &&
+    (!isSubmitted || Object.keys(errors).length === 0);
+
+  //
+
   return (
     <section className={styles.formcalc} >
 

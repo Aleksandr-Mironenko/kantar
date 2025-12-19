@@ -227,8 +227,8 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   // Проверяем, что в errors нет ошибок для обязательных полей
   const noErrorsInRequiredFields = requiredFields.every((field: string) => !errors[field as keyof typeof errors]);
 
-  const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && Boolean(agree)
-    && descriptionOfCargo && from && where && indexFrom && indexWhere && showInvois)
+  const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree
+    && descriptionOfCargo && from && where && indexFrom && indexWhere)
 
 
 

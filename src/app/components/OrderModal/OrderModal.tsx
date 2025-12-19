@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./OrderModal.module.scss"
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { OrderModalProps, FileObj, FormValues } from "../DTO/DTO"
 // import DownloadButton from "../DownloadButton/DownloadButton"
@@ -165,15 +165,15 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       // setInvoiceFiles([{ file: null, id: 0 }])
       // setShowInvois(true)
       // setDescriptionOfCargo("")
-      // reset()
-      setValue("nameFrom", "");
-      setValue("nameWhere", "");
-      setValue("phoneFrom", "");
-      setValue("phoneWhere", "");
-      setValue("emailFrom", "");
-      setValue("emailWhere", "");
-      setValue("adressFrom", from)
-      setValue("adressWhere", where);
+      reset()
+      // setValue("nameFrom", "");
+      // setValue("nameWhere", "");
+      // setValue("phoneFrom", "");
+      // setValue("phoneWhere", "");
+      // setValue("emailFrom", "");
+      // setValue("emailWhere", "");
+      // setValue("adressFrom", from)
+      // setValue("adressWhere", where);
       onClose()
     }
   };//при отправке обнуление очистить поля формы и закрыть ее
@@ -204,31 +204,31 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
 
 
-  // const requiredFields = useWatch({
-  //   control,
-  //   name: [
-  //     "nameFrom",
-  //     "nameWhere",
-  //     "phoneFrom",
-  //     "phoneWhere",
-  //     "emailFrom",
-  //     "emailWhere",
-  //     "adressFrom",
-  //     "adressWhere",
-  //   ],
-  // });
+  const requiredFields = useWatch({
+    control,
+    name: [
+      "nameFrom",
+      "nameWhere",
+      "phoneFrom",
+      "phoneWhere",
+      "emailFrom",
+      "emailWhere",
+      "adressFrom",
+      "adressWhere",
+    ],
+  });
 
 
-  // const agree = useWatch({ control, name: "agree" });
+  const agree = useWatch({ control, name: "agree" });
 
-  // // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
-  // const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
+  // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
+  const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
 
-  // // Проверяем, что в errors нет ошибок для обязательных полей
-  // const noErrorsInRequiredFields = requiredFields.every(field => !errors[field as keyof typeof errors]);
+  // Проверяем, что в errors нет ошибок для обязательных полей
+  const noErrorsInRequiredFields = requiredFields.every((field: string) => !errors[field as keyof typeof errors]);
 
-  // const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && Boolean(agree)
-  //   && descriptionOfCargo && from && where && indexFrom && indexWhere && showInvois)
+  const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && Boolean(agree)
+    && descriptionOfCargo && from && where && indexFrom && indexWhere && showInvois)
 
 
 
@@ -528,7 +528,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                 </div>
 
                 <button
-                  disabled={!isValid} className={styles.modal__submit} type="submit" >
+                  disabled={!isFilled} className={styles.modal__submit} type="submit" >
                   отправить
                 </button>
               </form>

@@ -130,6 +130,7 @@ export default function FormCalc() {
       });
       setInvoiceFiles([{ file: null, id: 0 }])
       reset()
+      await trigger();
     }
   }
 

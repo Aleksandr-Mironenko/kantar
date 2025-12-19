@@ -241,7 +241,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   );
 
   const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree
-    && descriptionOfCargo && from && where && indexFrom && indexWhere)
+    && (document !== "goods" || descriptionOfCargo) && from && where && indexFrom && indexWhere)
 
 
 

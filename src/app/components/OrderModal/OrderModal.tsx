@@ -203,7 +203,6 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   }, [fromCountryObj, fromCityObj, indexFrom]);
 
 
-
   const requiredFields = useWatch({
     control,
     name: [
@@ -217,7 +216,6 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       "adressWhere",
     ],
   });
-
 
   const agree = useWatch({ control, name: "agree" });
 
@@ -242,9 +240,6 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
   const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree
     && (document !== "goods" || descriptionOfCargo) && from && where && indexFrom && indexWhere)
-
-
-
 
   return (
     <>

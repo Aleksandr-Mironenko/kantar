@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
@@ -133,6 +133,40 @@ export default function FormCalc() {
     }
   }
 
+  //
+
+  //
+  const requiredFields = useWatch({
+    control,
+    name: [
+      "name",
+      "phone",
+      "email",
+      "comment"
+    ],
+  });
+
+  const agree = useWatch({ control, name: "agree" });
+
+  // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
+  const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
+
+  // Проверяем, что в errors нет ошибок для обязательных полей
+  const REQUIRED_FIELDS = [
+    "name",
+    "phone",
+    "email",
+    "comment"
+  ] as const;
+
+  const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
+    field => !errors[field]
+  );
+
+  const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree)
+
+  //
+
   return (
     <section className={styles.formcalc} >
 
@@ -214,7 +248,7 @@ export default function FormCalc() {
 
             <div className={styles.label__wrapper}  >
               <button
-                disabled={!isValid}
+                disabled={!isFilled}
                 className={styles.submit} type="submit" >
                 Отправить запрос
               </button>

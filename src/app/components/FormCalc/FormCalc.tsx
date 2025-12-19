@@ -57,7 +57,7 @@ export default function FormCalc() {
     message: ""
   })
 
-  const { register, handleSubmit, control, formState: { errors, isValid, }, reset, setValue, trigger, watch } = useForm<ValuesFromCalc>({
+  const { register, handleSubmit, control, formState: { errors, isSubmitted, isValid, }, reset, setValue, trigger, watch } = useForm<ValuesFromCalc>({
     resolver: yupResolver(schema),
     mode: "onChange",
     reValidateMode: "onChange",//"onChange",
@@ -130,7 +130,6 @@ export default function FormCalc() {
       });
       setInvoiceFiles([{ file: null, id: 0 }])
       reset()
-      await trigger();
     }
   }
 
@@ -152,19 +151,26 @@ export default function FormCalc() {
   // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
   const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
 
-  // Проверяем, что в errors нет ошибок для обязательных полей
-  const REQUIRED_FIELDS = [
-    "name",
-    "phone",
-    "email",
-    "comment"
-  ] as const;
+  // // Проверяем, что в errors нет ошибок для обязательных полей
+  // const REQUIRED_FIELDS = [
+  //   "name",
+  //   "phone",
+  //   "email",
+  //   "comment"
+  // ] as const;
 
-  const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
-    field => !errors[field]
-  );
+  // const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
+  //   field => !errors[field]
+  // );
 
-  const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree)
+  // const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree)
+
+  //
+
+  const isFilled =
+    allFieldsFilled &&
+    agree &&
+    (!isSubmitted || Object.keys(errors).length === 0);
 
   //
 

@@ -165,18 +165,18 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       // setInvoiceFiles([{ file: null, id: 0 }])
       // setShowInvois(true)
       // setDescriptionOfCargo("")
-      reset()
-      // setValue("nameFrom", "");
-      // setValue("nameWhere", "");
-      // setValue("phoneFrom", "");
-      // setValue("phoneWhere", "");
-      // setValue("emailFrom", "");
-      // setValue("emailWhere", "");
-      // setValue("adressFrom", from)
-      // setValue("adressWhere", where);
-      onClose()
+      // reset()
+      setValue("nameFrom", "");
+      setValue("nameWhere", "");
+      setValue("phoneFrom", "");
+      setValue("phoneWhere", "");
+      setValue("emailFrom", "");
+      setValue("emailWhere", "");
+      setValue("adressFrom", from)
+      setValue("adressWhere", where);
+      onClose()//при отправке обнуление очистить поля формы и закрыть ее
     }
-  };//при отправке обнуление очистить поля формы и закрыть ее
+  };
 
   useEffect(() => {
     setValue("adressFrom", from);
@@ -536,7 +536,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                 </div>
 
                 <button
-                  disabled={!isFilled} className={styles.modal__submit} type="submit" >
+                  disabled={!isFilled  /*isValid*/} className={styles.modal__submit} type="submit" >
                   отправить
                 </button>
               </form>

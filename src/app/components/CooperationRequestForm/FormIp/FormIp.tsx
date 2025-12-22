@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
@@ -102,7 +102,7 @@ export default function FormIp({ alertNotification }: CooperationProps) {
   const [showInvois, setShowInvois] = useState<boolean>(false)
 
 
-  const { register, handleSubmit, control, formState: { errors, isValid, }, /*trigger, watch,*/ reset } = useForm<IPFields>({
+  const { register, handleSubmit, control, formState: { errors, isValid, isSubmitted }, /*trigger, watch,*/ reset, setValue } = useForm<IPFields>({
     resolver: yupResolver(schema),
     mode: "onChange",
     reValidateMode: "onChange",
@@ -169,9 +169,48 @@ export default function FormIp({ alertNotification }: CooperationProps) {
         message: "С вами свяжется сотрудник компании с целью согласования даты и места встречи для подписания документов о сотрудничестве"
       });
       setInvoiceFiles([{ file: null, id: 0 }])
-      reset()
+      // reset()
+      setValue("name", "");
+      setValue("phone", "");
+      setValue("email", "");
+      setValue("ipName", "");
+      setValue("realAddressIp", "");
+      setValue("innip", "");
+      setValue("ogrnip", "");
+      setValue("rss", "");
+      setValue("bik", "");
+      setValue("kss", "");
+      setValue("comment", "");
     }
   }
+
+  const requiredFields = useWatch({
+    control,
+    name: [
+      "name",
+      "phone",
+      "email",
+      "ipName",
+      "realAddressIp",
+      "innip",
+      "ogrnip",
+      "rss",
+      "bik",
+      "kss",
+      "comment"
+    ],
+  });
+
+  const agree = useWatch({ control, name: "agree" });
+
+  // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
+  const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
+
+  const isFilled =
+    allFieldsFilled &&
+    agree &&
+    (!isSubmitted || Object.keys(errors).length === 0);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -377,7 +416,7 @@ export default function FormIp({ alertNotification }: CooperationProps) {
 
           <div className={styles.label__wrapper}  >
             <button
-              disabled={!isValid} className={styles.submit} type="submit" >
+              disabled={!isFilled/*!isValid*/} className={styles.submit} type="submit" >
               Отправить заявку
             </button>
           </div>

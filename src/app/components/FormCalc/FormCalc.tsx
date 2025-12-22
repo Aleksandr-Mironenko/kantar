@@ -46,9 +46,6 @@ const schema = yup.object({
 
 export default function FormCalc() {
 
-
-
-
   const [invoiceFiles, setInvoiceFiles] = useState<FileObj[]>([{ file: null, id: 0 }])
   const [showInvois, setShowInvois] = useState<boolean>(false)
   const [notification, setNotification] = useState<boolean>(false)
@@ -72,17 +69,12 @@ export default function FormCalc() {
     },
   });
 
-
-
   // useEffect(() => {
   //   const subscription = watch(() => {
   //     trigger();
   //   });
   //   return () => subscription.unsubscribe();
   // }, [watch, trigger]);
-
-
-
 
   const alertNotification = ({ titleAlert, message }: PropsNotification) => {
     setArgsNotification({ titleAlert, message })
@@ -138,9 +130,6 @@ export default function FormCalc() {
     }
   }
 
-  //
-
-  //
   const requiredFields = useWatch({
     control,
     name: [
@@ -156,28 +145,10 @@ export default function FormCalc() {
   // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
   const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
 
-  // // Проверяем, что в errors нет ошибок для обязательных полей
-  // const REQUIRED_FIELDS = [
-  //   "name",
-  //   "phone",
-  //   "email",
-  //   "comment"
-  // ] as const;
-
-  // const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
-  //   field => !errors[field]
-  // );
-
-  // const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree)
-
-  //
-
   const isFilled =
     allFieldsFilled &&
     agree &&
     (!isSubmitted || Object.keys(errors).length === 0);
-
-  //
 
   return (
     <section className={styles.formcalc} >

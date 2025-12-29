@@ -20,9 +20,18 @@ export default async function retry<T>(
   await sendEmail(
     "sanek.miron2@gmail.com",
     `Ошибка в ${lastError}`,
-    `Возникла ошибка при выполнении: ${lastError}
-    нужно обратить внимание. создан заказ и нужно проверить его вручную.`,
+    `<p>Возникла ошибка при выполнении: ${lastError}
+    нужно обратить внимание. создан заказ и нужно проверить его вручную.</p>`,
     "KANTAR dev",
   );
   throw lastError;
 }
+
+// tasks.push(
+//   sendEmail(//отправка сообщения администратору Кирилл
+//     "udink7405@gmail.com",
+//     "Новая заявка",
+//     emailMessage.bodyTextMessage,
+//     "НОВАЯ ЗАЯВКА KANTAR",
+//     fileArray
+//   ),

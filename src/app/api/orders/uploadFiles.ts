@@ -22,7 +22,7 @@ export async function uploadFiles({ orderId, files }: DataUploadFiles) {
         bucket_path: path,
         filename: file.name
       },
-        { onConflict: "order_files_file_personal_id_unique", }// уникальный ключ
+        { onConflict: "order_id, file_personal_id" },// уникальный ключ
       );
 
       if (insertError) throw insertError;

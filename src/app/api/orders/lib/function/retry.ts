@@ -19,7 +19,7 @@ export default async function retry<T>(
   //отправка сообщения об ошибке
   await sendEmail(
     "sanek.miron2@gmail.com",
-    `Ошибка в ${lastError}`,
+    `Ошибка `,
     `<p>Возникла ошибка при выполнении: ${lastError}
     нужно обратить внимание. создан заказ и нужно проверить его вручную.</p>`,
     "KANTAR dev",

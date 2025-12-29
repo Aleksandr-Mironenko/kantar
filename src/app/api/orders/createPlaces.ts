@@ -24,7 +24,7 @@ export async function createPlaces({ orderId, data }: DataCreatePlases) {
   const { error } = await supabaseServer
     .from("order_places")
     .upsert(records, {
-      onConflict: "places_personal_id", // уникальный ключ
+      onConflict: "order_id,places_personal_id", // уникальный ключ
     });
   //если ошибка - кидаем её выше
   if (error) throw error;

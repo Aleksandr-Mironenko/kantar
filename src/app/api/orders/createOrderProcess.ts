@@ -37,7 +37,7 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
     senderAddressId,
     recipientAddressId,
     discount: 0,
-    status: "new order" as const
+    status: "new" as const
   }
   )
 

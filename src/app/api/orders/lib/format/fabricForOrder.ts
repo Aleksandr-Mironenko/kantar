@@ -1,23 +1,6 @@
 "use server";
 
-import { DataCreateOrderProcess } from "@/app/components/DTO/DTO";
-
-type DataFabricForOrder = {
-  dataprops: DataCreateOrderProcess,
-  senderId: number,
-  recipientId: number,
-  senderAddressId: number,
-  recipientAddressId: number,
-  discount: number,
-  status: "new order" | // новый заказ 
-  "pickup required (processed)" | // требуется забор (обработано)
-  "awaiting payment (shipped)" | // ожидает оплаты(отправлен)
-  "awaiting payment (not shipped)" | // ожидает оплаты(не отправлен)
-  "in transit" | // в пути
-  "delivery pending" | // согласовывается вручение
-  "in transit (delivery)" | // в пути (вручение)
-  "delivered", // вручено 
-}
+import { DataCreateOrderProcess, DataFabricForOrder } from "@/app/components/DTO/DTO";
 
 export default async function fabricForOrder(data: DataFabricForOrder) {
 

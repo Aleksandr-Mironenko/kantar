@@ -196,7 +196,7 @@ export interface DataCreateOrder {
   price: number,
   isPaid: boolean,
   isFinalHeft: number,
-  status: "new order" | // новый заказ 
+  status: "new" | // новый заказ 
   "pickup required (processed)" | // требуется забор (обработано)
   "awaiting payment (shipped)" | // ожидает оплаты(отправлен)
   "awaiting payment (not shipped)" | // ожидает оплаты(не отправлен)
@@ -224,4 +224,21 @@ export type DataCreateUser = {
   isClient: boolean;
   typeAcc: "noAcc" | "private" | "OOO" | "IP";
   discount: number;
-}; 
+};
+
+export type DataFabricForOrder = {
+  dataprops: DataCreateOrderProcess,
+  senderId: number,
+  recipientId: number,
+  senderAddressId: number,
+  recipientAddressId: number,
+  discount: number,
+  status: "new" | // новый заказ 
+  "pickup required (processed)" | // требуется забор (обработано)
+  "awaiting payment (shipped)" | // ожидает оплаты(отправлен)
+  "awaiting payment (not shipped)" | // ожидает оплаты(не отправлен)
+  "in transit" | // в пути
+  "delivery pending" | // согласовывается вручение
+  "in transit (delivery)" | // в пути (вручение)
+  "delivered", // вручено 
+}

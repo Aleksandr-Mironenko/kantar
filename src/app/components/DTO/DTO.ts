@@ -224,4 +224,4 @@ export type DataCreateUser = {
   isClient: boolean;
   typeAcc: "noAcc" | "private" | "OOO" | "IP";
   discount: number;
-};
+}; 

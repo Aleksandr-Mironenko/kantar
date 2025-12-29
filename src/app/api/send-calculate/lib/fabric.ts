@@ -22,12 +22,12 @@ export default async function fabric(formData: FormData) {
   let emailWhere: string = "";
   let adressFrom: string = "";
   let adressWhere: string = "";
-  let document: string = "";
+  let document: "document" | "goods" = "goods";
   let from: string = "";
   let where: string = "";
   let indexFrom: string = "";
   let indexWhere: string = "";
-  let client: string = "";
+  let client: "sender" | "recipient" = "sender";
   let places: Place[] | [] = [];
   let fs: number = 0;
   let fsRF: number = 0;
@@ -90,13 +90,13 @@ export default async function fabric(formData: FormData) {
       } else if (key === "adressWhere") {
         adressWhere = value
       } else if (key === "document") {
-        document = value
+        document = value as "document" | "goods"
       } else if (key === "from") {
         from = value
       } else if (key === "where") {
         where = value
       } else if (key === "client") {
-        client = value
+        client = value as "sender" | "recipient"
       } else if (key === "descriptionOfCargo") {
         descriptionOfCargo = value
       }
@@ -300,5 +300,13 @@ ${adressWhere},
       .replace(/^8/, '7')
       .replace(/^7/, '+7')
 
-  return { agree, client, phoneFrom: normalizedPhone1, phoneWhere: normalizedPhone2, emailFrom, emailWhere, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessageUser2, bodyTextMessage } }
+  return {
+    isFinalHeft, price, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
+    adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo,
+
+
+    agree, client, phoneFrom: normalizedPhone1, phoneWhere: normalizedPhone2, emailFrom,
+    emailWhere, fileArray, sms: { messageUserSMS, messageAdminSMS },
+    emailMessage: { bodyTextMessageUser, bodyTextMessageUser2, bodyTextMessage }
+  }
 }

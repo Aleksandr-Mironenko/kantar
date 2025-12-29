@@ -11,12 +11,14 @@ import FormCalc from './components/FormCalc/FormCalc'
 import CalkSend from './components/CalkSend/CalkSend'
 import ThirdPartyFix from './components/ThirdPartyFix/ThirdPartyFix';
 import CooperationRequestForm from './components/CooperationRequestForm/CooperationRequestForm'
+// import AdninPanel from './components/AdminPanel/AdminPanel'
 export default function Home() {
 
 
   return (
     <>
       <ThirdPartyFix />
+      {/* <AdninPanel /> */}
       <Header />
       <Hero />
       <WhoWeAre />

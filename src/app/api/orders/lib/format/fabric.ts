@@ -1,0 +1,136 @@
+"use server";
+
+import { DataCreateAddress, DataCreateOrderProcess, DataCreateUser } from "@/app/components/DTO/DTO";
+
+
+export default async function fabric(data: DataCreateOrderProcess) {
+
+
+  //деструктуризация для общего доступа
+  const { agree,
+    client,
+    phoneFrom,
+    phoneWhere,
+    emailFrom,
+    emailWhere,
+    fileArray,
+    isFinalHeft,
+    price,
+    count,
+    fromCountryObj,
+    whereCountryObj,
+    fromCityObj,
+    whereCityObj,
+    showInvois,
+    nameFrom,
+    nameWhere,
+    adressFrom,
+    adressWhere,
+    document,
+    from,
+    where,
+    indexFrom,
+    indexWhere,
+    places,
+    fs,
+    fsRF,
+    koefficient,
+    descriptionOfCargo } = data
+
+  //константа только для валидации
+  const validateData: DataCreateOrderProcess = {
+    agree,
+    client,
+    phoneFrom,
+    phoneWhere,
+    emailFrom,
+    emailWhere,
+    fileArray,
+    isFinalHeft,
+    price,
+    count,
+    fromCountryObj,
+    whereCountryObj,
+    fromCityObj,
+    whereCityObj,
+    showInvois,
+    nameFrom,
+    nameWhere,
+    adressFrom,
+    adressWhere,
+    document,
+    from,
+    where,
+    indexFrom,
+    indexWhere,
+    places,
+    fs,
+    fsRF,
+    koefficient,
+    descriptionOfCargo
+  }
+
+  //формируем объект полного адреса отправления
+  const allFrom: DataCreateAddress = {
+    fullAddress: from,
+    countryName: fromCountryObj.name,
+    countryZone: fromCountryObj.zone,
+    countryId: fromCountryObj.id,
+    cityName: fromCityObj?.name,
+    cityZone: fromCityObj?.zone,
+    cityIdRF: fromCityObj?.numberZoneRF,
+    cityIdForeign: fromCityObj?.numberZoneForeign,
+    cityZoneId: fromCityObj?.id,
+    index: indexFrom
+  }
+  //формируем объект полного адреса получения
+  const allWhere: DataCreateAddress = {
+    fullAddress: where,
+    countryName: whereCountryObj.name,
+    countryZone: whereCountryObj.zone,
+    countryId: whereCountryObj.id,
+    cityName: whereCityObj?.name,
+    cityZone: whereCityObj?.zone,
+    cityIdRF: whereCityObj?.numberZoneRF,
+    cityIdForeign: whereCityObj?.numberZoneForeign,
+    cityZoneId: whereCityObj?.id,
+    index: indexWhere
+  }
+
+  //определяем кто создатель заказа  
+  const orderCreator = client === "sender" ? allFrom : allWhere
+
+  //определяем кто получатель заказа  
+  const noOrderCreator = client !== "sender" ? allFrom : allWhere
+
+  // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
+  const getOrCreateUserFromData: DataCreateUser = {
+    email: emailFrom,
+    phone: phoneFrom,
+    name: nameFrom,
+    isClient: client === 'sender',
+    typeAcc: "noAcc" as const,
+    discount: 0,
+  }
+
+  // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
+  const getOrCreateUserWhereData: DataCreateUser = {
+    email: emailWhere,
+    phone: phoneWhere,
+    name: nameWhere,
+    isClient: client === 'recipient' ? true : false,
+    typeAcc: "noAcc" as const,
+    discount: 0,
+  }
+
+
+  return {
+    places,
+    fileArray,
+    validateData,
+    orderCreator,
+    noOrderCreator,
+    getOrCreateUserFromData,
+    getOrCreateUserWhereData
+  }
+}

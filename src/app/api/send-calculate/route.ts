@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/app/helpers/sendEmail"
 import { sendSMS } from "@/app/helpers/sendSms";
+import createOrderProcess from '@/app/api/orders/createOrderProcess'
 import fabric from "./lib/fabric";
 
 export async function POST(req: Request) {
@@ -9,12 +10,20 @@ export async function POST(req: Request) {
 
 
   const {
-    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage
+    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage, isFinalHeft, price, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
+    adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
+
   } = await fabric(formData)
 
   const tasks: Promise<unknown>[] = []
 
   if (agree) {
+    //создание заказа в бд
+    await createOrderProcess({
+      agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, isFinalHeft, price, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
+      adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
+    })
+
     tasks.push(
       sendEmail(//отправка сообщения администратору Кирилл
         "udink7405@gmail.com",

@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface Place {
   heft: number;
   length: number;
@@ -136,3 +134,94 @@ export interface PropsNotification {
 export interface CooperationProps {
   alertNotification: (notification: PropsNotification) => void;
 }
+
+
+export interface DataCreateOrderProcess {
+  agree: boolean,
+  client: "sender" | "recipient",
+  phoneFrom: string,
+  phoneWhere: string,
+  emailFrom: string,
+  emailWhere: string,
+  fileArray: File[],
+  isFinalHeft: number,
+  price: number,
+  count: number,
+  fromCountryObj: Country,
+  whereCountryObj: Country,
+  fromCityObj: City | null,
+  whereCityObj: City | null,
+  showInvois: boolean,
+  nameFrom: string,
+  nameWhere: string,
+  adressFrom: string,
+  adressWhere: string,
+  document: "document" | "goods",
+  from: string,
+  where: string,
+  indexFrom: string,
+  indexWhere: string,
+  places: Place[],
+  fs: number,
+  fsRF: number,
+  koefficient: number,
+  descriptionOfCargo: string,
+}
+
+export type DataCreateAddress = {
+  fullAddress: string;
+  countryName: string;
+  countryZone: number;
+  countryId: number;
+  cityName: string | undefined;
+  cityZone: string | undefined;
+  cityIdRF?: number | undefined;
+  cityIdForeign?: number | undefined;
+  cityZoneId: number | undefined;
+  index: string
+};
+
+export interface DataCreateOrder {
+  senderId: number,
+  recipientId: number,
+  senderAddressId: number,
+  recipientAddressId: number,
+  nameFrom: string,
+  nameWhere: string,
+  phoneFrom: string,
+  phoneWhere: string,
+  emailFrom: string,
+  emailWhere: string,
+  discount: number,
+  price: number,
+  isPaid: boolean,
+  isFinalHeft: number,
+  status: "new order" | // новый заказ 
+  "pickup required (processed)" | // требуется забор (обработано)
+  "awaiting payment (shipped)" | // ожидает оплаты(отправлен)
+  "awaiting payment (not shipped)" | // ожидает оплаты(не отправлен)
+  "in transit" | // в пути
+  "delivery pending" | // согласовывается вручение
+  "in transit (delivery)" | // в пути (вручение)
+  "delivered", // вручено
+  agree: boolean
+}
+
+export interface DataUploadFiles {
+  orderId: number;
+  files: File[];
+}
+
+export interface DataCreatePlases {
+  orderId: number;
+  data: Place[];
+}
+
+export type DataCreateUser = {
+  email: string;
+  phone: string;
+  name: string;
+  isClient: boolean;
+  typeAcc: "noAcc" | "private" | "OOO" | "IP";
+  discount: number;
+};

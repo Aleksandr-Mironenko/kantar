@@ -15,8 +15,8 @@ export async function POST(req: Request) {
   const tasks: Promise<unknown>[] = []
 
   if (agree) {
-    //отправка сообщения администратору Кирилл
     tasks.push(
+      //отправка сообщения администратору Кирилл
       sendEmail(
         "udink7405@gmail.com",
         "ПЕРСОНАЛЬНЫЙ РАССЧЕТ",

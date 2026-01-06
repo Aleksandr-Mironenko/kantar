@@ -12,7 +12,15 @@ import retry from "./lib/function/retry";
 
 export default async function createOrderProcess(data: DataCreateOrderProcess) {
   // формирую все необходимые данные из входящего объекта
-  const { places, fileArray, validateData, orderCreator, noOrderCreator, getOrCreateUserFromData, getOrCreateUserWhereData } = await fabric(data)
+  const { places,
+    fileArray,
+    validateData,
+    orderCreator,
+    noOrderCreator,
+    getOrCreateUserFromData,
+    getOrCreateUserWhereData,
+    isInternal,
+    nds } = await fabric(data)
 
   // валидация входящих данных
   validate(validateData);
@@ -41,21 +49,22 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
   }
   )
 
-  //создаю заказ и получаю его id
-  let orderId
+  //создаю заказ и получаю его id и номер заказа
+  let orderId: number[] = []
   if (orderData && senderId && senderAddressId && recipientId && recipientAddressId) {
-    orderId = await createOrder(orderData);
+    orderId = await createOrder(orderData, isInternal, nds);
   }
+  const numberOrder = orderId[1]
+  const hachIdOrder = orderId[0]
 
-
-  if (!orderId) {
-    orderId = await retry(() => createOrder(orderData), { retries: 5, delay: 100 });
+  if (!numberOrder) {
+    orderId = await retry(() => createOrder(orderData, isInternal, nds), { retries: 5, delay: 100 });
   }
-  if (orderId === undefined) {
+  if (numberOrder === undefined) {
     throw new Error("Failed to create order after multiple attempts");
   } else {
     //формирую данные для создания мест
-    const createPlacesData = { orderId, data: places }
+    const createPlacesData = { orderId, data: places, isInternal, nds }
     //добавляю каждое место заказа присваивая их номеру заказа
 
     await retry(() => createPlaces(createPlacesData), { retries: 5, delay: 100 });
@@ -92,5 +101,5 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
     }
   }
   //возвращаю только id созданного заказа
-  return { orderId };
+  return { orderId: numberOrder };
 }

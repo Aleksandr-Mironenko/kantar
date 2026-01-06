@@ -2,7 +2,7 @@
 import styles from "./CalkSend.module.scss";
 import { useState, useEffect, useCallback } from "react"
 import {
-  fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key,
+  nds, fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key,
   funcExcess70, funcExcess300, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF,
   funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey
 } from './data'
@@ -319,78 +319,79 @@ export default function CalkSend() {
   useEffect(() => {
     const from = fromCountryObj?.name?.trim().toLowerCase() || "";
     const where = whereCountryObj?.name?.trim().toLowerCase() || "";
-    let rf
+
     if (!fromCountryObj || !whereCountryObj) {
       setPrice(0);
       return;
     }
+
+    let rf: boolean | undefined;
     let result: string | undefined;
 
     // Россия → За границу
     if (from === "россия" && where !== "россия" && fromCityObj && whereCountryObj) {
       const key = `${fromCityObj.numberZoneForeign}-${whereCountryObj.zone}`;
       if (key in tableRFneRF) {
-        result = funcTableRFneRF(key as RFKey)
-      };
-      rf = true
+        result = funcTableRFneRF(key as RFKey);
+        rf = true;
+      }
     }
 
     // За границу → Россия
     else if (from !== "россия" && where === "россия" && whereCityObj && fromCountryObj) {
       const key = `${whereCityObj.numberZoneForeign}-${fromCountryObj.zone}`;
       if (key in tableRFneRF) {
-        result = funcTableRFneRF(key as RFKey)
-      };
-      rf = true
+        result = funcTableRFneRF(key as RFKey);
+        rf = true;
+      }
     }
 
-    // Россия → Россия  
+    // Россия → Россия
     else if (from === "россия" && where === "россия" && fromCityObj && whereCityObj) {
       const key = `${fromCityObj.numberZoneRF}-${whereCityObj.numberZoneRF}`;
       if (key in tableRFRF) {
-        result = funcTableRFRF(key as RFRFKey)
-      };
-      rf = false
+        result = funcTableRFRF(key as RFRFKey);
+        rf = false;
+      }
     }
 
-    if (!result) {
+    if (!result || rf === undefined) {
       setPrice(0);
       return;
     }
-    let totalPrice = 0;
-    // Считаем общую цену отправления по России напрямую по всем местам 
-    if (rf) {
-      places.forEach(el => {
-        const heft = el.heft > el.volume ? el.heft : el.volume;
 
-        //выбираем больший вес - фактический или объемный
+    let totalPrice = 0;
+
+    let updatedPlaces: Place[] = [];
+
+    if (rf) {
+      updatedPlaces = places.map(el => {
+        const heft = el.heft > el.volume ? el.heft : el.volume;
         const totalWeight = heft * el.places;
 
         let calcWeight = totalWeight;
-
-        // Округление вверх до 0.5 кг
         if (totalWeight % 0.5 !== 0) {
           calcWeight = totalWeight + (0.5 - (totalWeight % 0.5));
         }
 
         let price = 0;
-        //малый вес и/или документы
+
         if (document === "document" && totalWeight <= 2) {
           const key = `${result}-${calcWeight}`;
           if (key in smallDoc) {
-            const price0 = funcSmallDoc(key as SmallDocKey)
-            // price = fsRF * price0 - ((1 - koefficient) * price0);
-            price = fsRF * price0 * (1 - koefficient)
+            const price0 = funcSmallDoc(key as SmallDocKey);
+            price = fsRF * price0 * (1 - koefficient);
           }
-        } else {//большой вес и/или груз
+        } else {
           let excessPerKg = 0;
           let excessWeight = 0;
 
-          //стоимость за кг сверх 70 кг
           if (totalWeight > 70) {
-            excessPerKg = totalWeight <= 300
-              ? funcExcess70(result as Excess70Key)
-              : funcExcess300(result as Excess300Key) || 7000;
+            excessPerKg =
+              totalWeight <= 300
+                ? funcExcess70(result as Excess70Key)
+                : funcExcess300(result as Excess300Key) || 7000;
+
             excessWeight = totalWeight - 70;
             calcWeight = 70;
           }
@@ -398,21 +399,22 @@ export default function CalkSend() {
           const key = `${result}-${calcWeight}`;
           if (key in bigDoc) {
             const price0 = funcBigDoc(key as BigDocKey);
-            // price = fsRF * (price0 + Math.ceil(excessWeight) * excessPerKg) - ((1 - koefficient) * price0);
-            price = fsRF * (price0 + Math.ceil(excessWeight) * excessPerKg) * (1 - koefficient)
+            price =
+              fsRF *
+              (price0 + Math.ceil(excessWeight) * excessPerKg) *
+              (1 - koefficient);
           }
         }
+
         totalPrice += price;
+        return { ...el, price };
       });
-    }
-    else {
-      places.forEach(el => {
-        //выбираем больший вес - фактический или объемный
+    } else {
+      updatedPlaces = places.map(el => {
         const heft = el.heft > el.volume ? el.heft : el.volume;
         const totalWeight = heft * el.places;
-        let calcWeight = totalWeight;
 
-        // Округление вверх до 0.5 кг
+        let calcWeight = totalWeight;
         if (totalWeight % 0.5 !== 0) {
           calcWeight = totalWeight + (0.5 - (totalWeight % 0.5));
         }
@@ -422,21 +424,36 @@ export default function CalkSend() {
         let excessWeight = 0;
 
         if (totalWeight > 70) {
-          excessPerKg = funcExcess70RF(result as Excess70RfKey)
+          excessPerKg = funcExcess70RF(result as Excess70RfKey);
           excessWeight = totalWeight - 70;
           calcWeight = 70;
         }
 
         const key = `${result}-${calcWeight}`;
-
         if (key in rfBigDoc) {
           const price0 = funcRfBigDoc(key as RfBigDocKey);
-          // price = fs * (price0 + Math.ceil(excessWeight) * excessPerKg) - ((1 - koefficient) * price0);
-          price = fs * (price0 + Math.ceil(excessWeight) * excessPerKg) * (1 - koefficient)
+          price =
+            fs *
+            (price0 + Math.ceil(excessWeight) * excessPerKg) *
+            (1 - koefficient);
         }
+
+        price = Math.ceil(price);
         totalPrice += price;
+
+        return { ...el, price };
       });
     }
+
+    // защита от бесконечного цикла
+    const isChanged = updatedPlaces.some(
+      (p, i) => p.price !== places[i]?.price
+    );
+
+    if (isChanged) {
+      setPlaces(updatedPlaces);
+    }
+
     setPrice(totalPrice);
   }, [
     fromCityObj,
@@ -444,8 +461,8 @@ export default function CalkSend() {
     fromCountryObj,
     whereCountryObj,
     document,
+    koefficient,
     places,
-    koefficient
   ]);
 
   //автоматическа подстановка города в отправитель
@@ -479,8 +496,9 @@ export default function CalkSend() {
   }, [notification])
 
   //рассчеты стоимости и ее детали
-  const nds = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 0.2 : 0;
-  const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * 1.2 : price;
+
+  const ndsHere = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * (nds - 1) : 0;
+  const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * nds : price;
 
   const totalPlaces = places.reduce((acc, el) => {
     return acc + el.places;
@@ -499,6 +517,7 @@ export default function CalkSend() {
 
   //формируем пропс для передачи в форму заявки
   const orderData = {
+    nds,
     fs,
     fsRF,
     koefficient,
@@ -549,7 +568,6 @@ export default function CalkSend() {
   const alertNotification = ({ titleAlert, message }: PropsNotification) => {
     setArgsNotification({ titleAlert, message })
     setNotification(true)
-    console.log("alertNotification", titleAlert, message)
   }
 
   return (
@@ -665,7 +683,7 @@ export default function CalkSend() {
           <div className={styles.total__title}>Итого:</div>
           <div className={styles.total__price}>{Math.ceil(fullPrice)} ₽</div>
           <div className={styles.total__details}>
-            <div>НДС: {Math.ceil(nds)} ₽</div>
+            <div>НДС: {Math.ceil(ndsHere)} ₽</div>
             <div>Цена: {Math.ceil(price)} ₽</div>
           </div>
           <div className={styles.total__time}>5-10 дней</div>

@@ -1,6 +1,6 @@
 "use server";
 
-import { DataCreateOrderProcess, DataFabricForOrder } from "@/app/components/DTO/DTO";
+import { DataFabricForOrder } from "@/app/components/DTO/DTO";
 
 export default async function fabricForOrder(data: DataFabricForOrder) {
 

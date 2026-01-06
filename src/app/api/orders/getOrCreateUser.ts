@@ -1,4 +1,4 @@
-import supabaseServer from "./lib/supabase/server";
+import supabaseServer from '@/app/api/lib/supabase/server-secret';
 import { DataCreateUser } from '@/app/components/DTO/DTO'
 
 export async function getOrCreateUser(data: DataCreateUser): Promise<number> {

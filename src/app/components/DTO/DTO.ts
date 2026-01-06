@@ -24,6 +24,7 @@ export interface City {
 }
 
 export interface InitialData {
+  nds: number;
   fs: number;
   fsRF: number;
   koefficient: number;
@@ -162,6 +163,7 @@ export interface DataCreateOrderProcess {
   indexFrom: string,
   indexWhere: string,
   places: Place[],
+  nds: number,
   fs: number,
   fsRF: number,
   koefficient: number,
@@ -208,13 +210,15 @@ export interface DataCreateOrder {
 }
 
 export interface DataUploadFiles {
-  orderId: number;
+  orderId: number[];
   files: File[];
 }
 
 export interface DataCreatePlases {
-  orderId: number;
+  orderId: number[];
   data: Place[];
+  isInternal: boolean
+  nds: number
 }
 
 export type DataCreateUser = {

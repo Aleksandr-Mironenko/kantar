@@ -5,79 +5,87 @@ import createOrderProcess from '@/app/api/orders/createOrderProcess'
 import fabric from "./lib/fabric";
 
 export async function POST(req: Request) {
-  const response = NextResponse.json({ success: true })
   const formData = await req.formData();
 
 
   const {
-    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage, isFinalHeft, price, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
+    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage, isFinalHeft, price, nds, count,
+    fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
     adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
 
   } = await fabric(formData)
 
   const tasks: Promise<unknown>[] = []
-
+  let orderNumbers
   if (agree) {
+
     //создание заказа в бд
-    await createOrderProcess({
-      agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, isFinalHeft, price, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
+    orderNumbers = await createOrderProcess({
+      agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, isFinalHeft, price, nds, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
       adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
     })
 
-    tasks.push(
-      sendEmail(//отправка сообщения администратору Кирилл
-        "udink7405@gmail.com",
-        "Новая заявка",
-        emailMessage.bodyTextMessage,
-        "НОВАЯ ЗАЯВКА KANTAR",
-        fileArray
-      ),
+  }
+  const response = NextResponse.json({ success: true, orderNumbers })
+  tasks.push(
+    sendEmail(//отправка сообщения администратору Кирилл
+      "udink7405@gmail.com",
+      `Новый заказ ${orderNumbers && JSON.stringify(orderNumbers?.orderId)}`,
+      emailMessage.bodyTextMessage,
+      `НОВЫЙ ЗАКАЗ ${orderNumbers && JSON.stringify(JSON.stringify(orderNumbers?.orderId))} KANTAR`,
+      fileArray
+    ),
 
-      //отправка сообщения администратору
-      sendEmail(
-        "sanek.miron2@gmail.com",
-        "Новая заявка",
-        emailMessage.bodyTextMessage,
-        "НОВАЯ ЗАЯВКА KANTAR",
-        fileArray
-      ),
+    //отправка сообщения администратору
+    sendEmail(
+      "sanek.miron2@gmail.com",
+      `Новый заказ ${orderNumbers && JSON.stringify(orderNumbers?.orderId)}`,
+      emailMessage.bodyTextMessage,
+      `НОВЫЙ ЗАКАЗ ${orderNumbers && JSON.stringify(JSON.stringify(orderNumbers?.orderId))} KANTAR`,
 
-      //отправка сообщения создателю заявки
-      sendEmail(
-        client === "sender" ? emailFrom : emailWhere,
-        "Вы создали заявку на отправление груза KANTAR",
-        emailMessage.bodyTextMessageUser
+      fileArray
+    ),
+
+    //отправка сообщения создателю заявки
+    sendEmail(
+      client === "sender" ? emailFrom : emailWhere,
+      "Вы создали заявку на отправление груза KANTAR",
+      `${orderNumbers && `<p>Номер вашего заказа: ${JSON.stringify(JSON.stringify(orderNumbers?.orderId))}</p>`}
+        ${emailMessage.bodyTextMessageUser}`
+      ,
+      "KANTAR"
+    ),
+
+    //отправка админу Кириллу
+    sendSMS("+79991386191",
+      `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
+        ${sms.messageAdminSMS} `),
+
+    //отправка админу  
+    sendSMS("+79030404804",
+      `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
+      sms.messageAdminSMS`),
+
+    //отправка клиенту
+    sendSMS(`${client === "sender" ? phoneFrom : phoneWhere} `,
+      `${orderNumbers && `Номер вашего заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
+        ${sms.messageUserSMS} `),
+  )
+
+  //отправка сообщения второй стороне
+  if (emailWhere !== emailFrom) {
+    // if (client === "sender" ? emailWhere : emailFrom) {
+    if (client !== "sender") {
+      tasks.push(sendEmail(
+        // client === "sender" ? emailWhere : emailFrom,
+        emailFrom,
+        // client === "sender" ? "Вы указаны получателем" : "Вы указаны отправителем",
+        "Вы указаны отправителем",
+        `${orderNumbers && `<p>Номер заказа: ${JSON.stringify(JSON.stringify(orderNumbers?.orderId))}</p>`}
+        ${emailMessage.bodyTextMessageUser2}`
         ,
         "KANTAR"
-      ),
-
-      //отправка админу Кириллу
-      sendSMS("+79991386191",
-        sms.messageAdminSMS),
-
-      //отправка админу мне
-      sendSMS("+79030404804",
-        sms.messageAdminSMS),
-
-      //отправка клиенту
-      sendSMS(`${client === "sender" ? phoneFrom : phoneWhere}`,
-        sms.messageUserSMS),
-    )
-
-    //отправка сообщения второй стороне
-    if (emailWhere !== emailFrom) {
-      // if (client === "sender" ? emailWhere : emailFrom) {
-      if (client !== "sender") {
-        tasks.push(sendEmail(
-          // client === "sender" ? emailWhere : emailFrom,
-          emailFrom,
-          // client === "sender" ? "Вы указаны получателем" : "Вы указаны отправителем",
-          "Вы указаны отправителем",
-          emailMessage.bodyTextMessageUser2
-          ,
-          "KANTAR"
-        ));
-      }
+      ));
     }
   }
 
@@ -85,7 +93,7 @@ export async function POST(req: Request) {
 
   results.forEach((result, index) => {
     if (result.status === "rejected") {
-      console.log("Task failed:", index, result.reason)
+      console.log("Ошибка в send-calculate/route:", index, result.reason)
     }
   })
 

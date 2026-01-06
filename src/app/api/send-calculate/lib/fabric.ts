@@ -29,10 +29,12 @@ export default async function fabric(formData: FormData) {
   let indexWhere: string = "";
   let client: "sender" | "recipient" = "sender";
   let places: Place[] | [] = [];
+  let nds: number = 1;
   let fs: number = 0;
   let fsRF: number = 0;
   let koefficient: number = 0;
   let descriptionOfCargo: string = ""
+
 
   for (const [key, value] of formData.entries()) {
     const match = key.match(/^files\[(\d+)\]$/);
@@ -53,6 +55,8 @@ export default async function fabric(formData: FormData) {
         price = Number(value)
       } else if (key === "count") {
         count = Number(value)
+      } else if (key === "nds") {
+        nds = Number(value)
       } else if (key === "fs") {
         fs = Number(value)
       } else if (key === "fsRF") {
@@ -103,6 +107,13 @@ export default async function fabric(formData: FormData) {
     }
   }
 
+  const isInternal =
+    (fromCountryObj.name === "Россия" &&
+      whereCountryObj.name === "Россия") ? true : false
+
+
+
+
   const mapPlaces = places.map(el => (
     `
   <li key={el.id} style="border:3px solid red; gap:20%; border-radius:15px; margin-top:10px; padding:15px" >
@@ -114,6 +125,7 @@ export default async function fabric(formData: FormData) {
         <p style="margin: 5px">Высота: <b>${el.height} см. </b></p>
       </div>
       <div>
+        <p style="margin: 5px">Стоимость каждого места ${isInternal ? "с НДС" : null}: <b>${isInternal ? Math.ceil(el.price * nds) : Math.ceil(el.price)} р. ${isInternal ? `, без НДС ${el.price}` : null}</b></p>
         <p style="margin: 5px">Вес каждого места: <b>${el.heft} кг. </b></p>
         <p style="margin: 5px">Объемный вес каждого места: <b>${el.volume} кг. </b></p>
       </div>
@@ -154,12 +166,12 @@ export default async function fabric(formData: FormData) {
       <p style="margin: 5px; text-decoration: underline">Описание груза: <b>${descriptionOfCargo}</b></p>
       <p style="margin: 5px">Заказчик <b style="font-size:15px">${client === "sender" ? "отправитель" : "получатель"}</b></p>
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
-      <p style="margin: 5px">Полная стоимость: <b>${Math.ceil(price)} р.</b></p>
+      <p style="margin: 5px">Полная стоимость: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>
       <p style="margin: 5px">Всего мест: <b>${count}</b> </p>
       <p style="margin: 5px">В рассчете учтены: </p>
       ${(fromCityObj && !whereCityObj) || (!fromCityObj && whereCityObj) ?
-      `<p style="margin: 5px; margin-left:12px">Транспортный налог(РФ): <b>${fsRF * 100 - 100} %</b></p>` :
-      `<p style="margin: 5px; margin-left:12px">Транспортный налог(не РФ): <b>${fs * 100 - 100} %</b></p>`}
+      `<p style="margin: 5px; margin-left:12px">Транспортный налог(не РФ): <b>${fs * 100 - 100} %</b></p>` :
+      `<p style="margin: 5px; margin-left:12px">Транспортный налог(РФ): <b>${fsRF * 100 - 100} %</b></p>`}
       <p style="margin: 5px; margin-left:12px">Скидка: <b>${koefficient * 100}% </b></p > 
       <div style="display:flex; justify-content:space-between; flex-direction:row">
         <div style="border:3px solid red; margin-right:20%; padding:15px; border-radius:15px">
@@ -227,13 +239,12 @@ export default async function fabric(formData: FormData) {
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
       <p style="margin: 5px">Всего мест: <b>${count}</b> </p>
       <p style="margin: 5px">Скидка: <b>${koefficient * 100}% </b></p >  
-      <p style="margin: 5px">Итоговая стоимость с учетом скидки: <b>${Math.ceil(price)} р.</b></p>
+      <p style="margin: 5px">Итоговая стоимость с учетом скидки: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>
       <div style="display:inline-block; text-decoration: none; border-radius:7px; margin:10px auto; background-color:#ff0d01; padding:10px 25px">
         <a style="font-weight:700; font-size:15px; margin:0 auto; color:white" href="tel:+79101056423">+7 910 105 64 23</a>
-      /div>
+      </div>
     </div>
    `
-
   const bodyTextMessageUser2 =
     //          `
     // <div style="font-size:15px"> 
@@ -282,7 +293,7 @@ ${adressFrom}
 ${adressWhere}, 
 
 Вес: ${isFinalHeft}, 
-Цена: ${Math.ceil(price)}, 
+Цена: ${Math.ceil(isInternal ? price * nds : price)}, 
 Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `
 
 
@@ -301,12 +312,37 @@ ${adressWhere},
       .replace(/^7/, '+7')
 
   return {
-    isFinalHeft, price, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
-    adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo,
-
-
-    agree, client, phoneFrom: normalizedPhone1, phoneWhere: normalizedPhone2, emailFrom,
-    emailWhere, fileArray, sms: { messageUserSMS, messageAdminSMS },
+    isFinalHeft,
+    price,
+    nds,
+    count,
+    fromCountryObj,
+    whereCountryObj,
+    fromCityObj,
+    whereCityObj,
+    showInvois,
+    nameFrom,
+    nameWhere,
+    adressFrom,
+    adressWhere,
+    document,
+    from,
+    where,
+    indexFrom,
+    indexWhere,
+    places,
+    fs,
+    fsRF,
+    koefficient,
+    descriptionOfCargo,
+    agree,
+    client,
+    phoneFrom: normalizedPhone1,
+    phoneWhere: normalizedPhone2,
+    emailFrom,
+    emailWhere,
+    fileArray,
+    sms: { messageUserSMS, messageAdminSMS },
     emailMessage: { bodyTextMessageUser, bodyTextMessageUser2, bodyTextMessage }
   }
 }

@@ -32,10 +32,14 @@ export default async function fabric(data: DataCreateOrderProcess) {
     indexFrom,
     indexWhere,
     places,
+    nds,
     fs,
     fsRF,
     koefficient,
     descriptionOfCargo } = data
+  const isInternal =
+    (fromCountryObj.name === "Россия" &&
+      whereCountryObj.name === "Россия") ? true : false
 
   //константа только для валидации
   const validateData: DataCreateOrderProcess = {
@@ -64,6 +68,7 @@ export default async function fabric(data: DataCreateOrderProcess) {
     indexFrom,
     indexWhere,
     places,
+    nds,
     fs,
     fsRF,
     koefficient,
@@ -131,6 +136,8 @@ export default async function fabric(data: DataCreateOrderProcess) {
     orderCreator,
     noOrderCreator,
     getOrCreateUserFromData,
-    getOrCreateUserWhereData
+    getOrCreateUserWhereData,
+    isInternal,
+    nds
   }
 }

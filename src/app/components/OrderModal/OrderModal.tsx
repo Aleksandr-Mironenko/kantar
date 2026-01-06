@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./OrderModal.module.scss"
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller, useWatch, set } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { OrderModalProps, FileObj, FormValues } from "../DTO/DTO"
 // import DownloadButton from "../DownloadButton/DownloadButton"
@@ -56,6 +56,7 @@ const schema = yup.object({
 export default function OrderModal({ initialData, isOpen, onClose, alertNotification }: OrderModalProps) {
 
   const {
+    nds, //ндс
     fs, //рассчетный транспортный налог не РФ
     fsRF, //рассчетный транспортный налог РФ
     koefficient, //скидка
@@ -79,8 +80,14 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const [invoiceFiles, setInvoiceFiles] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showInvois, setShowInvois] = useState<boolean>(false) //открыты ли файлы флаг
   const [descriptionOfCargo, setDescriptionOfCargo] = useState<string>("")
+  const [isCode, setIsCode] = useState<boolean>(false) //флаг подтверждения
+  const [code, setCode] = useState<string>("") //код подтверждения
+  const [trueCode, setTrueCode] = useState<boolean>(false) //верный код подтверждения
+  const [isFiledCheck, setIsFiledCheck] = useState<'error' | 'noFailed' | 'filledTime' | 'filledCode'>('noFailed') //флаг ошибки при проверке кода
+  const [lastCode, setLastCode] = useState<boolean>(false)
+  const [textReaponse, setTextReaponse] = useState<string>("")
 
-  const { register, handleSubmit, control, formState: { errors, isValid }, setValue, trigger, watch, reset } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors, isValid }, setValue, getValues, trigger, watch, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
     reValidateMode: "onChange",//"onChange",
@@ -98,6 +105,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       agree: true,
     },
   });
+
 
   useEffect(() => {
     const subscription = watch(() => {
@@ -122,6 +130,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     formData.append("isFinalHeft", String(isFinalHeft))
     formData.append("price", String(price))
     formData.append("count", String(count))
+    formData.append("nds", String(nds));
     formData.append("fs", String(fs));
     formData.append("fsRF", String(fsRF));
     formData.append("koefficient", String(koefficient));
@@ -153,19 +162,23 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       throw new Error("Ошибка отправки")
 
     } else {
+      const res = await response.json();
       alertNotification({
-        titleAlert: "Заявка на экспресс доставку отправлена",
-        message: "С вами свяжется сотрудник компании после обработки вашей заявки с целью забора посылки"
+        titleAlert: `Заявка на экспресс доставку отправлена (№ ${res.orderNumbers.orderId})`,
+        message: `С вами свяжется сотрудник компании после обработки вашего заказа с целью забора посылки`
       });
+      setCode("")
+      setTrueCode(false)
+      setIsFiledCheck("noFailed")
+      setLastCode(false)
+      setTextReaponse("")
+      setIsCode(false)
+
       setFrom("")
       setWhere("")
       setIndexFrom("")
       setIndexWhere("")
       setClient("sender")
-      // setInvoiceFiles([{ file: null, id: 0 }])
-      // setShowInvois(true)
-      // setDescriptionOfCargo("")
-      // reset()
       setValue("nameFrom", "");
       setValue("nameWhere", "");
       setValue("phoneFrom", "");
@@ -241,13 +254,70 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree
     && (document !== "goods" || descriptionOfCargo) && from && where && indexFrom && indexWhere)
 
+
+
+  const email = client === "sender" ? getValues("emailFrom") : getValues("emailWhere");
+  const phone = client === "sender" ? getValues("phoneFrom") : getValues("phoneWhere");
+
+  const sendVerificationCode = async (e: React.FormEvent) => {
+
+    e.preventDefault()
+    const request = await fetch("/api/auth/send-code", {
+      method: "POST", body: JSON.stringify({ phone, email }),
+    });
+    const responseData = await request.json();
+
+    if (!responseData.sendCode) {
+      throw new Error("Ошибка отправки кода подтверждения")
+
+    } else if (responseData.sendCode) {
+      setLastCode(responseData.lastCode)
+      setIsCode(true);
+    }
+  };
+
+
+  const checkodeSubmit = async (e: React.FormEvent) => {
+
+    e.preventDefault()
+    const request = await fetch("/api/auth/check-code", {
+      method: "POST", body: JSON.stringify({ code, phone, email }),
+    });
+    const responseData = await request.json();
+
+    if (responseData.checkCode === undefined) {
+      setTrueCode(false);
+      setIsFiledCheck('error');
+      throw new Error("Ошибка при проверке кода")
+    } else if ((responseData.checkCode === false && responseData.timer === false)
+      || (responseData.checkCode === true && responseData.timer === false)) {
+      setIsFiledCheck('filledTime');
+      setTextReaponse(`Срок действия кода истек. 
+      Пожалуйста, запросите новый код.`)
+    } else if (responseData.checkCode === false && responseData.timer === true) {
+      setIsFiledCheck('filledCode');
+      setTextReaponse(`Неверный код, попробуйте снова`)
+    }
+    else {
+      setIsFiledCheck('noFailed');
+      setTrueCode(true);
+      setTextReaponse("Код принят, продолжите оформления заказа.")
+    }
+  }
+
+  const onChangeCode = (value: string): void => {
+
+    if (/^\d{0,4}$/.test(value)) { // разрешаем ввод только до 4 цифр 
+      setCode(value);
+    }
+  }
+
+
   return (
     <>
       {isOpen &&
         <div className={styles.modalOverlay} onClick={onClose}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
-
-
             <div className={styles.modal__header}>
               <h2 className={styles.modal__title}>Формирование заявки</h2>
               <button className={styles.modal__close} onClick={onClose}>
@@ -534,9 +604,45 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                   </label>
                   {errors.agree && <p className={styles.agreeErrmsg}>Согласие обязательно</p>}
                 </div>
+                {isCode ?//если флаг подтверждения true то показать поле ввода кода
+                  <div className={styles.label__wrapper}  >
+                    {lastCode ? <p>{`Проверьте почту, 
+повторная отправка через 10минут`}</p> : null}
 
+
+                    <label htmlFor="code" className={`${styles.index} ${styles.label}`}>
+                      Введите код подтверждения
+                      <input
+                        type="text"
+                        autoComplete="off"
+                        name="code"
+                        id="code"
+                        placeholder="****"
+                        value={code ?? ""}
+                        onChange={e => onChangeCode(e.target.value)}
+                        className={styles.input}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      className={styles.modal__submit} onClick={(e) => checkodeSubmit(e)} >
+                      {//добавить сюда функцию проверки кода
+                      }
+                      отправить код подтверждения
+                    </button>
+
+
+
+                  </div> : <button type="button"
+                    className={styles.modal__submit} onClick={(e) => sendVerificationCode(e)} >
+                    отправить код подтверждения
+                  </button>
+                  //handleSubmit(onSubmit
+                }
+                <p>{textReaponse}</p>
+                {isFiledCheck === 'filledTime' && <button type="button" className={styles.modal__submit} onClick={(e) => sendVerificationCode(e)}>повторный запрос кода</button>}
                 <button
-                  disabled={!isFilled  /*isValid*/} className={styles.modal__submit} type="submit" >
+                  disabled={!(trueCode && isFilled)  /*isValid*/} className={styles.modal__submit} type="submit" >
                   отправить
                 </button>
               </form>
@@ -546,4 +652,4 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       }
     </>
   )
-} 
+}

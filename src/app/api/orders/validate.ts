@@ -116,12 +116,16 @@ export function validate(data: DataCreateOrderProcess) {
     errors.push("Общее количество мест (count) должно быть больше 0");
   }
 
-  if (!data.fs || data.fs <= 0) {
-    errors.push("Значение fs должно быть больше 0");
+  if (!data.nds) {
+    errors.push("Значение nds должно быть");
   }
 
-  if (!data.fsRF || data.fsRF <= 0) {
-    errors.push("Значение fsRF должно быть больше 0");
+  if (!data.fs) {
+    errors.push("Значение fs должно быть");
+  }
+
+  if (!data.fsRF) {
+    errors.push("Значение fsRF должно быть");
   }
 
   if (!data.koefficient || data.koefficient <= 0) {

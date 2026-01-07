@@ -231,6 +231,7 @@ export type DataCreateUser = {
 };
 
 export type DataFabricForOrder = {
+  nds: number,
   dataprops: DataCreateOrderProcess,
   senderId: number,
   recipientId: number,

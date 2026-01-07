@@ -39,6 +39,7 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
 
   // формирую данные для создания заказа
   const { orderData } = await fabricForOrder({
+    nds,
     dataprops: data,
     senderId,
     recipientId,

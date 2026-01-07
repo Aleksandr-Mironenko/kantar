@@ -6,7 +6,8 @@ export default async function fabricForOrder(data: DataFabricForOrder) {
 
 
   //деструктуризация для общего доступа
-  const { dataprops,
+  const { nds,
+    dataprops,
     senderId,
     recipientId,
     senderAddressId,
@@ -18,6 +19,7 @@ export default async function fabricForOrder(data: DataFabricForOrder) {
 
   //константа только для валидации
   const orderData = {
+    nds,
     senderId,
     recipientId,
     senderAddressId,

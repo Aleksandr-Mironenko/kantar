@@ -125,7 +125,7 @@ export default async function fabric(formData: FormData) {
         <p style="margin: 5px">Высота: <b>${el.height} см. </b></p>
       </div>
       <div>
-        <p style="margin: 5px">Стоимость каждого места ${isInternal ? "с НДС" : null}: <b>${isInternal ? Math.ceil(el.price * nds) : Math.ceil(el.price)} р. ${isInternal ? `, без НДС ${el.price}` : null}</b></p>
+        <p style="margin: 5px">Стоимость каждого места ${isInternal ? "с НДС " : ""}: <b>${isInternal ? Math.ceil(el.price * nds) : Math.ceil(el.price)} р. ${isInternal ? `, без НДС ${el.price}` : ""}</b></p>
         <p style="margin: 5px">Вес каждого места: <b>${el.heft} кг. </b></p>
         <p style="margin: 5px">Объемный вес каждого места: <b>${el.volume} кг. </b></p>
       </div>
@@ -177,7 +177,7 @@ export default async function fabric(formData: FormData) {
         <div style="border:3px solid red; margin-right:20%; padding:15px; border-radius:15px">
           <p style="margin: 5px; font-size:25px; border-bottom:3px solid red">Отправитель</p>
           <p style="margin: 5px"><b>${nameFrom}</b></p>
-          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:+7${phoneFrom}">+7${phoneFrom}</a></b></p> 
+          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:${phoneFrom}">${phoneFrom}</a></b></p> 
           <p style="margin: 5px">Эл.почта: <b><a style="font-size:15px; padding:7px" href="mailto:${emailFrom}">${emailFrom}</a></b></p>
           <p style="margin: 5px">Полный адрес:</p>
           <p style="margin: 5px"><b>${adressFrom}</b></p>
@@ -189,7 +189,7 @@ export default async function fabric(formData: FormData) {
         <div style="border:3px solid red; padding:15px; border-radius:15px">
           <p style="margin: 5px; font-size:25px; border-bottom:3px solid red">Получатель </p>
           <p style="margin: 5px"><b>${nameWhere}</b></p>
-          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:+7${phoneWhere}">+7${phoneWhere}</a></b></p> 
+          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:${phoneWhere}">${phoneWhere}</a></b></p> 
           <p style="margin: 5px">Эл.почта: <b><a style="font-size:15px; padding:7px" href="mailto:${emailWhere}">${emailWhere}</a></b></p>  
           <p style="margin: 5px">Полный адрес:</p>
           <p style="margin: 5px"><b>${adressWhere}</b></p>
@@ -213,7 +213,7 @@ export default async function fabric(formData: FormData) {
         <div style="border:3px solid red; margin-right:20%; padding:15px; border-radius:15px">
           <p style="margin: 5px; font-size:25px; border-bottom:3px solid red">Отправитель</p>
           <p style="margin: 5px"><b>${nameFrom}</b></p>
-          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:+7${phoneFrom}">+7${phoneFrom}</a></b></p> 
+          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:${phoneFrom}">${phoneFrom}</a></b></p> 
           <p style="margin: 5px">Эл.почта: <b><a style="font-size:15px; padding:7px" href="mailto:${emailFrom}">${emailFrom}</a></b></p>
           <p style="margin: 5px">Полный адрес:</p>
           <p style="margin: 5px"><b>${adressFrom}</b></p>
@@ -224,7 +224,7 @@ export default async function fabric(formData: FormData) {
         <div style="border:3px solid red; padding:15px; border-radius:15px">
           <p style="margin: 5px; font-size:25px; border-bottom:3px solid red">Получатель </p>
           <p style="margin: 5px"><b>${nameWhere}</b></p>
-          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:+7${phoneWhere}">+7${phoneWhere}</a></b></p> 
+          <p style="margin: 5px">Телефон: <b><a style="font-size:15px; padding:7px" href="tel:${phoneWhere}">${phoneWhere}</a></b></p> 
           <p style="margin: 5px">Эл.почта: <b><a style="font-size:15px; padding:7px" href="mailto:${emailWhere}">${emailWhere}</a></b></p>
           <p style="margin: 5px">Полный адрес:</p>
           <p style="margin: 5px"><b>${adressWhere}</b></p>
@@ -251,7 +251,7 @@ export default async function fabric(formData: FormData) {
     //  ${client === "sender" ? `<p>Здраствуйте, ${nameWhere}!</p>` : `<p>Здраствуйте, ${nameFrom}!</p>`}
     // <p>${client === "sender" ? "Вы указаны получателем отправления" : "Вы указаны отправителем отправления"}</p>
     // <p>${client === "sender" ? `Адрес вручения: ${adressWhere}` : `Адрес забора: ${adressFrom}`}</p>
-    // <p>За сутки до встречи с представителем, мы с вами свяжемся по номеру ${client === "sender" ? `+7${phoneWhere}` : `+7${phoneFrom}`}</p>
+    // <p>За сутки до встречи с представителем, мы с вами свяжемся по номеру ${client === "sender" ? `${phoneWhere}` : `${phoneFrom}`}</p>
     // <p>Если вы не понимаете что за отправление, за подробностями можете обратиться по нашему номеру</p>
     // <div style="display:inline-block; text-decoration: none; border-radius:7px; margin:10px auto; background-color:#ff0d01; padding:10px 25px">
     //   <a style="font-weight:700; font-size:15px; margin:0 auto; color:white" href="tel:+79101056423">+7 910 105 64 23</a>
@@ -263,7 +263,7 @@ export default async function fabric(formData: FormData) {
           <p>Здраствуйте, ${nameFrom}!</p>
           <p>Вы указаны отправителем отправления</p>
           <p>Адрес забора: ${adressFrom}</p>
-          <p>За сутки до встречи с представителем, мы с вами свяжемся по номеру +7${phoneFrom}</p>
+          <p>За сутки до встречи с представителем, мы с вами свяжемся по номеру ${phoneFrom}</p>
           <p>Если вы не понимаете что за отправление, за подробностями можете обратиться по нашему номеру</p>
           <div style="display:inline-block; text-decoration: none; border-radius:7px; margin:10px auto; background-color:#ff0d01; padding:10px 25px">
             <a style="font-weight:700; font-size:15px; margin:0 auto; color:white" href="tel:+79101056423">+7 910 105 64 23</a>
@@ -285,7 +285,8 @@ export default async function fabric(formData: FormData) {
   // )}`;
 
 
-  const messageAdminSMS: string = `Оформлена ЭКСПРЕСС ДОСТАВКА! 
+  const messageAdminSMS: string =
+    `Оформлена ЭКСПРЕСС ДОСТАВКА! 
 ${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}. 
 
 ${adressFrom}
@@ -294,10 +295,11 @@ ${adressWhere},
 
 Вес: ${isFinalHeft}, 
 Цена: ${Math.ceil(isInternal ? price * nds : price)}, 
-Оформитель: +7${client === "sender" ? phoneFrom : phoneWhere} `
+Оформитель: ${client === "sender" ? phoneFrom : phoneWhere} `
 
 
-  const messageUserSMS = `Экспресс доставка оформлена. 
+  const messageUserSMS =
+    `Экспресс доставка оформлена. 
 Ожидайте звонка сотрудника для подтверждения. 
 Контактный номер телефона +79101056423`
 

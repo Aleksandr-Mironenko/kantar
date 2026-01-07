@@ -1,5 +1,5 @@
 "use server";
-const BASE_URL = "https://api.textbee.dev/api/v1";
+const BASE_URL = process.env.DATABASE_URL
 
 const API_KEY = process.env.TEXTBEE_API_KEY
 const DEVICE_ID = process.env.TEXTBEE_DEVICE_ID

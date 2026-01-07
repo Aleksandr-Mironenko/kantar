@@ -1,6 +1,6 @@
 import supabaseServer from '@/app/api/lib/supabase/server-secret';
-import { sendEmail } from "@/app/helpers/sendEmail"
-import { sendSMS } from "@/app/helpers/sendSms";
+import { sendEmail } from "@/app/api/lib/helpers/sendEmail"
+import { sendSMS } from "@/app/api/lib/helpers/sendSms";
 import retry from '../../orders/lib/function/retry';
 export async function POST(req: Request) {
   const { phone, email } = await req.json();
@@ -71,18 +71,26 @@ export async function POST(req: Request) {
     }
 
     const tasks: Promise<unknown>[] = []
+
+    // console.log(phone, 75, "send-code")
     tasks.push(
+
       //отправка сообщения клиенту 
       sendEmail(
         email,
-        `Проверочный код KANTAR`,
+        `Код поодтверждения KANTAR`,
         `<p>Ваш код для входа: <strong>${code}</strong></p><p>Код действителен 10 минут</p>`,
         `Проверочный код KANTAR`
       ),
+
       //отправка смс клиенту 
       sendSMS(phone,
-        `Ваш код для входа: ${code} `,
+        `Ваш код подтверждения: ${code} `,
       )
+
+      // sendSMS(`${client === "sender" ? phoneFrom : phoneWhere} `,
+      // `${orderNumbers && `Номер вашего заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
+      //   ${sms.messageUserSMS} `),
     )
     const results = await Promise.allSettled(tasks)
 
@@ -95,10 +103,4 @@ export async function POST(req: Request) {
   } else {
     return Response.json({ sendCode: true, lastCode: true });
   }
-
-
-
-
-
-
 } 

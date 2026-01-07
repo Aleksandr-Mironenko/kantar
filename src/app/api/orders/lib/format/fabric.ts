@@ -47,8 +47,8 @@ export default async function fabric(data: DataCreateOrderProcess) {
     client,
     phoneFrom,
     phoneWhere,
-    emailFrom,
-    emailWhere,
+    emailFrom: emailFrom.toLowerCase(),
+    emailWhere: emailWhere.toLowerCase(),
     fileArray,
     isFinalHeft,
     price,
@@ -108,11 +108,18 @@ export default async function fabric(data: DataCreateOrderProcess) {
   //определяем кто получатель заказа  
   const noOrderCreator = client !== "sender" ? allFrom : allWhere
 
+  const correctFio = (stringFio: string): string => {
+    const arrFio = stringFio.trim().split(/\s+/)
+    let res = ''
+    arrFio.forEach((el, index) => res += `${index > 0 ? " " : ""}${el[0].toUpperCase()}${el.slice(1).toLowerCase()}`)
+    return res
+  }
+
   // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
   const getOrCreateUserFromData: DataCreateUser = {
-    email: emailFrom,
+    email: emailFrom.toLowerCase(),
     phone: phoneFrom,
-    name: nameFrom,
+    name: nameFrom && nameFrom !== " " ? correctFio(nameFrom) : "Имя получателя",
     isClient: client === 'sender',
     typeAcc: "noAcc" as const,
     discount: 0,
@@ -120,9 +127,9 @@ export default async function fabric(data: DataCreateOrderProcess) {
 
   // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
   const getOrCreateUserWhereData: DataCreateUser = {
-    email: emailWhere,
+    email: emailWhere.toLowerCase(),
     phone: phoneWhere,
-    name: nameWhere,
+    name: nameWhere && nameWhere !== " " ? correctFio(nameWhere) : "Имя получателя",
     isClient: client === 'recipient' ? true : false,
     typeAcc: "noAcc" as const,
     discount: 0,

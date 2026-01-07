@@ -65,8 +65,8 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
   } else {
     //формирую данные для создания мест
     const createPlacesData = { orderId, data: places, isInternal, nds }
-    //добавляю каждое место заказа присваивая их номеру заказа
 
+    //добавляю каждое место заказа присваивая их номеру заказа
     await retry(() => createPlaces(createPlacesData), { retries: 5, delay: 100 });
 
     // let resultPlacess = await createPlaces(createPlacesData);

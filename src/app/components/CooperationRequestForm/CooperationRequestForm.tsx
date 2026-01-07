@@ -33,7 +33,7 @@ export default function CooperationRequestForm() {
     console.log("alertNotification", titleAlert, message)
   }
   return (
-    <section className={styles.formcalc} >
+    <section className={styles.formcalc} id="requestForCooperation" >
       <div className={styles.formcalc__container}>
         <h2 className={styles.formcalc__title}>Запрос на сотрудничество</h2>
         <div className={styles.formcalc__forms} >

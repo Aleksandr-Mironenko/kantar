@@ -1,4 +1,4 @@
-import { sendEmail } from "@/app/helpers/sendEmail";
+import { sendEmail } from "@/app/api/lib/helpers/sendEmail";
 
 export default async function retry<T>(
   fn: () => Promise<T>,

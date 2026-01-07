@@ -15,9 +15,9 @@ export async function createPlaces({ orderId, data, isInternal, nds }: DataCreat
         height: place.height,
         heft: place.heft,
         places_personal_id: `${i + 1}_из_${place.places}_в_order_number_${orderId[1]}`,
-        price: place.price,
-        nds: isInternal ? Math.ceil(place.price * (nds - 1)) : place.price,
-        fullPrice: isInternal ? Math.floor(place.price * nds) : place.price,
+        price: Math.ceil(place.price),
+        nds: isInternal ? Math.ceil(place.price * (nds - 1)) : 0,
+        fullPrice: isInternal ? Math.ceil(place.price * nds) : Math.ceil(place.price),
         volume: place.volume,
       });
     }

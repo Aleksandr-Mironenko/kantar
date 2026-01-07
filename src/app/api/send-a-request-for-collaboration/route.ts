@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/helpers/sendEmail"
-import { sendSMS } from "@/app/helpers/sendSms";
+import { sendEmail } from "@/app/api/lib/helpers/sendEmail"
+import { sendSMS } from "@/app/api/lib/helpers/sendSms";
 import fabric from "./lib/fabric"
 
 export async function POST(req: Request) {

@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback } from "react"
 import {
   nds, fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key,
   funcExcess70, funcExcess300, koefficient, coutriesZoneObject, citiesZoneObject, tableRFneRF, tableRFRF, funcTableRFneRF,
-  funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey
+  funcTableRFRF, RFKey, smallDoc, bigDoc, funcSmallDoc, funcBigDoc, SmallDocKey, BigDocKey, personalRequestContant
 } from './data'
 import Image from "next/image";
 import OrderModal from "../OrderModal/OrderModal"
 import { Place, Country, City, PropsNotification } from "../DTO/DTO"
 import Notification from "@/app/components/NotificationAntd/NotificationAntd"
+import { Modal, Button } from 'antd';
+import router from "next/router";
 
 export default function CalkSend() {
   const [fromCountryObj, setFromCountryObj] = useState<Country | null>(null);
@@ -20,6 +22,10 @@ export default function CalkSend() {
   const [document, setDocument] = useState<"document" | "goods">("document");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<boolean>(false)
+  // const [loading, setLoading] = useState<boolean>(true);
+  const [isFinalHeft, setIsFinalHeft] = useState<number>(0.5)
+  const [individualOffer, setIndividualOffer] = useState<boolean>(false)// больше ли вес чем personalRequestContant
+  const [refusedTheIndividualOffer, setRefusedTheIndividualOffer] = useState<boolean>(false)// отказся ли уже
   const [argsNotification, setArgsNotification] = useState<PropsNotification>({
     titleAlert: "",
     message: ""
@@ -183,6 +189,28 @@ export default function CalkSend() {
     )
   }
 
+  //функция перехода по клику на кнопки в модальном окне при превышении веса для перехода к индивидуальному рассчету
+  const individualModal1 = () => {
+    setRefusedTheIndividualOffer(true);
+
+    setTimeout(() => {//только если на одной странице 
+      window.document.getElementById('contacts')?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }, 0);
+  }
+
+  //функция перехода по клику на кнопки в модальном окне при превышении веса для перехода к заключению договора
+  const individualModal2 = () => {
+    setRefusedTheIndividualOffer(true);
+
+    setTimeout(() => {//только если на одной странице 
+      window.document.getElementById('requestForCooperation')?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }, 0);
+  }
+
   //поля ввода характеристик отправления из массива places
   const mapPlaces = places.map((place, index) => (
     <div key={place.id} className={styles.place}>
@@ -190,6 +218,31 @@ export default function CalkSend() {
         <div className={styles.place__header}>
           <div className={styles.place__titleRow}>
             <h2 className={styles.place__title}>Габариты отправления</h2>
+            <Modal
+              getContainer={false}
+              title={<h3>Вот это габариты!</h3>}
+              footer={
+                <>
+                  <Button className={styles.total__buttonmodal} type="primary"
+                    onClick={() => individualModal1()}>
+                    Заполнить запрос на рассчет
+                  </Button>
+                  <Button className={styles.total__buttonmodal} type="primary"
+                    onClick={() => individualModal2()}>
+                    Заключить договор
+                  </Button>
+                </>
+              }
+              open={individualOffer && !refusedTheIndividualOffer}
+              onCancel={() => setRefusedTheIndividualOffer(true)}//</div>individualOffer && refusedTheIndividualOffer
+            >
+              <p>Посмотрите на цену.</p>
+              <p>Можем сделать индивидуальный рассчет</p>
+              <p>Чуть дольше но цена ниже</p>
+              <p>А еще можем заключить договор</p>
+              <p>за вами закрепится индивидуальная скидка</p>
+            </Modal>
+
             <div className={styles.volumeField}>
               <label htmlFor="volume" className={styles.volumeField__label}>Об. вес</label>
               <div className={styles.volumeField__wrapper}>
@@ -299,7 +352,7 @@ export default function CalkSend() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
       {
         places.length > 1 &&
         <button
@@ -308,10 +361,12 @@ export default function CalkSend() {
         > ⨯
         </button>
       }
-      {price !== 0 &&
+      {
+        price !== 0 &&
         places.length - 1 === index &&
         < button onClick={addPlace} className={styles.calculator__addButton}
-        > + </button>}
+        > + </button>
+      }
     </div >
   ))
 
@@ -496,7 +551,6 @@ export default function CalkSend() {
   }, [notification])
 
   //рассчеты стоимости и ее детали
-
   const ndsHere = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * (nds - 1) : 0;
   const fullPrice = (fromCountryObj && fromCountryObj.name === "Россия" && whereCountryObj && whereCountryObj.name === "Россия") ? price * nds : price;
 
@@ -504,16 +558,21 @@ export default function CalkSend() {
     return acc + el.places;
   }, 0);
 
-  const totalVolume = places.reduce((acc, el) => {
-    return acc + el.volume;
-  }, 0)
-
-  //рассчет общего веса для формы заявки
-  const totalHeft =
-    places.reduce((acc, el) => {
-      return acc + el.heft * el.places;
+  //правильный рассчет финального учтенного веса
+  useEffect(() => {
+    const totalVolume = places.reduce((acc, el) => {
+      return acc + el.volume;
     }, 0)
-  const isFinalHeft = totalVolume > totalHeft ? totalVolume : totalHeft
+    //рассчет общего веса для формы заявки
+    const totalHeft =
+      places.reduce((acc, el) => {
+        return acc + el.heft * el.places;
+      }, 0)
+    setIsFinalHeft(totalVolume > totalHeft ? totalVolume : totalHeft)
+
+  }, [places]
+  )
+
 
   //формируем пропс для передачи в форму заявки
   const orderData = {
@@ -569,6 +628,15 @@ export default function CalkSend() {
     setArgsNotification({ titleAlert, message })
     setNotification(true)
   }
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIndividualOffer(isFinalHeft >= personalRequestContant)
+    }, 2500)
+    return () => clearTimeout(timer)
+  }, [isFinalHeft, personalRequestContant])
+
 
   return (
     <div className={styles.calculator} id="calculator" >

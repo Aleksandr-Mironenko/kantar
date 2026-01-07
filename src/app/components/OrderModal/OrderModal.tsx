@@ -118,8 +118,8 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     const formData = new FormData();
     formData.append("nameFrom", data.nameFrom);
     formData.append("nameWhere", data.nameWhere);
-    formData.append("phoneFrom", data.phoneFrom);
-    formData.append("phoneWhere", data.phoneWhere);
+    formData.append("phoneFrom", `+7${data.phoneFrom}`);//телефон
+    formData.append("phoneWhere", `+7${data.phoneWhere}`);//телефон
     formData.append("emailFrom", data.emailFrom);
     formData.append("emailWhere", data.emailWhere);
     formData.append("adressFrom", data.adressFrom);
@@ -257,10 +257,9 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
 
   const email = client === "sender" ? getValues("emailFrom") : getValues("emailWhere");
-  const phone = client === "sender" ? getValues("phoneFrom") : getValues("phoneWhere");
+  const phone = client === "sender" ? `+7${getValues("phoneFrom")}` : `+7${getValues("phoneWhere")}`;
 
   const sendVerificationCode = async (e: React.FormEvent) => {
-
     e.preventDefault()
     const request = await fetch("/api/auth/send-code", {
       method: "POST", body: JSON.stringify({ phone, email }),

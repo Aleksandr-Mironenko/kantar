@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/helpers/sendEmail"
-import { sendSMS } from "@/app/helpers/sendSms";
+import { sendEmail } from "@/app/api/lib/helpers/sendEmail"
+import { sendSMS } from "@/app/api/lib/helpers/sendSms";
 import createOrderProcess from '@/app/api/orders/createOrderProcess'
 import fabric from "./lib/fabric";
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   }
   const response = NextResponse.json({ success: true, orderNumbers })
   tasks.push(
-    sendEmail(//отправка сообщения администратору Кирилл
+    sendEmail(//отправка сообщения администратору Кирилл (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
       "udink7405@gmail.com",
       `Новый заказ ${orderNumbers && JSON.stringify(orderNumbers?.orderId)}`,
       emailMessage.bodyTextMessage,
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       fileArray
     ),
 
-    //отправка сообщения администратору
+    //отправка сообщения администратору (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
     sendEmail(
       "sanek.miron2@gmail.com",
       `Новый заказ ${orderNumbers && JSON.stringify(orderNumbers?.orderId)}`,
@@ -56,15 +56,15 @@ export async function POST(req: Request) {
       "KANTAR"
     ),
 
-    //отправка админу Кириллу
+    //отправка админу Кириллу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
     sendSMS("+79991386191",
       `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
         ${sms.messageAdminSMS} `),
 
-    //отправка админу  
+    //отправка админу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
     sendSMS("+79030404804",
       `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
-      sms.messageAdminSMS`),
+      ${sms.messageAdminSMS}`),
 
     //отправка клиенту
     sendSMS(`${client === "sender" ? phoneFrom : phoneWhere} `,

@@ -25,7 +25,8 @@ export async function createOrder(
       is_paid: data.isPaid,
       heft_full: data.isFinalHeft,
       status: data.status,
-      agree: data.agree
+      agree: data.agree,
+      is_individual: data.price == 0
     })
     .select("id,order_number")
     .single();

@@ -120,12 +120,12 @@ export default async function fabric(formData: FormData) {
     <p style="margin: 10px 5px; border-bottom:3px solid red"} >Количество: ${el.places} </p>
     <div style="display: flex; gap:20%; justify-content: space-between; flex-direction:row">
       <div style="margin-right: 20%">
-        <p style="margin: 5px">Длина: <b>${el.length} см. </b></p>
-        <p style="margin: 5px">Ширина: <b>${el.width} см. </b></p>
-        <p style="margin: 5px">Высота: <b>${el.height} см. </b></p>
+        <p style="margin: 5px; width:130px ">Длина: <b>${el.length} см. </b></p>
+        <p style="margin: 5px; width:130px">Ширина: <b>${el.width} см. </b></p>
+        <p style="margin: 5px; width:130px">Высота: <b>${el.height} см. </b></p>
       </div>
       <div>
-        <p style="margin: 5px">Стоимость каждого места ${isInternal ? "с НДС " : ""}: <b>${isInternal ? Math.ceil(el.price * nds) : Math.ceil(el.price)} р. ${isInternal ? `, без НДС ${el.price}` : ""}</b></p>
+        ${price !== 0 ? `<p style="margin: 5px">Стоимость каждого места ${isInternal ? "с НДС " : ""}: <b>${isInternal ? Math.ceil(el.price * nds) : Math.ceil(el.price)} р. ${isInternal ? `, без НДС ${el.price}` : ""}</b></p>` : `<p style="margin: 5px"><b>Заявка на рассчет индивидуальной стоимости отправления!</b> </p>`}
         <p style="margin: 5px">Вес каждого места: <b>${el.heft} кг. </b></p>
         <p style="margin: 5px">Объемный вес каждого места: <b>${el.volume} кг. </b></p>
       </div>
@@ -166,9 +166,9 @@ export default async function fabric(formData: FormData) {
       <p style="margin: 5px; text-decoration: underline">Описание груза: <b>${descriptionOfCargo}</b></p>
       <p style="margin: 5px">Заказчик <b style="font-size:15px">${client === "sender" ? "отправитель" : "получатель"}</b></p>
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
-      <p style="margin: 5px">Полная стоимость: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>
+      ${price !== 0 ? `<p style="margin: 5px">Полная стоимость: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>` : `<p style="margin: 5px"><b>ТРЕБУЕТСЯ ИНДИВИДУАЛЬНЫЙ РАССЧЕТ СТОИМОСТИ И СРОКОВ</b></p>`}
       <p style="margin: 5px">Всего мест: <b>${count}</b> </p>
-      <p style="margin: 5px">В рассчете учтены: </p>
+      ${price !== 0 ? `<p style="margin: 5px">В рассчете учтены: </p>` : `<p style="margin: 5px">В рассчете не забыть учесть: </p>`}
       ${(fromCityObj && !whereCityObj) || (!fromCityObj && whereCityObj) ?
       `<p style="margin: 5px; margin-left:12px">Транспортный налог(не РФ): <b>${fs * 100 - 100} %</b></p>` :
       `<p style="margin: 5px; margin-left:12px">Транспортный налог(РФ): <b>${fsRF * 100 - 100} %</b></p>`}
@@ -239,12 +239,12 @@ export default async function fabric(formData: FormData) {
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
       <p style="margin: 5px">Всего мест: <b>${count}</b> </p>
       <p style="margin: 5px">Скидка: <b>${koefficient * 100}% </b></p >  
-      <p style="margin: 5px">Итоговая стоимость с учетом скидки: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>
-      <div style="display:inline-block; text-decoration: none; border-radius:7px; margin:10px auto; background-color:#ff0d01; padding:10px 25px">
-        <a style="font-weight:700; font-size:15px; margin:0 auto; color:white" href="tel:+79101056423">+7 910 105 64 23</a>
+      ${price !== 0 ? `<p style="margin: 5px">Итоговая стоимость с учетом скидки: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>` : ""}
+      <div style="display:inline-block; text-decoration: none; border-radius:7px; margin:10px auto; background-color:#ff0d01; padding:10px 25px" >
+      <a style="font-weight:700; font-size:15px; margin:0 auto; color:white" href = "tel:+79101056423" > +7 910 105 64 23 </a>
       </div>
     </div>
-   `
+      `
   const bodyTextMessageUser2 =
     //          `
     // <div style="font-size:15px"> 

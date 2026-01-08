@@ -72,7 +72,6 @@ export async function POST(req: Request) {
 
     const tasks: Promise<unknown>[] = []
 
-    // console.log(phone, 75, "send-code")
     tasks.push(
 
       //отправка сообщения клиенту 

@@ -37,6 +37,7 @@ export default async function fabric(data: DataCreateOrderProcess) {
     fsRF,
     koefficient,
     descriptionOfCargo } = data
+  console.log(price, 40)
   const isInternal =
     (fromCountryObj.name === "Россия" &&
       whereCountryObj.name === "Россия") ? true : false

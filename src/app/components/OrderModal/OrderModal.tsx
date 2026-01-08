@@ -128,9 +128,9 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     formData.append("document", document);
     formData.append("descriptionOfCargo", descriptionOfCargo);
     formData.append("isFinalHeft", String(isFinalHeft))
-    formData.append("price", String(price))
+    formData.append("price", String(price === 0 ? 0 : price))
     formData.append("count", String(count))
-    formData.append("nds", String(nds));
+    formData.append("nds", String(price === 0 ? 0 : nds));
     formData.append("fs", String(fs));
     formData.append("fsRF", String(fsRF));
     formData.append("koefficient", String(koefficient));
@@ -311,7 +311,6 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     }
   }
 
-
   return (
     <>
       {isOpen &&
@@ -382,9 +381,9 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                     <p className={styles.modal__info_text}  >
                       <strong>Рассчетный вес:</strong>  {isFinalHeft}
                     </p>
-                    <p className={styles.modal__info_text}  >
+                    {price === 0 ? null : <p className={styles.modal__info_text}  >
                       <strong>Стоимость:</strong> {Math.ceil(price)} ₽
-                    </p>
+                    </p>}
                   </div>
                 </div>
               </div>

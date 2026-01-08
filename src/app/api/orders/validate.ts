@@ -104,8 +104,8 @@ export function validate(data: DataCreateOrderProcess) {
   }
 
   // 10. Цена и расчёты
-  if (!data.price || data.price <= 0) {
-    errors.push("Стоимость (price) должна быть больше 0");
+  if (data.price < 0) {
+    errors.push(`Стоимость (price) ${data.price} ${typeof data.price} должна быть указана`);
   }
 
   if (!data.isFinalHeft || data.isFinalHeft <= 0) {
@@ -116,7 +116,7 @@ export function validate(data: DataCreateOrderProcess) {
     errors.push("Общее количество мест (count) должно быть больше 0");
   }
 
-  if (!data.nds) {
+  if (data.price < 0) {
     errors.push("Значение nds должно быть");
   }
 

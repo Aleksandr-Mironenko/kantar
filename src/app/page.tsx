@@ -8,9 +8,10 @@ import Advantages from './components/Advantages/Advantages';
 import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
 import FormCalc from './components/FormCalc/FormCalc'
-import CalkSend from './components/CalkSend/CalkSend'
+import CalkSendExpress from './components/CalkSendExpress/CalkSendExpress'
 import ThirdPartyFix from './components/ThirdPartyFix/ThirdPartyFix';
 import CooperationRequestForm from './components/CooperationRequestForm/CooperationRequestForm'
+import CalkSendLong from './components/CalkSendLong/CalkSendLong';
 // import AdninPanel from './components/AdminPanel/AdminPanel'
 export default function Home() {
 
@@ -26,8 +27,9 @@ export default function Home() {
       <Advantages />
       <FormCalc />
       <Contacts />
-      <CalkSend />
+      <CalkSendExpress />
       <CooperationRequestForm />
+      <CalkSendLong />
       <Footer />
     </>
   );

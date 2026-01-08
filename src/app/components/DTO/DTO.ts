@@ -32,10 +32,10 @@ export interface InitialData {
   fromCityObj: City | null,
   whereCountryObj: Country | null,
   whereCityObj: City | null,
-  price: number
-  count: number
-  document: "document" | "goods"
-  isFinalHeft: number
+  price: number,
+  count: number,
+  document: "document" | "goods",
+  isFinalHeft: number,
   places: Place[]
 }
 export interface OrderModalProps {

@@ -1,5 +1,5 @@
 "use client";
-import styles from "./CalkSend.module.scss";
+import styles from "./CalkSendExpress.module.scss";
 import { useState, useEffect, useCallback } from "react"
 import {
   nds, fs, fsRF, rfBigDoc, RfBigDocKey, funcRfBigDoc, Excess70RfKey, funcExcess70RF, RFRFKey, Excess70Key, Excess300Key,
@@ -11,9 +11,8 @@ import OrderModal from "../OrderModal/OrderModal"
 import { Place, Country, City, PropsNotification } from "../DTO/DTO"
 import Notification from "@/app/components/NotificationAntd/NotificationAntd"
 import { Modal, Button } from 'antd';
-import router from "next/router";
 
-export default function CalkSend() {
+export default function CalkSendExpress() {
   const [fromCountryObj, setFromCountryObj] = useState<Country | null>(null);
   const [fromCityObj, setFromCityObj] = useState<City | null>(null);
   const [whereCountryObj, setWhereCountryObj] = useState<Country | null>(null);
@@ -625,6 +624,7 @@ export default function CalkSend() {
   };
 
   const alertNotification = ({ titleAlert, message }: PropsNotification) => {
+    console.log('alertNotification called');
     setArgsNotification({ titleAlert, message })
     setNotification(true)
   }
@@ -639,7 +639,7 @@ export default function CalkSend() {
 
 
   return (
-    <div className={styles.calculator} id="calculator" >
+    <div className={styles.calculator} id="calculator_express" >
       {/* Контейнер */}
       < div className={styles.calculator__left} >
         {/* Заголовок */}
@@ -719,21 +719,23 @@ export default function CalkSend() {
           </div>
           {/* Документы / Груз */}
           <div className={styles.radioButton}>
-            <label className={styles.radio}>
+            <label htmlFor="goods_express" className={styles.radio}>
               <input
                 className={styles.radioButtonChenge}
+                id="goods_express"
                 type="radio"
-                name="type"
+                name="type_express"
                 value="goods"
                 checked={document === "goods"}
                 onChange={(e) => setDocument(e.target.value as "goods")}
               /> Груз
             </label>
-            <label className={styles.radio}>
+            <label htmlFor="document_express" className={styles.radio}>
               <input
                 className={styles.radioButtonChenge}
+                id='document_express'
                 type="radio"
-                name="type"
+                name="type_express"
                 value="document"
                 checked={document === "document"}
                 onChange={(e) => setDocument(e.target.value as "document")}

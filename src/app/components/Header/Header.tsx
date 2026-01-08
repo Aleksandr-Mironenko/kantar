@@ -31,7 +31,7 @@ export default function Header() {
             </a>
 
 
-            <a href="#calculator" className={styles.header__nav_button}>
+            <a href="#calculator_express" className={styles.header__nav_button}>
               <div className={styles.header__nav_button_content}>
                 <span>КАЛЬКУЛЯТОР</span>
               </div>

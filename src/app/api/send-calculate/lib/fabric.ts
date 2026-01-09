@@ -239,12 +239,13 @@ export default async function fabric(formData: FormData) {
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
       <p style="margin: 5px">Всего мест: <b>${count}</b> </p>
       <p style="margin: 5px">Скидка: <b>${koefficient * 100}% </b></p >  
-      ${price !== 0 ? `<p style="margin: 5px">Итоговая стоимость с учетом скидки: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>` : `<p style="margin: 5px">Итоговая стоимость будет предоставлена после индивидуального расчета</p>}
+      ${price !== 0 ? `<p style="margin: 5px">Итоговая стоимость с учетом скидки: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>` : `<p style="margin: 5px">Итоговая стоимость будет предоставлена после индивидуального расчета</p>`}
       <div style="display:inline-block; text-decoration: none; border-radius:7px; margin:10px auto; background-color:#ff0d01; padding:10px 25px" >
       <a style="font-weight:700; font-size:15px; margin:0 auto; color:white" href = "tel:+79101056423" > +7 910 105 64 23 </a>
       </div>
     </div>
       `
+
   const bodyTextMessageUser2 =
     //          `
     // <div style="font-size:15px"> 

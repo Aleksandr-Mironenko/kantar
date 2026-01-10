@@ -1,5 +1,5 @@
 "use server";
-const BASE_URL = process.env.DATABASE_URL
+const BASE_URL = process.env.BASE_URL
 
 const API_KEY = process.env.TEXTBEE_API_KEY
 const DEVICE_ID = process.env.TEXTBEE_DEVICE_ID

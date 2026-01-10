@@ -56,10 +56,10 @@ export async function POST(req: Request) {
       "KANTAR"
     ),
 
-    //отправка админу Кириллу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
-    sendSMS("+79991386191",
-      `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
-        ${sms.messageAdminSMS} `),
+    // //отправка админу Кириллу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
+    // sendSMS("+79991386191",
+    //   `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
+    //     ${sms.messageAdminSMS} `),
 
     //отправка админу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
     sendSMS("+79030404804",

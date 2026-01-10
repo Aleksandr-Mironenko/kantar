@@ -1,4 +1,4 @@
-import supabaseServer from '@/app/api/lib/supabase/server-public';
+import supabaseServer from '../../lib/supabase/server-public';
 import bcrypt from 'bcrypt';
 
 // POST /api/admin/login

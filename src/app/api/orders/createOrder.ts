@@ -1,5 +1,5 @@
-import supabaseServer from '@/app/api/lib/supabase/server-secret';
-import { DataCreateOrder } from '@/app/components/DTO/DTO'
+import supabaseServer from '../lib/supabase/server-secret';
+import { DataCreateOrder } from '../../components/DTO/DTO'
 
 export async function createOrder(
   data: DataCreateOrder, isInternal: boolean, nds: number
@@ -26,7 +26,7 @@ export async function createOrder(
       heft_full: data.isFinalHeft,
       status: data.status,
       agree: data.agree,
-      is_individual: data.price == 0
+      is_individual: data.isIndividual
     })
     .select("id,order_number")
     .single();

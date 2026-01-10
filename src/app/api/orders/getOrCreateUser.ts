@@ -1,5 +1,5 @@
-import supabaseServer from '@/app/api/lib/supabase/server-secret';
-import { DataCreateUser } from '@/app/components/DTO/DTO'
+import supabaseServer from '../lib/supabase/server-secret';
+import { DataCreateUser } from '../../components/DTO/DTO'
 
 export async function getOrCreateUser(data: DataCreateUser): Promise<number> {
   // проверяем наличие пользователя в бд по email или телефону

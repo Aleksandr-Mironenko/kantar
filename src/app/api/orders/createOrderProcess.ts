@@ -4,7 +4,7 @@ import { getOrCreateAddress } from "./getOrCreateAddress";
 import { createPlaces } from "./createPlaces";
 import { uploadFiles } from "./uploadFiles";
 import { createOrder } from "./createOrder";
-import { DataCreateOrderProcess } from '@/app/components/DTO/DTO'
+import { DataCreateOrderProcess } from '../../components/DTO/DTO'
 import fabric from "./lib/format/fabric";
 import fabricForOrder from "./lib/format/fabricForOrder";
 import retry from "./lib/function/retry";

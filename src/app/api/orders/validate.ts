@@ -1,4 +1,4 @@
-import { DataCreateOrderProcess } from '@/app/components/DTO/DTO'
+import { DataCreateOrderProcess } from '../../components/DTO/DTO'
 
 // Утилита для проверки пустой строки
 function isEmpty(str: string | undefined): boolean {

@@ -1,5 +1,5 @@
-import supabaseServer from '@/app/api/lib/supabase/server-secret';
-import { DataCreatePlases } from '@/app/components/DTO/DTO'
+import supabaseServer from '../lib/supabase/server-secret';
+import { DataCreatePlases } from '../../components/DTO/DTO'
 
 export async function createPlaces({ orderId, data, isInternal, nds }: DataCreatePlases) {
   const records = [];

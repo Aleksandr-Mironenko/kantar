@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import supabaseServer from '@/app/api/lib/supabase/server-public';
+import supabaseServer from '../../../lib/supabase/server-public';
 
 
 

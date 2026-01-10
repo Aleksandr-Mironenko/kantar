@@ -1,6 +1,6 @@
 "use server";
 
-import { DataFabricForOrder } from "@/app/components/DTO/DTO";
+import { DataFabricForOrder } from "../../../../components/DTO/DTO";
 
 export default async function fabricForOrder(data: DataFabricForOrder) {
 
@@ -35,7 +35,8 @@ export default async function fabricForOrder(data: DataFabricForOrder) {
     isPaid: false,
     isFinalHeft,
     status,
-    agree
+    agree,
+    isIndividual: price === 0
   }
 
 

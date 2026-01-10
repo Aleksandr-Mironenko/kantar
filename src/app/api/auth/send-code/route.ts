@@ -1,6 +1,6 @@
-import supabaseServer from '@/app/api/lib/supabase/server-secret';
-import { sendEmail } from "@/app/api/lib/helpers/sendEmail"
-import { sendSMS } from "@/app/api/lib/helpers/sendSms";
+import supabaseServer from '../../lib/supabase/server-secret';
+import { sendEmail } from "../../lib/helpers/sendEmail"
+import { sendSMS } from "../../lib/helpers/sendSms";
 import retry from '../../orders/lib/function/retry';
 export async function POST(req: Request) {
   const { phone, email } = await req.json();

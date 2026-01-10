@@ -7,7 +7,7 @@ import {
 import Image from "next/image";
 import OrderModal from "../OrderModal/OrderModal"
 import { Place, Country, City, PropsNotification } from "../DTO/DTO"
-import Notification from "@/app/components/NotificationAntd/NotificationAntd"
+import Notification from "../NotificationAntd/NotificationAntd"
 
 export default function CalkSend() {
   const [fromCountryObj, setFromCountryObj] = useState<Country | null>(null);

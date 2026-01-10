@@ -1,5 +1,5 @@
-import supabaseServer from '@/app/api/lib/supabase/server-secret';
-import { DataUploadFiles } from '@/app/components/DTO/DTO'
+import supabaseServer from '../lib/supabase/server-secret';
+import { DataUploadFiles } from '../../components/DTO/DTO'
 import retry from "./lib/function/retry";
 
 

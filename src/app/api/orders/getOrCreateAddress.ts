@@ -1,5 +1,5 @@
-import supabaseServer from '@/app/api/lib/supabase/server-secret';
-import { DataCreateAddress } from '@/app/components/DTO/DTO'
+import supabaseServer from '../lib/supabase/server-secret';
+import { DataCreateAddress } from '../../components/DTO/DTO'
 
 export async function getOrCreateAddress(
   data: DataCreateAddress

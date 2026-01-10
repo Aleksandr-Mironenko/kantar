@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/api/lib/helpers/sendEmail"
-import { sendSMS } from "@/app/api/lib/helpers/sendSms";
-import createOrderProcess from '@/app/api/orders/createOrderProcess'
+import { sendEmail } from "../lib/helpers/sendEmail"
+import { sendSMS } from "../lib/helpers/sendSms";
+import createOrderProcess from '../orders/createOrderProcess'
 import fabric from "./lib/fabric";
 
 export async function POST(req: Request) {
@@ -28,7 +28,9 @@ export async function POST(req: Request) {
   }
   const response = NextResponse.json({ success: true, orderNumbers })
   tasks.push(
-    sendEmail(//отправка сообщения администратору Кирилл (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
+
+    //отправка сообщения администратору Кирилл (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
+    sendEmail(
       "udink7405@gmail.com",
       `Новый заказ ${orderNumbers && JSON.stringify(orderNumbers?.orderId)}`,
       emailMessage.bodyTextMessage,
@@ -50,16 +52,16 @@ export async function POST(req: Request) {
     sendEmail(
       client === "sender" ? emailFrom : emailWhere,
       "Вы создали заявку на отправление груза KANTAR",
-      `${orderNumbers && `<p>Номер вашего заказа: ${JSON.stringify(JSON.stringify(orderNumbers?.orderId))}</p>`}
+      `${orderNumbers && `<p style="font-size:20px">Номер вашего заказа: ${JSON.stringify(JSON.stringify(orderNumbers?.orderId))}</p>`}
         ${emailMessage.bodyTextMessageUser}`
       ,
       "KANTAR"
     ),
 
-    // //отправка админу Кириллу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
-    // sendSMS("+79991386191",
-    //   `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
-    //     ${sms.messageAdminSMS} `),
+    //отправка админу Кириллу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
+    sendSMS("+79991386191",
+      `${orderNumbers && `Номер заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
+        ${sms.messageAdminSMS} `),
 
     //отправка админу (ТУТ МЕСТО РОСТА - БРАТЬ ДАННЫЕ С БЛОКА АДМИНОВ КОТОРЫЕ РАБОТАЮТ)
     sendSMS("+79030404804",

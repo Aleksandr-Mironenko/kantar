@@ -1,6 +1,6 @@
 "use server";
 
-import { DataCreateAddress, DataCreateOrderProcess, DataCreateUser } from "@/app/components/DTO/DTO";
+import { DataCreateAddress, DataCreateOrderProcess, DataCreateUser } from "../../../../components/DTO/DTO";
 
 
 export default async function fabric(data: DataCreateOrderProcess) {

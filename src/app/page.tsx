@@ -12,14 +12,14 @@ import CalkSendExpress from './components/CalkSendExpress/CalkSendExpress'
 import ThirdPartyFix from './components/ThirdPartyFix/ThirdPartyFix';
 import CooperationRequestForm from './components/CooperationRequestForm/CooperationRequestForm'
 import CalkSendLong from './components/CalkSendLong/CalkSendLong';
-// import AdninPanel from './components/AdminPanel/AdminPanel'
+import AdninPanel from './components/AdminPanel/AdminPanel'
 export default function Home() {
 
 
   return (
     <>
       <ThirdPartyFix />
-      {/* <AdninPanel /> */}
+      <AdninPanel />
       <Header />
       <Hero />
       <WhoWeAre />

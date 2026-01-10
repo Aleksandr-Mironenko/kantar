@@ -1,5 +1,5 @@
 import retry from '../../orders/lib/function/retry';
-import supabaseServer from '@/app/api/lib/supabase/server-secret';
+import supabaseServer from '../../lib/supabase/server-secret';
 
 export async function POST(req: Request) {
   const { code, phone, email } = await req.json();

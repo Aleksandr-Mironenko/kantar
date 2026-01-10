@@ -1,5 +1,5 @@
 "use server";
-import { Place, Country, City } from '@/app/components/DTO/DTO'
+import { Place, Country, City } from '../../../components/DTO/DTO'
 
 export default async function fabric(formData: FormData) {
 

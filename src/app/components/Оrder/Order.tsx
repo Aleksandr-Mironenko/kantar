@@ -386,10 +386,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
     return (
-      <li key={el.id} style={{ display: "flex", marginBottom: "10px", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-
-          <p style={{ alignSelf: "center" }}>{personalMarker}</p>
+      <li key={el.id} style={{ marginTop: "10px", display: "flex", marginBottom: "10px", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+        <div style={{ width: "90%", display: "flex", flexDirection: "column" }}>
+          <p style={{ fontSize: "28px", alignSelf: "center" }}>{personalMarker}</p>
           <p> Проверка фактических характеристик: {statusEl}</p>
           <p> Номер места: {el.id}</p>
           {/* <p>{new Date(order.created_at).toLocaleString()}</p> */}
@@ -524,6 +523,14 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   }
 
 
+  const yandexMapsLink = (adsress: string) => {
+    return `https://yandex.ru/maps/?text=${encodeURIComponent(
+      [adsress]
+        .filter(Boolean)
+        .join(", ")
+    )}`;
+  }
+
   const mapOrder = (
     <div key={order.id} style={{ display: "flex" }}>
       <div style={{ width: "100%", }}>
@@ -547,12 +554,36 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         <p> Полная стоимость: {order.price_full}   <span style={{ color: "red" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
         <p> Индивидуальная скидка (заказа): {order.discount_this_send}</p>
         <p> Поступление оплаты: {order.is_paid === true ? "Оплачен" : "Не оплачен"}</p>
-        <div style={{ padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
-          <p>Данные отправителя</p>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginBottom: "10px", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+          <p style={{ fontSize: "28px", alignSelf: "center" }}>Данные отправителя</p>
           <p>ФИО: {userSendler.name}</p>
-          <p>Телефон: {userSendler.phone}</p>
-          <p>Эл. почта: {userSendler.email}</p>
-          <p>Адрес закрепленный:{dataAddressInIdSendler.full_address}</p>
+          <p style={{}}>
+            Телефон:
+            <b>
+              <a style={{ fontSize: "15px", padding: "7px" }}
+                href={`tel:${userSendler.phone}`} >
+                {userSendler.phone}
+              </a>
+            </b>
+          </p>
+          <p style={{ marginBottom: "0" }}>
+            Эл. почта:
+            <b>
+              <a
+                style={{ fontSize: "15px", padding: "7px" }}
+                href={`mailto:${userSendler.email}`}
+              >
+                {userRecipient.email}
+              </a>
+            </b>
+          </p>
+          <a
+            href={`${yandexMapsLink(dataAddressInIdSendler.full_address)}`}
+            style={{ margin: "15px", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
+            target="_blank">
+            {dataAddressInIdSendler.full_address} на Яндекс.Картах
+          </a>
+
           {/* <p>{userSendler.created_at}</p>  */}
           {/*уже известно когда созданы места*/}
           <p>Персональная скидка клиента: {userSendler.discount}</p>
@@ -561,12 +592,34 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           <p>Наличие договора: {typeAcc(userSendler.type_acc)}</p>
           <p>Реферальный код: {userSendler.ref_code ? userSendler.ref_code : "не задан"}</p>
         </div>
-        <div style={{ padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
-          <p>Данные получателя</p>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+          <p style={{ fontSize: "28px", alignSelf: "center" }}>Данные получателя</p>
           <p>ФИО: {userRecipient.name}</p>
-          <p>Телефон: {userRecipient.phone}</p>
-          <p>Эл. почта: {userRecipient.email}</p>
-          <p>Адрес закрепленный:{dataAddressInIRecipient.full_address}</p>
+          <p style={{}}>
+            Телефон:
+            <b>
+              <a style={{ fontSize: "15px", padding: "7px" }} href={`tel:${userRecipient.phone}`} >
+                {userRecipient.phone}
+              </a>
+            </b>
+          </p>
+          <p style={{ marginBottom: "0" }}>
+            Эл. почта:
+            <b>
+              <a
+                style={{ fontSize: "15px", padding: "7px" }}
+                href={`mailto:${userRecipient.email}`}
+              >
+                {userRecipient.email}
+              </a>
+            </b>
+          </p>
+          <a
+            href={`${yandexMapsLink(dataAddressInIRecipient.full_address)}`}
+            style={{ margin: "15px", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
+            target="_blank">
+            {dataAddressInIRecipient.full_address} на Яндекс.Картах
+          </a>
           {/* <p>{userSendler.created_at}</p>  */}
           {/*уже известно когда созданы места*/}
           <p>Персональная скидка клиента: {userRecipient.discount}</p>
@@ -576,8 +629,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           <p>Реферальный код: {userRecipient.ref_code ? userSendler.ref_code : "не задан"}</p>
           <p>{typeAcc(userRecipient.type_acc)}</p>
         </div>
+
         <div>
-          <p>Места в заказе:</p>
+
           <ol style={{ listStyleType: "none" }}>
             {mapPlaces}
           </ol>

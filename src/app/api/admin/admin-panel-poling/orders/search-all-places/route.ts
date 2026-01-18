@@ -1,7 +1,7 @@
 import supabaseServer from '../../../../lib/supabase/server-public';
 
 // get  
-export async function get() {
+export async function GET() {
   try {
     //ищу данные всей таблицы
 

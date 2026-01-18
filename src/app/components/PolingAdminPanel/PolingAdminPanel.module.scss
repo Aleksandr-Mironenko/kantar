@@ -1,0 +1,59 @@
+.adminpages {
+  padding: 200px 10px;
+
+  &__block {
+    background-color: #fff;
+    overflow: auto;
+  }
+
+  &__part {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+  }
+
+  &__column {
+    height: 40px;
+    border: 1px solid #e31e24;
+    padding: 5px;
+  }
+
+  &__select {
+    position: relative
+  }
+
+  &__select_button {
+    position: absolute;
+    right: -5px;
+    top: -2px
+  }
+
+  &__title {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 48px;
+    color: white;
+    margin-bottom: 18px;
+  }
+
+  &__list {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    padding: 20px 25px;
+    border-radius: 10px;
+    background: #e31e24;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  @media (min-width: 812px) {
+    width: 100vw;
+  }
+}

@@ -4,7 +4,17 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   images: {
-    domains: ["i.pinimg.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'pyzpdyaqsrbgstfdlycz.supabase.co',
+        pathname: '/storage/**',
+      },
+    ],
+
+  },
+  turbopack: {
+    root: './',
   },
 };
 

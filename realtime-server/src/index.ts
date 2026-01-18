@@ -2,7 +2,7 @@ import 'dotenv/config' // Загружаем переменные окружен
 import { createClient } from '@supabase/supabase-js'
 import { WebSocketServer } from 'ws'
 import WebSocket from 'ws'
-import { TableOrdersRecord, TableOrdersRecordWithEvent } from '../DTO/DTO'
+import { TableOrdersRecord, TableOrdersRecordWithEvent } from './DTO/DTO'
 
 
 // Инициализация Supabase 

@@ -218,7 +218,7 @@ export type DataCreateOrder = {
 export interface DataUploadFiles {
   orderId: number[];
   files: File[];
-  name: string
+  name?: string
 }
 
 export interface DataCreatePlases {

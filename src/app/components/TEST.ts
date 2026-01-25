@@ -1,12 +1,12 @@
-const fs = require("fs"); const { PDFDocument } = require("pdf-lib");
-async function main() {
-  const templatePdf = fs.readFileSync("waybill3.pdf");
-  const pdfDoc = await PDFDocument.load(templatePdf);
-  const form = pdfDoc.getForm();
-  const fields = form.getFields();
-  console.log(fields.map(f => ({ name: f.getName(), type: f.constructor.name, })));
-}
-main();
+// const fs = require("fs"); const { PDFDocument } = require("pdf-lib");
+// async function main() {
+//   const templatePdf = fs.readFileSync("waybill3.pdf");
+//   const pdfDoc = await PDFDocument.load(templatePdf);
+//   const form = pdfDoc.getForm();
+//   const fields = form.getFields();
+//   console.log(fields.map(f => ({ name: f.getName(), type: f.constructor.name, })));
+// }
+// main();
 
 // [
 //   { name: 'order_number', type: 'PDFTextField' },

@@ -10,7 +10,7 @@ import Order from '../Оrder/Order'
 // import { orders } from "./data";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./PolingAdminPanel.module.scss";
-import { TableOrdersRecord, TableOrdersRecordWithEvent, WSMessage } from "../DTO/DTO";
+import { TableOrdersRecord, TableOrdersRecordMeta, TableOrdersRecorResponse, TableOrdersRecordWithEvent, WSMessage } from "../DTO/DTO";
 import { ColumnDef } from "@tanstack/react-table";
 
 // Extend ColumnDef to include meta with editable property
@@ -27,6 +27,15 @@ export default function PolingeAdminPanel() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const [orders, setOrders] = useState<TableOrdersRecord[]>([])
+  const [meta, setMeta] = useState<TableOrdersRecordMeta>({
+    page: 1,
+    limit: 10,
+    total: 10,
+    totalPages: 10,
+    hasNext: false,
+    hasPrev: false,
+  })
+
   const [place, setPlace] = useState([])
   const [view, setView] = useState<boolean>(false)
   const [activeNumberOrder, setActiveNumberOrder] = useState<number>(100042)
@@ -38,20 +47,22 @@ export default function PolingeAdminPanel() {
   } | null>(null);
   const [url, setUrl] = useState<string[]>([]);
 
-  const getOrders = async () => {
-    const request = await fetch("api/admin/admin-panel-poling/orders/search-all-orders")
+  const getOrders = async (page: number) => {
+    const request = await fetch(`api/admin/admin-panel-poling/orders/search-all-orders?page=${page}`)
 
     if (!request.ok) {
       throw new Error("Ошибка получения заказов")
     }
 
-    const response = await request.json();
+    const response: TableOrdersRecorResponse = await request.json();
     setOrders(response.arrayOrderObjData)
+    setMeta(response.meta)
+
   }
 
 
   useEffect(() => {
-    getOrders()
+    getOrders(1)
   }, []);
 
 
@@ -378,13 +389,13 @@ export default function PolingeAdminPanel() {
     setEditingCell(null);
 
 
-    await getOrders();
+    await getOrders(meta.page);
   };
 
 
 
 
-  const getPlaces = async (props = 100070) => {
+  const getPlaces = async (props = 1000100) => {
     const request = await fetch("api/admin/admin-panel-poling/orders/search-place-in-orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -409,108 +420,68 @@ export default function PolingeAdminPanel() {
   }, []);
 
 
-  function getFileType(path: string) {
-    const cleanPath = path.split('?')[0];
-    const ext = cleanPath.split('.').pop()?.toLowerCase();
 
-    if (!ext) return 'unknown';
-
-    if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) return 'image';
-    if (ext === 'pdf') return 'pdf';
-    if (['doc', 'docx'].includes(ext)) return 'doc';
-    if (['xls', 'xlsx'].includes(ext)) return 'xls';
-
-    return 'text';
-  }
-
-
-  // fullPrice
-  // heft 
-  // height 
-  // id
-  // length
-  // nds
-  // order
-  // id
-  // order_number
-  // places_personal_id
-  // price
-  // volume width 
-
-
-  const mapfiles = Array.isArray(url)
-    ? url.map((el) => {
-      const type = getFileType(el);
-      return (
-        <li key={el}>
-          {type === 'image' ? (
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              {/* <Image
-                src={el}
-                alt=""
-                width={1300}
-                height={1200}
-                style={{ objectFit: 'contain' }}
-              /> */}
-              <a
-                href={el}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-              >
-                Скачать изображение
-              </a>
+  const pagination = (
+    <>
+      {meta.page - 2 > 0 && (
+        <button
+          onClick={() => {
+            getOrders(meta.page - 2)
+          }}
+          style={{ borderColor: "white", fontWeight: 900, borderRadius: "50%", color: "black", margin: "0 15px" }}>
+          <div style={{ width: "25px" }}>
+            {meta.page - 2}
+          </div>
+        </button>
+      )
+      }
+      {
+        meta.page - 1 > 0 && (
+          <button
+            onClick={() => {
+              getOrders(meta.page - 1)
+            }}
+            style={{ borderColor: "white", fontWeight: 900, borderRadius: "50%", color: "black", margin: "0 15px" }}>
+            <div style={{ width: "25px" }}>
+              {meta.page - 1}
             </div>
+          </button>
 
-          ) : type === 'pdf' ? (
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <iframe
-                src={el}
-                width="100%"
-                height="600"
-              />
+        )
+      }
+      <div style={{ textDecoration: "underline", color: "rgba(255, 255, 255, 0.7)", fontWeight: 700, display: "inline-block", margin: "0 10px" }}>
+        {meta.page}
+      </div>
+      {
+        meta.totalPages + 1 > meta.page + 1 && (
+          <button onClick={() => {
+            getOrders(meta.page + 1)
+          }}
+            style={{ borderColor: "white", fontWeight: 900, borderRadius: "50%", color: "black", margin: "0 15px" }}>
+            <div style={{ width: "25px" }}>
+              {meta.page + 1}
             </div>
-          ) :
-            type === 'doc' ? (
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <a
-                  href={el}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                >
-                  Скачать файл doc
-                </a>
-              </div>
-
-            ) :
-              type === 'xls' ? (
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <a
-                    href={el}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                  >
-                    Скачать файл xls
-                  </a>
-                </div>
-
-              ) : (
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <p>остальное</p>
-                  <a
-                    href={el}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                  >
-                    Скачать (тип файла не определен)
-                  </a>
-                </div>
-              )}
-        </li>
-      );
-    })
-    : null;
-
-
+          </button>
+        )
+      }
+      {
+        meta.totalPages + 1 > meta.page + 2 && (
+          <button
+            onClick={() => {
+              getOrders(meta.page + 2)
+            }}
+            style={{ borderColor: "white", fontWeight: 900, borderRadius: "50%", color: "black", margin: "0 15px" }}>
+            <div style={{ width: "25px" }}>
+              {meta.page + 2}
+            </div>
+          </button>
+        )
+      }
+      <div style={{ marginLeft: "40px", color: "white", borderRadius: "25% 25% 25% 25%", textDecoration: "underline", padding: "0 5px", display: "inline-block", margin: "0 15px" }}>
+        Всего: {meta.totalPages}
+      </div>
+    </>
+  )
 
   return (
     <>
@@ -518,6 +489,7 @@ export default function PolingeAdminPanel() {
       {
         isOpen ? (<section className={styles.adminpages} id="adminpages">
           <h2 className={styles.adminpages__title}>Админ панель</h2>
+          <h3 className={styles.adminpages__title_table}>Список заказов</h3>
           <div className={styles.adminpages__block}>
             <div className={styles.adminpages__block}>{/*блок  в котором будет 2 кномки переключения между новыми заказами и запросами на договор/*/}
 
@@ -638,9 +610,10 @@ export default function PolingeAdminPanel() {
                   ))}
                 </tbody>
               </table>
+
             </div>
           </div>
-
+          <div className={styles.adminpages__title_table_bottom}>{pagination}</div>
           <div className={styles.adminpages__list}>{/*блок создать заказ*/}
 
             {view && <Order numberOrder={activeNumberOrder} />}

@@ -33,6 +33,6 @@ export async function createOrder(
 
   //если ошибка - кидаем её выше
   if (error) throw error;
-  //возвращаем id созданного заказа
+  //возвращаем id созданного заказа 
   return [order.id, order.order_number] as number[];
-}
+} 

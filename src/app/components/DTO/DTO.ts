@@ -218,6 +218,7 @@ export type DataCreateOrder = {
 export interface DataUploadFiles {
   orderId: number[];
   files: File[];
+  name: string
 }
 
 export interface DataCreatePlases {
@@ -235,6 +236,9 @@ export type DataCreateUser = {
   typeAcc: Type_acc;
   discount: number;
 };
+
+
+
 
 export type DataFabricForOrder = {
   nds: number,
@@ -287,6 +291,98 @@ export type TableOrdersRecord = {
   "archived" //архивный
   is_individual: boolean,
 };
+
+
+
+export interface TableOrdersRecordMeta {
+  page: number,
+  limit: number,
+  total: number,
+  totalPages: number,
+  hasNext: boolean,
+  hasPrev: boolean,
+}
+
+
+export interface TableOrdersRecorResponse {
+  ok: boolean,
+  arrayOrderObjData: TableOrdersRecord[],
+  meta: TableOrdersRecordMeta,
+}
+
+export interface PDFWayBill {
+  order_number: number,
+  date_create_at: string,
+  from_name: string,
+  from_full_adress: string,
+  from_city: string,
+  from_country: string,
+  where_name: string,
+  where_full_adress: string,
+  where_sity: string,
+  where_counter: string,
+  from_code: string,
+  where_code: string,
+  array_services: string,
+  saved_price: string,
+  volume_total_heft: number,
+  total_heft: number,
+  sum_places: number,
+  array_numbers_places: string,
+  order_id: number,
+}
+
+export type StatusPlace = "confirmed" | "changes_have_been_made" | "client_responsibility" | "canceled"
+
+export interface PleaseInServer {
+  fullPrice: number,
+  heft: number,
+  height: number,
+  id: number,
+  length: number,
+  nds: number,
+  order_id: string,
+  order_number: number,
+  places_personal_id: string,
+  price: number,
+  volume: number,
+  width: number,
+  status_place: StatusPlace,
+  sumPlaces: number
+}
+
+export interface AddressInServer {
+  id: number,
+  full_address: string,
+  country_name: string,
+  country_zone: string,
+  country_id: 0,
+  city_name: string,
+  city_zone: string,
+  city_id_rf: number,
+  city_id_foreign: number,
+  city_zone_id: number,
+  index: string
+}
+
+export type TypeAcc = "noAcc" | "request" | "private" | "OOO" | "IP";
+
+export interface UserInServer {
+  id: string,
+  email: string,
+  phone: string,
+  name: string,
+  address_id: number,
+  is_client: boolean,
+  is_dogovor: boolean,
+  type_acc: Type_acc,
+  ref_code: string,
+  created_at: string,
+  discount: number,
+}
+
+
+
 
 export type TableOrdersRecordWithEvent = TableOrdersRecord & { eventType: string }
 

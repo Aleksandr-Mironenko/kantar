@@ -3,7 +3,7 @@ import { TableOrdersRecord } from "../DTO/DTO";
 import { Flex, QRCode } from 'antd';
 import type { QRCodeProps } from 'antd';
 import { createStyles } from 'antd-style';
-
+import { PDFWayBill, UserInServer, PleaseInServer, AddressInServer } from "../DTO/DTO";
 
 const useStyles = createStyles(() => ({
   root: {
@@ -28,52 +28,6 @@ const stylesFunction: QRCodeProps['styles'] = (info) => {
 };
 
 
-type PleaseInServer = {
-  fullPrice: number,
-  heft: number,
-  height: number,
-  id: number,
-  length: number,
-  nds: number,
-  order_id: string,
-  order_number: number,
-  places_personal_id: string,
-  price: number,
-  volume: number,
-  width: number,
-  status_place: "confirmed" | "changes_have_been_made" | "client_responsibility" | "canceled",
-  sumPlaces: number
-}
-
-interface AddressInServer {
-  id: number,
-  full_address: string,
-  country_name: string,
-  country_zone: string,
-  country_id: 0,
-  city_name: string,
-  city_zone: string,
-  city_id_rf: number,
-  city_id_foreign: number,
-  city_zone_id: number,
-  index: string
-}
-
-type Type_acc = "noAcc" | "request" | "private" | "OOO" | "IP";
-
-interface UserInServer {
-  id: string,
-  email: string,
-  phone: string,
-  name: string,
-  address_id: number,
-  is_client: boolean,
-  is_dogovor: boolean,
-  type_acc: Type_acc,
-  ref_code: string,
-  created_at: string,
-  discount: number,
-}
 
 
 
@@ -221,6 +175,25 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
 
+  const createPDFWaybill = async (data: PDFWayBill) => {
+    const request = await fetch("/api/admin/admin-panel-poling/orders/PDFDocumentWaybillLoad", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data
+      })
+    })
+
+    if (!request.ok) {
+      throw new Error("Ошибка создания PDF")
+    }
+
+    console.log("pdf создан")
+    getPlaces(numberOrder)
+  }
+
+
+
   console.log(userSendler,
     userRecipient,
     addressSendler,
@@ -248,14 +221,24 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   function getFileType(path: string) {
     const cleanPath = path.split('?')[0];
     const ext = cleanPath.split('.').pop()?.toLowerCase();
-
+    const waybill = cleanPath.split('-').at(-2)?.toLowerCase();
     if (!ext) return 'unknown';
 
-    if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) return 'image';
-    if (ext === 'pdf') return 'pdf';
-    if (['doc', 'docx'].includes(ext)) return 'doc';
-    if (['xls', 'xlsx'].includes(ext)) return 'xls';
-
+    if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) {
+      return 'image'
+    }
+    else if (waybill === "waybill" && ext === 'pdf') {
+      return 'waybill'
+    }
+    else if (ext === 'pdf') {
+      return 'pdf'
+    }
+    else if (['doc', 'docx'].includes(ext)) {
+      return 'doc'
+    }
+    else if (['xls', 'xlsx'].includes(ext)) {
+      return 'xls'
+    };
     return 'text';
   }
 
@@ -272,6 +255,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   // places_personal_id
   // price
   // volume width 
+
 
 
   const dateCreateOrder = (date: string) => {
@@ -296,81 +280,6 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
 
-  // type Place = typeof place[number]; //сомнительный момент
-
-  // type PlaceWithCount = Place & {
-  //   count: number;
-  // };
-
-  // const transformPlaces = (places: Place[]): PlaceWithCount[] => {
-  //   const map = new Map<string, Place[]>();
-
-  //   // Группировка одинаковых мест
-  //   for (const el of places) {
-  //     const key = `${el.heft}_${el.width}_${el.length}_${el.volume}`;
-
-  //     if (!map.has(key)) {
-  //       map.set(key, []);
-  //     }
-
-  //     map.get(key)!.push(el);
-  //   }
-
-  //   const result: PlaceWithCount[] = [];
-
-  //   // Разбиение по sumPlaces
-  //   for (const group of map.values()) {
-  //     const limit = group[0].sumPlaces; // есть в каждой записи
-  //     let remaining = group.length;
-
-  //     while (remaining > 0) {
-  //       const count = Math.min(limit, remaining);
-
-  //       result.push({
-  //         ...group[0],
-  //         count,
-  //       });
-
-  //       remaining -= count;
-  //     }
-  //   }
-
-  //   return result;
-  // };
-
-
-  // const mapPlaces = transformPlaces(place).map(el => {
-  //   return (
-  //     <li key={el.id} style={{ marginBottom: "10px", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
-  //       <div>
-
-  //         <p> Номер заказа: {el.order_number}</p>
-  //         <p>{new Date(order.created_at).toLocaleString()}</p>
-  //         <p> Вес: {el.heft}</p>
-  //         <p> Высота: {el.height}</p>
-  //         <p> Номер места: {el.id}</p>
-  //         <p> Длина: {el.length}</p>
-  //         <p> НДС: {el.nds}</p>
-  //         <p> id заказа: {el.order_id}</p>
-  //         <p> Персональный id места: {el.places_personal_id}</p>
-
-  //         <p> Объем: {el.volume}</p>
-  //         <p> Ширина: {el.width}</p>
-  //         <div style={{ display: "flex", justifyContent: "space-between" }}>
-  //           <span> Стоимость места: {el.price} </span>  <span>аналогичных мест {el.sumPlaces}</span>
-  //         </div>
-  //       </div>
-  //     </li>
-  //   )
-  // }
-  // )
-
-  // const markerInPlase = (value: string): string => {
-  //   const arr = value.split("_")
-  //   const arrTosSring = arr.splice(1, 1).join("_")
-  //   return arrTosSring
-
-  // }
 
 
   const mapPlaces = place.map(el => {
@@ -458,31 +367,29 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
             //     <p>пдф</p>
             //   </div>
             // ) 
-            type === 'pdf' ? (
+            type === 'waybill' ? (
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <a
                   href={el}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  {index + 1}. ФАЙЛ PDF смотреть
+                  {index + 1}. waybill.pdf смотреть
                 </a>
               </div>)
               :
-              type === 'doc' ? (
+              type === 'pdf' ? (
                 <div style={{ display: "flex", flexDirection: "row" }}>
-                  {/* добавить hover */}
                   <a
                     href={el}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                   >
-                    {index + 1}. ФАЙЛ DOC скачать
+                    {index + 1}. ФАЙЛ PDF смотреть
                   </a>
-                </div>
-
-              ) :
-                type === 'xls' ? (
+                </div>)
+                :
+                type === 'doc' ? (
                   <div style={{ display: "flex", flexDirection: "row" }}>
                     {/* добавить hover */}
                     <a
@@ -490,22 +397,35 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {index + 1}. ФАЙЛ XLS скачать
+                      {index + 1}. ФАЙЛ DOC скачать
                     </a>
                   </div>
 
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "row" }}>
-                    {/* добавить hover */}
-                    <a
-                      href={el}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                    >
-                      {index + 1}. ФАЙЛ (неопределенный тип) скачать
-                    </a>
-                  </div>
-                )
+                ) :
+                  type === 'xls' ? (
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      {/* добавить hover */}
+                      <a
+                        href={el}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                      >
+                        {index + 1}. ФАЙЛ XLS скачать
+                      </a>
+                    </div>
+
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      {/* добавить hover */}
+                      <a
+                        href={el}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                      >
+                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                      </a>
+                    </div>
+                  )
           }
         </li >
       );
@@ -531,25 +451,88 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     )}`;
   }
 
+  const place_volume_total_heft = place.reduce((acc, el) =>
+    acc += el.volume
+    , 0)
+
+  const place_total_heft = place.reduce((acc, el) =>
+    acc += el.heft
+    , 0)
+
+  const stringNumbersPlaces = place
+    .map(el => el.id)
+    .join(', ')
+
+  const propsProduct = () => {
+    const arr = []
+    if (order.is_individual) {
+      arr.push("individual")
+    } else { arr.push("express") }
+    if (addressRecipient.country_name === "Россия" && addressSendler.country_name === "Россия") {
+      arr.push("RF")
+    } else {
+      arr.push("international")
+    }
+    return arr.join("_")
+  }
+
+  // const numbersOnly = Number(String(order.id).replace(/\D/g, ''));
+
+  const propsPGF = {
+    order_number: order.order_number,
+    date_create_at: dateCreateOrder(order.created_at),
+    from_name: userSendler.name,
+    from_full_adress: addressSendler.full_address,
+    from_city: addressSendler.city_name,
+    from_country: addressSendler.country_name,
+    where_name: userRecipient.name,
+    where_full_adress: addressRecipient.full_address,
+    where_sity: addressRecipient.city_name,
+    where_counter: addressRecipient.country_name,//назвал поле неправильно подразумевал страну получения
+    from_code: `${addressSendler.country_zone}${addressSendler.city_zone ? ` ⯈  ${addressSendler.city_zone}` : ""}`,
+    where_code: `${addressRecipient.country_zone}${addressRecipient.city_zone ? ` ⯈  ${addressRecipient.city_zone}` : ""}`,
+    array_services: "Список доп услуг 111111111111 11111111111 111111111 111111111 11111111 11111111 1111111111111111111",
+    saved_price: "Страховка груза 1 Р",
+    volume_total_heft: place_volume_total_heft,
+    total_heft: place_total_heft,
+    sum_places: place?.[0]?.sumPlaces ?? 1,
+    array_numbers_places: stringNumbersPlaces,
+    from_phone: userSendler.phone,
+    where_phone: userRecipient.phone,
+    product: propsProduct(),
+    payment: order.is_paid,
+    shipping_invoice: "номер счета",
+    sender_markse: "комментарий",
+    content: "документ или груз",
+    order_id: order.id
+  }
+
+
   const mapOrder = (
     <div key={order.id} style={{ display: "flex" }}>
       <div style={{ width: "100%", }}>
         <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <p style={{ fontSize: "28px" }}> Номер заказа: {order.order_number}</p>
-          <Flex gap="middle" style={{ position: "absolute", top: "0px", right: "0px" }}>
-            <QRCode
-              {...sharedProps}
-              type="canvas"
-              icon="https://cdn.iconscout.com/icon/premium/png-512-thumb/gps-arrow-icon-svg-download-png-6291895.png?f=webp&w=512"
-              styles={stylesFunction}
-            />
-          </Flex>
+          <div style={{ position: "absolute", top: "0px", right: "0px" }}>
+            <Flex gap="middle"  >
+              <QRCode
+                {...sharedProps}
+                type="canvas"
+                icon="https://cdn.iconscout.com/icon/premium/png-512-thumb/gps-arrow-icon-svg-download-png-6291895.png?f=webp&w=512"
+                styles={stylesFunction}
+              />
+            </Flex>
+            <button onClick={(e) => {
+              e.preventDefault()
+              createPDFWaybill(propsPGF)
+            }}>Создать файл</button>
+          </div>
 
 
 
 
         </div><p> Статус заказа: {status} </p>
-        <p> Был создан: {dateCreateOrder(order.created_at)}</p>
+        <p> Был создан: {order.created_at ? dateCreateOrder(order.created_at) : ""}</p>
         <p> Полный рассчетный вес: {order.heft_full}</p>
         <p> Полная стоимость: {order.price_full}   <span style={{ color: "red" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
         <p> Индивидуальная скидка (заказа): {order.discount_this_send}</p>
@@ -579,9 +562,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           </p>
           <a
             href={`${yandexMapsLink(dataAddressInIdSendler.full_address)}`}
-            style={{ margin: "15px", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
+            style={{ margin: "15px 0", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
             target="_blank">
-            {dataAddressInIdSendler.full_address} на Яндекс.Картах
+            {dataAddressInIdSendler.full_address} НА КАРТЕ
           </a>
 
           {/* <p>{userSendler.created_at}</p>  */}
@@ -616,9 +599,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           </p>
           <a
             href={`${yandexMapsLink(dataAddressInIRecipient.full_address)}`}
-            style={{ margin: "15px", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
+            style={{ margin: "15px 0", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
             target="_blank">
-            {dataAddressInIRecipient.full_address} на Яндекс.Картах
+            {dataAddressInIRecipient.full_address} НА КАРТЕ
           </a>
           {/* <p>{userSendler.created_at}</p>  */}
           {/*уже известно когда созданы места*/}
@@ -637,16 +620,13 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           </ol>
         </div>
         {files.length > 0 ? <div style={{ display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
-          <p>Клиент прикрепил файлы:</p>
+          <p>Файлы заказа:</p>
           <ol style={{ listStyleType: "none", marginTop: "30px" }}>
             {mapfiles}
           </ol>
         </div> : null}
 
         {/* {order.1} */}
-
-
-
       </div>
     </div >
   )

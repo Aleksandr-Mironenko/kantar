@@ -155,7 +155,7 @@ export default async function fabric(formData: FormData) {
     const minutes = min < 10 ? `0${min}` : String(min)
     const h: number = now.getHours();
     const hours = h < 10 ? `0${h}` : String(h)
-    return `${hours}:${minutes}`
+    return `${hours + 3}:${minutes}`
   }
   const createTime = validTime()
 

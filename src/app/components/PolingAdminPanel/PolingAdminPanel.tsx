@@ -942,12 +942,7 @@ export default function PolingeAdminPanel() {
           <div className={styles.adminpages__title_table_bottom}>{pagination}</div>
           <div className={styles.adminpages__list}>{/*блок создать заказ*/}
             {/* тут  */}
-            <div>
-              <Order numberOrder={activeNumberOrder}
-                onClose={closeModal}
-                isModalOpen={isModalOpen}
-              />
-            </div>
+
           </div>
 
 

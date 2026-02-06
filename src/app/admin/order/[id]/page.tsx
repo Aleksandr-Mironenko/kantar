@@ -1,4 +1,4 @@
-import OrderCopy from "@/app/components/OrderCopy/OrderCopy";
+import Оrder from '@/app/components/Оrder/Order';
 
 export default async function OrderPage({ params }: {
   params: Promise<{ id: string }>;
@@ -7,5 +7,5 @@ export default async function OrderPage({ params }: {
 
   const numberOrder = Number(id);
 
-  return <OrderCopy numberOrder={numberOrder} />;
+  return <Оrder numberOrder={numberOrder} />;
 }

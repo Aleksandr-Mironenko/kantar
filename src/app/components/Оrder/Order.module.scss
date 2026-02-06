@@ -20,19 +20,18 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-
 }
 
 .modal {
-
+  padding: 20px;
   position: relative;
   background: white;
   border-radius: 16px;
-  padding: 10vw;
-  width: 90vw;
-  max-width: 95vw;
-  min-height: 95vh;
-  max-height: 90vh;
+  padding: 20px;
+  width: 98vw;
+  max-width: 98vw;
+  min-height: 98vh;
+  max-height: 98vh;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -42,29 +41,5 @@
 
   }
 
-  &__close {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    width: 36px;
-    height: 36px;
-    font-size: 32px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #999;
-    transform: scale(1);
-    font-weight: 400;
-    transform: scale(1);
-    display: inline-block;
-    transition: (transform 1s cubic-bezier(0.075, 0.82, 0.165, 1),
-        font-weight 1s cubic-bezier(0.075, 0.82, 0.165, 1));
 
-
-
-    &:hover {
-      transform: scale(1.15);
-      font-weight: 700;
-    }
-  }
 }

@@ -31,11 +31,11 @@ const stylesFunction: QRCodeProps['styles'] = (info) => {
 };
 
 
-const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onClose: () => void, isModalOpen: boolean }) => {
+const Order = ({ numberOrder }: { numberOrder: number }) => {
   const { styles: classNames } = useStyles();
 
   const sharedProps: QRCodeProps = {
-    value: 'https://kanta-i60yzketp-aleksandrs-projects-45823929.vercel.app/#calculator_express',
+    value: `https://kanta-m26229ivc-aleksandrs-projects-45823929.vercel.app/admin/order/${numberOrder}`,
     size: 140,
     classNames,
   };
@@ -1079,7 +1079,7 @@ const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onC
           {addFileInOrder ?
             <div style={{ position: "relative" }}>
               <div
-                onClick={() => setOpenOrderFiles(false)}
+                onClick={() => setAddFileInOrder(false)}
                 className={styles.closeButton} style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
                 отмена
               </div>
@@ -1108,21 +1108,13 @@ const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onC
 
   return (
     <>
-      {isModalOpen &&
-        <div className={styles.modalOverlay} onClick={onClose}>
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
 
-          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+          {mapOrder}
 
-
-            <div >
-              <button className={styles.modal__close} onClick={onClose}>
-                ×
-              </button>
-              {mapOrder}
-            </div>
-          </div>
         </div>
-      }
+      </div>
     </>
   )
 }

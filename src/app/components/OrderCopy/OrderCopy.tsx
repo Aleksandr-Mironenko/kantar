@@ -5,7 +5,7 @@ import { Flex, QRCode } from 'antd';
 import type { QRCodeProps } from 'antd';
 import { createStyles } from 'antd-style';
 import { PDFWayBillClient, UserInServer, PleaseInServer, AddressInServer } from "../DTO/DTO";
-import styles from './Order.module.scss'
+import styles from './OrderCopy.module.scss'
 import DownloadFile from "../Helpers/DownloadFile"
 
 const useStyles = createStyles(() => ({
@@ -31,7 +31,7 @@ const stylesFunction: QRCodeProps['styles'] = (info) => {
 };
 
 
-const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onClose: () => void, isModalOpen: boolean }) => {
+const OrderCopy = ({ numberOrder }: { numberOrder: number }) => {
   const { styles: classNames } = useStyles();
 
   const sharedProps: QRCodeProps = {
@@ -818,7 +818,7 @@ const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onC
         className={styles.closeButton} >
         ×
       </div>
-      <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные отправителя</h2>
+      <p style={{ fontSize: "28px", alignSelf: "center" }}>Данные отправителя</p>
       <p>ФИО: {userSendler.name}</p>
       <p  >
         Телефон:
@@ -910,7 +910,7 @@ const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onC
         className={styles.closeButton} >
         ×
       </div>
-      <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные получателя</h2>
+      <p style={{ fontSize: "28px", alignSelf: "center" }}>Данные получателя</p>
       <p>ФИО: {userRecipient.name}</p>
       <p style={{}}>
         Телефон:
@@ -1101,29 +1101,10 @@ const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onC
       </div>
     </div >
   )
-
-
-
-
-
   return (
-    <>
-      {isModalOpen &&
-        <div className={styles.modalOverlay} onClick={onClose}>
-
-          <div className={styles.modal} onClick={e => e.stopPropagation()}>
-
-
-            <div >
-              <button className={styles.modal__close} onClick={onClose}>
-                ×
-              </button>
-              {mapOrder}
-            </div>
-          </div>
-        </div>
-      }
-    </>
+    <div >
+      {mapOrder}
+    </div>
   )
 }
-export default Order
+export default OrderCopy

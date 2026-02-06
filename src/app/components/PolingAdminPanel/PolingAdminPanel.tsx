@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import {
   useReactTable,
   getCoreRowModel,
@@ -191,17 +191,45 @@ export default function PolingeAdminPanel() {
     return "Имя представителя клиента"
   }
 
+  {/* <Link href={`/admin/orders/${order.id}`}>
+  Открыть
+</Link> */}
 
   const columns: ColumnDef<TableOrdersRecord>[] = [
     //я хочу описать поле поле клиент тут может быть и отправитель и получатель
 
+    // {
+    //   accessorKey: "order_number",
+    //   header: "№",
+    //   meta: {
+    //     editable: false,
+    //   },
+    // },
+
+
     {
       accessorKey: "order_number",
       header: "№",
+      cell: info => {
+        const row = info.row.original;
+        const value = info.getValue<string>();
+
+        return (
+          <Link href={`/admin/order/${value}`}
+            // onClick={() => setActiveNumberOrder(row.order_number)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {value}
+          </Link>
+        );
+      },
       meta: {
         editable: false,
       },
     },
+
+
     {
       accessorKey: "created_at",
       header: "дата",

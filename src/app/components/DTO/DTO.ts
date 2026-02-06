@@ -314,7 +314,7 @@ export type DataFabricForOrder = {
 
 // серверный
 export type TableOrdersRecord = {
-  id: number,
+  id: string,
   order_number: number,
   created_at: string,
   sender_id: number,

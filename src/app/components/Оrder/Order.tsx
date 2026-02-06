@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect } from 'react'
 import { TableOrdersRecord, FileObj } from "../DTO/DTO";
 import { Flex, QRCode } from 'antd';

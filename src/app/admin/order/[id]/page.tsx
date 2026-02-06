@@ -1,11 +1,11 @@
 import OrderCopy from "@/app/components/OrderCopy/OrderCopy";
 
-interface Props {
-  params: { id: string };
-}
+export default async function OrderPage({ params }: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-export default function OrderPage({ params }: Props) {
-  const numberOrder = Number(params.id);
+  const numberOrder = Number(id);
 
   return <OrderCopy numberOrder={numberOrder} />;
 }

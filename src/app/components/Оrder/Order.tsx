@@ -138,7 +138,7 @@ const Order = ({ numberOrder, onClose, isModalOpen }: { numberOrder: number, onC
 
   const [order, setOrder] = useState<TableOrdersRecord>(
     {
-      id: 0,
+      id: '',
       order_number: 0,
       created_at: "",
       sender_id: 0,

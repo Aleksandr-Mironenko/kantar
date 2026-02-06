@@ -47,7 +47,7 @@ export default function PolingeAdminPanel() {
   const [activeNumberOrder, setActiveNumberOrder] = useState<number>(100042)
 
   const [editingCell, setEditingCell] = useState<{
-    orderId: number;      // или string — как у тебя в orders
+    orderId: string;      // или string — как у тебя в orders
     columnId: string;
     value: string;
   } | null>(null);

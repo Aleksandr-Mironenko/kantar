@@ -553,7 +553,7 @@ export interface PDFWayBillClient {
   shipping_invoice: string;
   sender_markse: string;
   content: string;
-  order_id: number;
+  order_id: string;
 }
 
 

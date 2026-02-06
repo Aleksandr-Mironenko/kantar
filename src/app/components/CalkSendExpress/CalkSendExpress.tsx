@@ -23,6 +23,8 @@ export default function CalkSendExpress() {
   const [notification, setNotification] = useState<boolean>(false)
   // const [loading, setLoading] = useState<boolean>(true);
   const [isFinalHeft, setIsFinalHeft] = useState<number>(0.5)
+  const [isFinalOnlyHeft, setIsFinalOnlyHeft] = useState<number>(0)
+  const [isFinalOnlyVolume, setIsFinalOnlyVolume] = useState<number>(0)
   const [individualOffer, setIndividualOffer] = useState<boolean>(false)// больше ли вес чем personalRequestContant
   const [refusedTheIndividualOffer, setRefusedTheIndividualOffer] = useState<boolean>(false)// отказся ли уже
   const [argsNotification, setArgsNotification] = useState<PropsNotification>({
@@ -568,7 +570,8 @@ export default function CalkSendExpress() {
         return acc + el.heft * el.places;
       }, 0)
     setIsFinalHeft(totalVolume > totalHeft ? totalVolume : totalHeft)
-
+    setIsFinalOnlyHeft(totalHeft)
+    setIsFinalOnlyVolume(totalVolume)
   }, [places]
   )
 
@@ -581,6 +584,8 @@ export default function CalkSendExpress() {
     koefficient,
     document,
     isFinalHeft,
+    isFinalOnlyHeft,
+    isFinalOnlyVolume,
     isModalOpen,
     fromCountryObj,
     fromCityObj,

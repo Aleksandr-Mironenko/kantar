@@ -1,6 +1,15 @@
 "use server";
+import { toCorrectUserAcc } from '@/app/components/DTO/DTO'
 
 export default async function fabric(formData: FormData) {
+  const correctFio = (stringFio: string): string => {
+    const arrFio = stringFio.trim().split(/\s+/)
+    let res = ''
+    arrFio.forEach((el, index) => res += `${index > 0 ? " " : ""}${el[0].toUpperCase()}${el.slice(1).toLowerCase()}`)
+    return res
+  }
+
+
   const filesWithId: { id: number; file: File }[] = [];
   let agree: boolean = false;
   let client: 'ooo' | 'ip' | 'private' = 'private';
@@ -30,6 +39,39 @@ export default async function fabric(formData: FormData) {
       else if (value === "ip") client = "ip";
       else if (value === "private") client = "private";
     }
+  }
+
+  const getOrCreateUserWhereData: toCorrectUserAcc = {
+    email: null,
+    phone: null,
+    name: null,
+    address_id: null,//надо изменить создав новый или получив старый
+    is_client: true,
+    is_dogovor: false,
+    type_acc: null,
+    ref_code: null,//поменять
+    count_refcode_use: null,
+    discount: null,
+    passport: null,
+    snils: null,
+    fio_gd_OOO: null,
+    name_OOO: null,
+    oficial_adress_OOO: null,
+    actual_address_OOO: null,
+    inn_OOO: null,
+    kpp_OOO: null,
+    ogrn_OOO: null,
+    rs_OOO: null,
+    bic_OOO: null,
+    corr_score_OOO: null,
+    comment,
+    fio_IP: null,
+    actual_address_IP: null,
+    inn_IP: null,
+    ogrn_IP: null,
+    rs_IP: null,
+    bic_IP: null,
+    corr_score_IP: null,
   }
 
   for (const [key, value] of formData.entries()) {
@@ -75,6 +117,28 @@ export default async function fabric(formData: FormData) {
         } else if (key === "kss") {
           kss = value
         }
+
+        getOrCreateUserWhereData.email = email.toLowerCase()
+        getOrCreateUserWhereData.phone = phone
+        getOrCreateUserWhereData.name = name && name !== " " ? correctFio(name) : "Имя"
+        getOrCreateUserWhereData.address_id = 56//надо изменить создав новый или получив старый но строго админу! 
+        getOrCreateUserWhereData.is_client = true
+        getOrCreateUserWhereData.is_dogovor = false
+        getOrCreateUserWhereData.type_acc = "request" as const
+        getOrCreateUserWhereData.ref_code = `${companyName}_referal#${56}`//поменять
+        getOrCreateUserWhereData.count_refcode_use = 0
+        getOrCreateUserWhereData.discount = 0
+        getOrCreateUserWhereData.comment = comment
+        getOrCreateUserWhereData.fio_gd_OOO = nameGD
+        getOrCreateUserWhereData.name_OOO = companyName
+        getOrCreateUserWhereData.oficial_adress_OOO = legalAddress
+        getOrCreateUserWhereData.actual_address_OOO = realAddress
+        getOrCreateUserWhereData.inn_OOO = innOoo
+        getOrCreateUserWhereData.kpp_OOO = kpp
+        getOrCreateUserWhereData.ogrn_OOO = ogrn
+        getOrCreateUserWhereData.rs_OOO = rss
+        getOrCreateUserWhereData.bic_OOO = bik
+        getOrCreateUserWhereData.corr_score_OOO = kss
       }
       else if (client === "ip") {
         if (key === "client") {
@@ -102,6 +166,25 @@ export default async function fabric(formData: FormData) {
         } else if (key === "kss") {
           kss = value
         }
+
+        getOrCreateUserWhereData.email = email.toLowerCase()
+        getOrCreateUserWhereData.phone = phone
+        getOrCreateUserWhereData.name = name && name !== " " ? correctFio(name) : "Имя"
+        getOrCreateUserWhereData.address_id = 56//надо изменить создав новый или получив старый
+        getOrCreateUserWhereData.is_client = true
+        getOrCreateUserWhereData.is_dogovor = false
+        getOrCreateUserWhereData.type_acc = "request" as const
+        getOrCreateUserWhereData.ref_code = `${innip}_referal#${56}`//поменять
+        getOrCreateUserWhereData.count_refcode_use = 0
+        getOrCreateUserWhereData.discount = 0
+        getOrCreateUserWhereData.comment = comment
+        getOrCreateUserWhereData.fio_IP = ipName
+        getOrCreateUserWhereData.actual_address_IP = realAddressIp
+        getOrCreateUserWhereData.inn_IP = innip
+        getOrCreateUserWhereData.ogrn_IP = ogrnip
+        getOrCreateUserWhereData.rs_IP = rss
+        getOrCreateUserWhereData.bic_IP = bik
+        getOrCreateUserWhereData.corr_score_IP = kss
       }
       else if (client === "private") {
         if (key === "ooo") {
@@ -118,6 +201,20 @@ export default async function fabric(formData: FormData) {
           passport = value
         }
       }
+
+      getOrCreateUserWhereData.email = email.toLowerCase()
+      getOrCreateUserWhereData.phone = phone
+      getOrCreateUserWhereData.name = name && name !== " " ? correctFio(name) : "Имя"
+      getOrCreateUserWhereData.address_id = 56//надо изменить создав новый или получив старый
+      getOrCreateUserWhereData.is_client = true
+      getOrCreateUserWhereData.is_dogovor = false
+      getOrCreateUserWhereData.type_acc = "request" as const
+      getOrCreateUserWhereData.ref_code = `${email}_referal#${56}`//поменять
+      getOrCreateUserWhereData.count_refcode_use = 0
+      getOrCreateUserWhereData.discount = 0
+      getOrCreateUserWhereData.comment = comment
+      getOrCreateUserWhereData.passport = passport
+      getOrCreateUserWhereData.snils = null  //заменить  
     }
   }
 
@@ -303,5 +400,9 @@ ${comment}
       .replace(/^8/, '7')
       .replace(/^7/, '+7')
 
-  return { agree, phone: normalizedPhone, email, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessage } }
+  console.log(getOrCreateUserWhereData)
+
+  return { getOrCreateUserWhereData, agree, phone: normalizedPhone, email, fileArray, sms: { messageUserSMS, messageAdminSMS }, emailMessage: { bodyTextMessageUser, bodyTextMessage } }
 }
+
+

@@ -7,7 +7,7 @@ import WhoWeAre from './components/WhoWeAre/WhoWeAre';
 import Advantages from './components/Advantages/Advantages';
 import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
-import FormCalc from './components/FormCalc/FormCalc'
+// import FormCalc from './components/FormCalc/FormCalc'
 import CalkSendExpress from './components/CalkSendExpress/CalkSendExpress'
 import ThirdPartyFix from './components/ThirdPartyFix/ThirdPartyFix';
 import CooperationRequestForm from './components/CooperationRequestForm/CooperationRequestForm'
@@ -27,10 +27,11 @@ export default function Home() {
       <WhoWeAre />
       {/* <Services />*/}
       <Advantages />
-      <FormCalc />
+      {/* <FormCalc /> */}{/* форма запрос на персональный рассчет - не нужна */}
       <Contacts />
       <CalkSendExpress />
-      <CooperationRequestForm />
+      <CooperationRequestForm />{/* сделать условным по запросу типа внутри аккаунта
+      нахождение под авторизацией клиента */}
       <CalkSendLong />
       <Footer />
     </>

@@ -387,7 +387,11 @@ export default function FormIp({ alertNotification }: CooperationProps) {
               invoiceFiles={invoiceFiles}
               setInvoiceFiles={setInvoiceFiles}
               showInvois={showInvois}
-              setShowInvois={setShowInvois} />
+              setShowInvois={setShowInvois}
+              isOrder={false}
+              isUserSender={false}
+              isUserRecipient={false}
+            />
           </div>
 
 

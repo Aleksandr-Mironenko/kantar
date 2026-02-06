@@ -1,21 +1,31 @@
 import supabaseServer from '../lib/supabase/server-secret';
 import { DataCreateAddress } from '../../components/DTO/DTO'
 
+type CreatedAddressResult = {
+  id: number;
+  country_name: string;
+  city_name: string | null;
+};
+
 export async function getOrCreateAddress(
   data: DataCreateAddress
-): Promise<number> {
+): Promise<CreatedAddressResult> {
 
   // проверяем наличие адреса в бд совместно по полному адресу и индексу
   const { data: existing } = await supabaseServer
     .from("addresses")
-    .select("id")
+    .select("id,country_name,city_name")
     .eq("full_address", data.fullAddress)
     .eq("index", data.index)
     .maybeSingle();
 
   //если нашли - возвращаем id и отрезаем продолжение функции
   if (existing) {
-    return existing.id;
+    return {
+      id: existing.id,
+      country_name: existing.country_name,
+      city_name: existing.city_name
+    }
   }
 
   // создаём запись в таблице
@@ -33,12 +43,16 @@ export async function getOrCreateAddress(
       city_zone_id: data.cityZoneId,
       index: data.index
     })
-    .select("id")
+    .select("id,country_name,city_name")
     .single();
 
   //если ошибка - кидаем её выше
   if (error) throw error;
 
   //возвращаем id созданного адреса или найденного
-  return created.id;
-}
+  return {
+    id: created.id,
+    country_name: created.country_name,
+    city_name: created.city_name
+  }
+};

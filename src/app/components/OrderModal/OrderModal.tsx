@@ -62,7 +62,9 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     koefficient, //скидка
     document, //документ или груз
     places,//массив характеристик отправлений 
-    isFinalHeft, //вес по которому рассчет 
+    isFinalHeft, // по которому рассчетный вес
+    isFinalOnlyHeft, // только вес
+    isFinalOnlyVolume, //только объем
     fromCountryObj, // объект страны откуда
     fromCityObj, // объект города откуда
     whereCountryObj, // объект страны куда
@@ -128,6 +130,8 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     formData.append("document", document);
     formData.append("descriptionOfCargo", descriptionOfCargo);
     formData.append("isFinalHeft", String(isFinalHeft))
+    formData.append("isFinalOnlyHeft", String(isFinalOnlyHeft))
+    formData.append("isFinalOnlyVolume", String(isFinalOnlyVolume))
     formData.append("price", String(price === 0 ? 0 : price))
     formData.append("count", String(count))
     formData.append("nds", String(price === 0 ? 0 : nds));
@@ -573,7 +577,11 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                   invoiceFiles={invoiceFiles}
                   setInvoiceFiles={setInvoiceFiles}
                   showInvois={showInvois}
-                  setShowInvois={setShowInvois} />
+                  setShowInvois={setShowInvois}
+                  isOrder={false}
+                  isUserSender={false}
+                  isUserRecipient={false}
+                />
                 }
                 {document === "goods" &&
                   <div className={styles.label__wrapper}  >
@@ -624,8 +632,6 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                     <button
                       type="button"
                       className={styles.modal__submit} onClick={(e) => checkodeSubmit(e)} >
-                      {//добавить сюда функцию проверки кода
-                      }
                       отправить код подтверждения
                     </button>
 

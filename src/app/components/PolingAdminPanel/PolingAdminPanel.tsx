@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,18 +10,21 @@ import Order from '../Оrder/Order'
 // import { orders } from "./data";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./PolingAdminPanel.module.scss";
-import { TableOrdersRecord, TableOrdersRecordMeta, TableOrdersRecorResponse, TableOrdersRecordWithEvent, WSMessage } from "../DTO/DTO";
+import { TableOrdersRecord, TableOrdersRecordMeta, TableOrdersRecorResponse, TableOrdersRecordWithEvent, WSMessage, PleaseInServer } from "../DTO/DTO";
 import { ColumnDef } from "@tanstack/react-table";
 
 // Extend ColumnDef to include meta with editable property
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
     editable?: boolean;
-    editor?: "input" | "select";
+    editor?: "input" | "select" | "date";
     options?: { label: string; value: string | number }[];
-    inputType?: "text" | "number"
+    inputType?: "text" | "number" | "date";
   }
 }
+
+
+
 
 export default function PolingeAdminPanel() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -36,8 +39,11 @@ export default function PolingeAdminPanel() {
     hasPrev: false,
   })
 
-  const [place, setPlace] = useState([])
+  // const [place, setPlace] = useState<PleaseInServer[]>([])
   const [view, setView] = useState<boolean>(false)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)  //прокинуть пропс в заказ
+
+
   const [activeNumberOrder, setActiveNumberOrder] = useState<number>(100042)
 
   const [editingCell, setEditingCell] = useState<{
@@ -45,7 +51,7 @@ export default function PolingeAdminPanel() {
     columnId: string;
     value: string;
   } | null>(null);
-  const [url, setUrl] = useState<string[]>([]);
+  // const [url, setUrl] = useState<string[]>([]);
 
   const getOrders = async (page: number) => {
     const request = await fetch(`api/admin/admin-panel-poling/orders/search-all-orders?page=${page}`)
@@ -74,7 +80,121 @@ export default function PolingeAdminPanel() {
   }
 
 
+
+  //       sender_name: data.senderName,
+  //       sender_type_acc: data.senderType_acc,
+  //       sender_name_OOO: data.senderName_OOO,
+  //       sender_fio_gd_OOO: data.senderFio_gd_OOO,
+  //       sender_fio_IP: data.senderFio_IP,
+  //       recipient_name: data.recipientName,
+  //       recipient_type_acc: data.recipientType_acc,
+  //       recipient_name_OOO: data.recipientName_OOO,
+  //       recipient_fio_gd_OOO: data.recipientFio_gd_OOO,
+  //       recipient_fio_IP: data.recipientFio_IP,
+  //       sender_country_name: data.sender_country_name,
+  //       recipient_country_name: data.recipient_country_name,
+  //       sender_city_name: data.sender_city_name,
+  //       recipient_city_name: data.recipient_city_name,0
+
+
+  function getDisplayClient(
+    type: string,
+    name: string,
+    spareName: string,
+    nameOOO?: string,
+    fioIP?: string,
+    fioGdOOO?: string
+  ) {
+    if (type === "noAcc" || type === "private") {
+      console.log("105name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+
+    }
+
+    if (type === "request") {
+      console.log("111nameOOO", nameOOO)
+      if (nameOOO && (nameOOO !== "" && nameOOO !== " " && nameOOO !== null)) return nameOOO
+      console.log("113fioGdOOO", fioGdOOO)
+      if (fioGdOOO && (fioGdOOO !== "" && fioGdOOO !== " " && fioGdOOO !== null)) return fioGdOOO
+      console.log("115fioIP", fioIP)
+      if (fioIP && (fioIP !== "" && fioIP !== " " && fioIP !== null)) return fioIP
+      console.log("117name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+    }
+
+    if (type === "OOO") {
+      console.log("123nameOOO", nameOOO)
+      if (nameOOO && (nameOOO !== "" && nameOOO !== " " && nameOOO !== null)) return nameOOO
+      console.log("125fioGdOOO", fioGdOOO)
+      if (fioGdOOO && (fioGdOOO !== "" && fioGdOOO !== " " && fioGdOOO !== null)) return fioGdOOO
+      console.log("127name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+
+    }
+
+    if (type === "IP") {
+      console.log("133fioIP", fioIP)
+      if (fioIP && (fioIP !== "" && fioIP !== " " && fioIP !== null)) return fioIP
+      console.log("135name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+    }
+    console.log("139name", name)
+    if (name && (name !== "" && name !== " " && name !== null)) return name
+    if (spareName && (spareName !== "" && spareName !== " " && spareName !== null)) return spareName
+    return "Имя клиента"
+  }
+
+  function getDisplayClientRepresentative(
+    type: string,
+    name: string,
+    spareName: string,
+    nameOOO?: string,
+    fioIP?: string,
+    fioGdOOO?: string
+  ) {
+    if (type === "noAcc" || type === "private") {
+      console.log("105name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+
+    }
+
+    if (type === "request") {
+      console.log("111nameOOO", nameOOO)
+      if (nameOOO && (nameOOO !== "" && nameOOO !== " " && nameOOO !== null)) return name
+      console.log("113fioGdOOO", fioGdOOO)
+      if (fioGdOOO && (fioGdOOO !== "" && fioGdOOO !== " " && fioGdOOO !== null)) return name
+      console.log("115fioIP", fioIP)
+      if (fioIP && (fioIP !== "" && fioIP !== " " && fioIP !== null)) return name
+      console.log("117name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+    }
+
+    if (type === "OOO") {
+      console.log("123nameOOO", nameOOO)
+      if (nameOOO && (nameOOO !== "" && nameOOO !== " " && nameOOO !== null)) return name
+      console.log("125fioGdOOO", fioGdOOO)
+      if (fioGdOOO && (fioGdOOO !== "" && fioGdOOO !== " " && fioGdOOO !== null)) return name
+      console.log("127name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+
+    }
+
+    if (type === "IP") {
+      console.log("133fioIP", fioIP)
+      if (fioIP && (fioIP !== "" && fioIP !== " " && fioIP !== null)) return name
+      console.log("135name", name)
+      if (name && (name !== "" && name !== " " && name !== null)) return name
+    }
+    console.log("139name", name)
+    if (name && (name !== "" && name !== " " && name !== null)) return name
+    if (spareName && (spareName !== "" && spareName !== " " && spareName !== null)) return spareName
+    return "Имя представителя клиента"
+  }
+
+
   const columns: ColumnDef<TableOrdersRecord>[] = [
+    //я хочу описать поле поле клиент тут может быть и отправитель и получатель
+
     {
       accessorKey: "order_number",
       header: "№",
@@ -91,6 +211,191 @@ export default function PolingeAdminPanel() {
       },
     },
     {
+      accessorKey: "loading_date",
+      header: "ДАТА ЗАГРУЗКИ",
+      cell: info => {
+        const value = info.getValue<string>();
+        return new Date(value).toLocaleDateString("ru-RU")
+          ;
+      },
+      meta: {
+        editable: true,
+        editor: "date",
+        inputType: "date",
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Статус",
+      cell: info => `${info.getValue<string>() === "new" ? "новый" :
+        info.getValue<string>() === "pickup_required_(processed)" ? "требуется забор (обработано)" :
+          info.getValue<string>() === "awaiting_payment_(shipped)" ? "ожидает оплаты(отправлен)" :
+            info.getValue<string>() === "awaiting_payment_(not_shipped)" ? "ожидает оплаты(не отправлен)" :
+              info.getValue<string>() === "in_transit" ? "в пути" :
+                info.getValue<string>() === "delivery_pending" ? "согласовываем вручение" :
+                  info.getValue<string>() === "in_transit_(delivery)" ? "в пути (вручение)" :
+                    info.getValue<string>() === "delivered" ? "вручено" :
+                      info.getValue<string>() === "canceled" ? "отменено" :
+                        info.getValue<string>() === "archived" ? "архивный" : ""
+        }`,
+      meta: {
+        editable: true,
+        editor: "select",
+        options: [
+          { value: "new", label: "новый" },
+          { value: "pickup_required_(processed)", label: "требуется забор (обработано)" },
+          { value: "awaiting_payment_(shipped)", label: "ожидает оплаты (отправлен)" },
+          { value: "awaiting_payment_(not_shipped)", label: "ожидает оплаты(не отправлен)" },
+          { value: "in_transit", label: "в пути" },
+          { value: "delivery_pending", label: "согласовываем вручение" },
+          { value: "in_transit_(delivery)", label: "в пути (вручение)" },
+          { value: "delivered", label: "вручено" },
+          { value: "canceled", label: "отменено" },
+          { value: "archived", label: "архивный" },
+        ],
+      },
+    },
+    {
+      accessorKey: "is_paid",
+      header: "Оплачен",
+      cell: info => `${info.getValue<number>() ? "да" : "нет"}`,
+      meta: {
+        editable: true,
+        editor: "select",
+        options: [
+          { value: "true", label: "да" },
+          { value: "false", label: "нет" },
+        ],
+      },
+    },
+    {
+      accessorFn: (row) => {
+        if (row.isSender === "sender") {
+          return getDisplayClient(
+            row.sender_type_acc,
+            row.sender_name,
+            row.name_from,
+            row.sender_name_OOO,
+            row.sender_fio_IP,
+            row.sender_fio_gd_OOO,
+
+          );
+        }
+        return getDisplayClient(
+          row.recipient_type_acc,
+          row.recipient_name,
+          row.name_where,
+          row.recipient_name_OOO,
+          row.recipient_fio_IP,
+          row.recipient_fio_gd_OOO
+
+        );
+      },
+      id: "client",
+      header: "клиент",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+        if (row.isSender === "sender") {
+          return getDisplayClientRepresentative(
+            row.sender_type_acc,
+            row.sender_name,
+            row.name_from,
+            row.sender_name_OOO,
+            row.sender_fio_IP,
+            row.sender_fio_gd_OOO,
+
+          );
+        }
+        return getDisplayClientRepresentative(
+          row.recipient_type_acc,
+          row.recipient_name,
+          row.name_where,
+          row.recipient_name_OOO,
+          row.recipient_fio_IP,
+          row.recipient_fio_gd_OOO,
+
+        );
+      },
+      id: "clientRepresentative",
+      header: "Представитель клиента",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+
+        return getDisplayClient(
+          row.sender_type_acc,
+          row.sender_name,
+          row.name_from,
+          row.sender_name_OOO,
+          row.sender_fio_IP,
+          row.sender_fio_gd_OOO,
+        );
+      },
+      id: "sender",
+      header: "отправитель",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+        return getDisplayClientRepresentative(
+          row.sender_type_acc,
+          row.sender_name,
+          row.name_from,
+          row.sender_name_OOO,
+          row.sender_fio_IP,
+          row.sender_fio_gd_OOO,
+        );
+      },
+      id: "senderRepresentative",
+      header: "Представитель отправителя",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+        return getDisplayClient(
+          row.recipient_type_acc,
+          row.recipient_name,
+          row.name_where,
+          row.recipient_name_OOO,
+          row.recipient_fio_IP,
+          row.recipient_fio_gd_OOO,
+        );
+      },
+      id: "recipient",
+      header: "получатель",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+        return getDisplayClientRepresentative(
+          row.recipient_type_acc,
+          row.recipient_name,
+          row.name_from,
+          row.recipient_name_OOO,
+          row.recipient_fio_IP,
+          row.recipient_fio_gd_OOO,
+        );
+      },
+      id: "resipientRepresentative",
+      header: "Представитель получателя",
+      meta: {
+        editable: false,
+      },
+    },
+    {
       accessorKey: "heft_full",
       header: "вес",
       meta: {
@@ -99,6 +404,33 @@ export default function PolingeAdminPanel() {
         inputType: "text",
       },
     },
+    {
+      accessorKey: "unloading_date",
+      header: "ДАТА ЗАВЕРШЕНИЯ",
+      cell: info => {
+        const value = info.getValue<string>();
+        return new Date(value).toLocaleDateString("ru-RU")
+          ;
+      },
+      meta: {
+        editable: true,
+        editor: "date",
+        inputType: "date",
+      },
+    },
+
+
+
+    {
+
+      accessorFn: row => `${row.heft_only_full} / ${row.volume_only_full}`,
+      id: "weight_volume",
+      header: "ВЕС / ОБЪЕМ",
+      meta: {
+        editable: false, // редактировать объединённое поле обычно нельзя
+      },
+    },
+
     {
       accessorKey: "price_full",
       header: "Стоимость",
@@ -110,7 +442,7 @@ export default function PolingeAdminPanel() {
     {
       accessorKey: "discount_this_send",
       header: "скидка",
-      cell: info => `${info.getValue<number>()}%`,
+      cell: info => `${info.getValue<number>()} % `,
       meta: {
         editable: true,
         editor: "select",
@@ -231,58 +563,14 @@ export default function PolingeAdminPanel() {
         ],
       },
     },
-    {
-      accessorKey: "is_paid",
-      header: "Оплачен",
-      cell: info => `${info.getValue<number>() ? "да" : "нет"}`,
-      meta: {
-        editable: true,
-        editor: "select",
-        options: [
-          { value: "true", label: "да" },
-          { value: "false", label: "нет" },
-        ],
-      },
-    },
-    {
-      accessorKey: "status",
-      header: "Статус",
-      cell: info => `${info.getValue<string>() === "new" ? "новый" :
-        info.getValue<string>() === "pickup_required_(processed)" ? "требуется забор (обработано)" :
-          info.getValue<string>() === "awaiting_payment_(shipped)" ? "ожидает оплаты(отправлен)" :
-            info.getValue<string>() === "awaiting_payment_(not_shipped)" ? "ожидает оплаты(не отправлен)" :
-              info.getValue<string>() === "in_transit" ? "в пути" :
-                info.getValue<string>() === "delivery_pending" ? "согласовываем вручение" :
-                  info.getValue<string>() === "in_transit_(delivery)" ? "в пути (вручение)" :
-                    info.getValue<string>() === "delivered" ? "вручено" :
-                      info.getValue<string>() === "canceled" ? "отменено" :
-                        info.getValue<string>() === "archived" ? "архивный" : ""}`,
-      meta: {
-        editable: true,
-        editor: "select",
-        options: [
-          { value: "new", label: "новый" },
-          { value: "pickup_required_(processed)", label: "требуется забор (обработано)" },
-          { value: "awaiting_payment_(shipped)", label: "ожидает оплаты (отправлен)" },
-          { value: "awaiting_payment_(not_shipped)", label: "ожидает оплаты(не отправлен)" },
-          { value: "in_transit", label: "в пути" },
-          { value: "delivery_pending", label: "согласовываем вручение" },
-          { value: "in_transit_(delivery)", label: "в пути (вручение)" },
-          { value: "delivered", label: "вручено" },
-          { value: "canceled", label: "отменено" },
-          { value: "archived", label: "архивный" },
-        ],
-      },
-    },
-
-    {
-      accessorKey: "name_from",
-      header: "Отправитель",
-      meta: {
-        editable: true,
-        editor: "input",
-      },
-    },
+    // {
+    //   accessorKey: "name_from",
+    //   header: "Отправитель",
+    //   meta: {
+    //     editable: true,
+    //     editor: "input",
+    //   },
+    // },
     {
       accessorKey: "phone_from",
       header: "номер отправителя",
@@ -291,22 +579,22 @@ export default function PolingeAdminPanel() {
         editor: "input",
       },
     },
-    {
-      accessorKey: "email_from",
-      header: "Почта отправителя",
-      meta: {
-        editable: true,
-        editor: "input",
-      },
-    },
-    {
-      accessorKey: "name_where",
-      header: "Получатель",
-      meta: {
-        editable: true,
-        editor: "input",
-      },
-    },
+    // {
+    //   accessorKey: "email_from",
+    //   header: "Почта отправителя",
+    //   meta: {
+    //     editable: true,
+    //     editor: "input",
+    //   },
+    // },
+    // {
+    //   accessorKey: "name_where",
+    //   header: "Получатель",
+    //   meta: {
+    //     editable: true,
+    //     editor: "input",
+    //   },
+    // },
     {
       accessorKey: "phone_where",
       header: "номер получателя",
@@ -315,14 +603,14 @@ export default function PolingeAdminPanel() {
         editor: "input",
       },
     },
-    {
-      accessorKey: "email_where",
-      header: "Почта получателя",
-      meta: {
-        editable: true,
-        editor: "input",
-      },
-    },
+    // {
+    //   accessorKey: "email_where",
+    //   header: "Почта получателя",
+    //   meta: {
+    //     editable: true,
+    //     editor: "input",
+    //   },
+    // },
   ];
 
 
@@ -395,29 +683,29 @@ export default function PolingeAdminPanel() {
 
 
 
-  const getPlaces = async (props = 1000100) => {
-    const request = await fetch("api/admin/admin-panel-poling/orders/search-place-in-orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        props
-      })
-    })
+  // const getPlaces = async (numberOrder: number = 1000100) => {
+  //   const request = await fetch("api/admin/admin-panel-poling/orders/search-place-in-orders", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       numberOrder
+  //     })
+  //   })
 
-    if (!request.ok) {
-      throw new Error("Ошибка получения мест")
-    }
+  //   if (!request.ok) {
+  //     throw new Error("Ошибка получения мест")
+  //   }
 
-    const response = await request.json();
-    setUrl(response.arrrfiles)
-    setPlace(response.arrayPlacesInOrder)
+  //   const response = await request.json();
+  //   setUrl(response.arrrfiles)
+  //   setPlace(response.arrayPlacesInOrder)
 
-  }
-  console.log(place)
+  // }
+  // console.log(place)
 
-  useEffect(() => {
-    getPlaces(100070)
-  }, []);
+  // useEffect(() => {
+  //   getPlaces(100100)
+  // }, []);
 
 
 
@@ -483,6 +771,11 @@ export default function PolingeAdminPanel() {
     </>
   )
 
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
   return (
     <>
       <button onClick={() => setIsOpen(prev => !prev)}>{isOpen ? "Закрыть админку" : "Открыть админку"} </button>
@@ -524,6 +817,7 @@ export default function PolingeAdminPanel() {
                               console.log("Price clicked:", value)
                               setActiveNumberOrder(value)
                               setView(true)
+                              setIsModalOpen(true)
 
                             }
                           }}
@@ -541,7 +835,11 @@ export default function PolingeAdminPanel() {
                             const rawValue = cell.getValue();
                             let value = "";
 
-                            if (cell.column.id === "is_paid" || cell.column.id === "is_individual") {
+                            if (cell.column.columnDef.meta?.editor === "date") {
+                              value = rawValue
+                                ? String(rawValue).split("T")[0] // <-- вот это главное
+                                : "";
+                            } else if (cell.column.id === "is_paid" || cell.column.id === "is_individual") {
                               value = rawValue ? "true" : "false";
                             } else {
                               value = String(rawValue ?? "");
@@ -615,31 +913,17 @@ export default function PolingeAdminPanel() {
           </div>
           <div className={styles.adminpages__title_table_bottom}>{pagination}</div>
           <div className={styles.adminpages__list}>{/*блок создать заказ*/}
+            {/* тут  */}
+            <div>
+              <Order numberOrder={activeNumberOrder}
+                onClose={closeModal}
+                isModalOpen={isModalOpen}
+              />
+            </div>
+          </div>
 
-            {view && <Order numberOrder={activeNumberOrder} />}
-            {/* <div className={styles.adminpages__item}>15 лет опыта</div>
-        <div className={styles.adminpages__item}>Страхование груза</div>
-        <div className={styles.adminpages__item}>Доставка точно в срок</div>
-        <div className={styles.adminpages__item}>Крупная собственная сеть</div> */}
-          </div>
-          <div className={styles.adminpages__list}>{/*блок новые заказы*/}
-            {/* <div className={styles.adminpages__item}>15 лет опыта</div>
-        <div className={styles.adminpages__item}>Страхование груза</div>
-        <div className={styles.adminpages__item}>Доставка точно в срок</div>
-        <div className={styles.adminpages__item}>Крупная собственная сеть</div> */}
-          </div>
-          <div className={styles.adminpages__list}>{/*блок все заказы*/}
-            {/* <div className={styles.adminpages__item}>15 лет опыта</div>
-        <div className={styles.adminpages__item}>Страхование груза</div>
-        <div className={styles.adminpages__item}>Доставка точно в срок</div>
-        <div className={styles.adminpages__item}>Крупная собственная сеть</div> */}
-          </div>
-          <div className={styles.adminpages__list}>{/*услуги редактирование просмотр и тд*/}
-            {/* <div className={styles.adminpages__item}>15 лет опыта</div>
-        <div className={styles.adminpages__item}>Страхование груза</div>
-        <div className={styles.adminpages__item}>Доставка точно в срок</div>
-        <div className={styles.adminpages__item}>Крупная собственная сеть</div> */}
-          </div>
+
+
 
         </section >) : null
       }

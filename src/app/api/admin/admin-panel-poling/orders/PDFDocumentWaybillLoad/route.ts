@@ -1,265 +1,15 @@
-
-// import fs from 'fs';
-// import path from 'path';
-// import { PDFDocument } from 'pdf-lib';
-// import { uploadFiles } from '@/app/api/orders/uploadFiles'
-// import fontkit from '@pdf-lib/fontkit';
-
-
-
-// interface PDFWayBill {
-//   order_number: number,
-//   date_create_at: string,
-//   from_name: string,
-//   from_full_adress: string,
-//   from_city: string,
-//   from_country: string,
-//   where_name: string,
-//   where_full_adress: string,
-//   where_sity: string,
-//   where_counter: string,
-//   from_code: string,
-//   where_code: string,
-//   array_services: string,
-//   saved_price: string,
-//   volume_total_heft: number,
-//   total_heft: number,
-//   sum_places: number,
-//   array_numbers_places: string,
-//   from_phone: string,
-//   where_phone: string,
-//   product: string,
-//   payment: string,
-//   shipping_invoice: string,
-//   sender_markse: string,
-//   content: string
-
-// }
-
-
-
-// export async function POST(request: Request): Promise<Response> {
-
-//   try {
-//     const { data } = await request.json();
-//     // Деструктурирую пропс
-//     const { order_number,
-//       date_create_at,
-//       from_name,
-//       from_full_adress,
-//       from_city,
-//       from_country,
-//       where_name,
-//       where_full_adress,
-//       where_sity,
-//       where_counter,
-//       from_code,
-//       where_code,
-//       array_services,
-//       saved_price,
-//       volume_total_heft,
-//       total_heft,
-//       sum_places,
-//       from_phone,
-//       where_phone,
-//       product,
-//       payment,
-//       shipping_invoice,
-//       sender_markse,
-//       content,
-//       array_numbers_places }: PDFWayBill = data
-
-
-//     // Абсолютный путь
-//     const templatePath = path.join(
-//       process.cwd(),
-//       'public',
-//       'pdf',
-//       'waybill3.pdf'
-//     );
-
-
-//     // Читаю PDF как Buffer
-//     const templatePdf = fs.readFileSync(templatePath);
-
-
-//     // ЗагружаюPDF
-//     const pdfDoc = await PDFDocument.load(templatePdf);
-//     const form = pdfDoc.getForm();
-
-
-//     // // Подключаю fontkit
-//     // pdfDoc.registerFontkit(fontkit);
-//     // // Путь к шрифту
-//     // const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Roboto-Regular.ttf');
-//     // // Читаю шрифт
-//     // const fontBytes = fs.readFileSync(fontPath);
-//     // // Встраиваю шрифт
-//     // const customFont = await pdfDoc.embedFont(fontBytes);
-
-//     function set(fieldName: string, value: string) {
-//       const field = form.getTextField(fieldName);
-//       field.setText(value);
-
-//       // if (value.trim() !== '') {
-//       //   field.updateAppearances(customFont);
-//       // }
-//     }
-
-//     function safe(value: string | number | null) {
-//       return value === null || value === undefined ? '' : String(value);
-//     }
-//     // Заполняю поля
-//     form.getTextField('order_number').setText(`${safe(order_number)}`);
-//     set('date_create_at', `${safe(date_create_at)}`);
-//     set('from_name', safe(from_name));
-//     set('from_full_adress', safe(from_full_adress));
-//     set('from_city', safe(from_city || '—'));
-//     set('from_country', safe(from_country));
-//     set('where_name', safe(where_name));
-//     set('where_full_adress', safe(where_full_adress));;
-//     set('where_sity', safe(where_sity || '—'));
-//     set('where_country', safe(where_counter));
-//     set('from_code', safe(from_code));
-//     set('where_code', safe(where_code));
-//     set('array_services', safe(array_services));
-//     set('saved_price', `${safe(saved_price)} ₽`);
-//     set('volume_total_heft', `${safe(volume_total_heft)}`);
-//     set('total_heft', `${safe(total_heft)} кг`);
-//     form.getTextField('sum_places').setText(`${safe(sum_places)}`);
-//     set('array_numbers_places', safe(array_numbers_places));
-
-
-//     set('from_phone', `${safe(from_phone)}`);
-//     set('where_phone', `${safe(where_phone)}`);
-
-//     set('Product', `${safe(product)}`);//express rf | express international \ individual rf |individual international
-//     set('Payment', `${safe(payment)}`); // boolean true |false
-//     set('Freight', `${safe(shipping_invoice)}`);
-
-//     set('Ref', `${safe(sender_markse)}`);
-//     set('Content', `${safe(content)}`);
-
-
-
-
-
-//     // Фиксирую
-//     form.flatten();
-
-
-//     // Получаю результат
-//     const pdfBytes = await pdfDoc.save();
-
-
-//     //сохранить в папку storage по номеру заказа его файл
-//     const safeBytes = new Uint8Array(pdfBytes);
-
-//     const a = safe(order_number)
-//     const aa = safe(date_create_at)
-//     const aaa = safe(from_name)
-//     const aaaa = safe(from_full_adress)
-//     const aw = safe(from_city)
-//     const aww = safe(from_country)
-//     const awww = safe(where_name)
-//     const ae = safe(where_full_adress)
-//     const aee = safe(where_sity)
-//     const aeee = safe(where_counter)
-//     const ar = safe(from_code)
-//     const arr = safe(where_code)
-//     const arrr = safe(array_services)
-//     const at = safe(saved_price)
-//     const att = safe(volume_total_heft)
-//     const attt = safe(total_heft)
-//     const ay = safe(sum_places)
-//     const ayy = safe(array_numbers_places)
-//     const au = safe(from_phone)
-//     const auu = safe(where_phone)
-//     const auuu = safe(product)
-//     const ai = safe(payment)
-//     const aii = safe(shipping_invoice)
-//     const aiii = safe(sender_markse)
-//     const ao = safe(content)
-//     console.log("PDF DATA:", { au, auu, auuu, ai, aii, aiii, ao, a, aa, aaa, aaaa, aw, aww, awww, ae, aee, aeee, ar, arr, arrr, at, att, attt, ay, ayy });
-
-//     const file = new File(
-//       [safeBytes],
-//       `waybill-${order_number}.pdf`,
-//       {
-//         type: "application/pdf",
-//         lastModified: Date.now(),
-//       }
-//     );
-
-//     // Сохраняю в папку заказа
-//     await uploadFiles({
-//       orderId: [order_number, order_number],
-//       files: [file],
-//     });
-
-//     // Сохранить файл (опционально)
-//     // fs.writeFileSync('waybill-filled.pdf', pdfBytes);
-
-//     return new Response(
-//       JSON.stringify({
-//         ok: true,
-//       })
-
-//     )
-//   } catch (err) {
-//     console.error(err);
-//     return new Response(
-//       JSON.stringify({ ok: false, error: 'PDF WayBill no correct' }),
-//       { status: 500 }
-//     );
-//   }
-// }
-
-
-
-
-
 import fs from 'fs';
 import path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import { uploadFiles } from '@/app/api/orders/uploadFiles';
+import { PDFWayBillClient } from '@/app/components/DTO/DTO';
 
-
-interface PDFWayBill {
-  order_number: number;
-  date_create_at: string;
-  from_name: string;
-  from_full_adress: string;
-  from_city: string;
-  from_country: string;
-  where_name: string;
-  where_full_adress: string;
-  where_sity: string;
-  where_counter: string;
-  from_code: string;
-  where_code: string;
-  array_services: string;
-  saved_price: string;
-  volume_total_heft: number;
-  total_heft: number;
-  sum_places: number;
-  array_numbers_places: string;
-  from_phone: string;
-  where_phone: string;
-  product: string;
-  payment: string;
-  shipping_invoice: string;
-  sender_markse: string;
-  content: string;
-  order_id: number;
-}
 
 export async function POST(request: Request): Promise<Response> {
   try {
 
-
-    const { data }: { data: PDFWayBill } = await request.json();
+    const { data }: { data: PDFWayBillClient } = await request.json();
     //     // Деструктурирую пропс
     const { order_number,
       date_create_at,
@@ -271,8 +21,8 @@ export async function POST(request: Request): Promise<Response> {
       where_full_adress,
       where_sity,
       where_counter,
-      from_code,//не нужные данные 
-      where_code,//не нужные данные 
+      // from_code,//не нужные данные 
+      // where_code,//не нужные данные 
       array_services,
       saved_price,
       volume_total_heft,
@@ -287,7 +37,7 @@ export async function POST(request: Request): Promise<Response> {
       content,
       array_numbers_places,
       order_id
-    }: PDFWayBill = data
+    }: PDFWayBillClient = data
 
     const safe = (v: string | number | null | undefined) =>
       v === null || v === undefined ? '' : String(v);

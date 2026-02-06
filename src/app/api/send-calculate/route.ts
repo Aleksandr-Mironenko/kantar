@@ -9,19 +9,21 @@ export async function POST(req: Request) {
 
 
   const {
-    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage, isFinalHeft, price, nds, count,
+    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage, isFinalHeft, isFinalOnlyHeft, isFinalOnlyVolume, price, nds, count,
     fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
     adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
 
   } = await fabric(formData)
-
+  console.log(isFinalOnlyHeft, "isFinalOnlyHeft route send-calculate")
+  console.log(isFinalOnlyVolume, "isFinalOnlyVolume route send-calculate")
   const tasks: Promise<unknown>[] = []
   let orderNumbers
   if (agree) {
 
     //создание заказа в бд
     orderNumbers = await createOrderProcess({
-      agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, isFinalHeft, price, nds, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
+      agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, isFinalHeft, isFinalOnlyHeft,
+      isFinalOnlyVolume, price, nds, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
       adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
     })
 

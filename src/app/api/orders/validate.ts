@@ -112,6 +112,14 @@ export function validate(data: DataCreateOrderProcess) {
     errors.push("Итоговый вес (isFinalHeft) должен быть больше 0");
   }
 
+  if (!data.isFinalOnlyHeft || data.isFinalOnlyHeft <= 0) {
+    errors.push("Общий вес (isFinalOnlyHeft) должен быть больше 0");
+  }
+
+  if (!data.isFinalOnlyVolume || data.isFinalOnlyVolume <= 0) {
+    errors.push("Общий объем (isFinalOnlyVolume) должен быть больше 0");
+  }
+
   if (!data.count || data.count <= 0) {
     errors.push("Общее количество мест (count) должно быть больше 0");
   }

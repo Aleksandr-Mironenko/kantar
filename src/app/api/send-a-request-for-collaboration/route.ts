@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { sendEmail } from "../lib/helpers/sendEmail"
 import { sendSMS } from "../lib/helpers/sendSms";
 import fabric from "./lib/fabric"
+import findOrCreateUser from "./findOrCreateUser"
+import retry from "@/app/api/orders/lib/function/retry";
+import uploadFiles from './uploadFiles'
+import findUserType from "./findUserType"
 
 export async function POST(req: Request) {
   const response = NextResponse.json({ success: true })
@@ -9,13 +13,33 @@ export async function POST(req: Request) {
 
   //функция парсинга данных и генерации сообщений
   const {
-    agree, phone, email, fileArray, sms, emailMessage
+    getOrCreateUserWhereData, agree, phone, email, fileArray, sms, emailMessage
   } = await fabric(formData)
 
   const tasks: Promise<unknown>[] = []
 
   if (agree) {
 
+    const checkUserInTable: string = await findUserType(email)
+
+    //защита от изменений если тип не соответствуют требованию
+    if (checkUserInTable !== "not_user" &&
+      checkUserInTable !== "OOO" &&
+      checkUserInTable !== "IP" &&
+      checkUserInTable !== "private" &&
+      checkUserInTable !== "request") {
+
+      // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
+      const userId = await findOrCreateUser(email, getOrCreateUserWhereData);
+      //
+      if (fileArray.length > 0) {
+
+        const uploadFilesData = { userId, files: fileArray }
+
+        await retry(() => uploadFiles(uploadFilesData), { retries: 5, delay: 100 });
+
+      }
+    }
     tasks.push(
       //отправка сообщения администратору Кирилл
       sendEmail(

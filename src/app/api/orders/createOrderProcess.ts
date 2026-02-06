@@ -4,7 +4,7 @@ import { getOrCreateAddress } from "./getOrCreateAddress";
 import { createPlaces } from "./createPlaces";
 import { uploadFiles } from "./uploadFiles";
 import { createOrder } from "./createOrder";
-import { DataCreateOrderProcess } from '../../components/DTO/DTO'
+import { DataCreateOrderProcess, orderIdForDataUploadFiles } from '../../components/DTO/DTO'
 import fabric from "./lib/format/fabric";
 import fabricForOrder from "./lib/format/fabricForOrder";
 import retry from "./lib/function/retry";
@@ -20,22 +20,28 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
     getOrCreateUserFromData,
     getOrCreateUserWhereData,
     isInternal,
-    nds } = await fabric(data)
+    nds,
+    document,
+    isSender } = await fabric(data)
 
   // валидация входящих данных
   validate(validateData);
 
 
   // проверяю адрес на наличие в бд, добавляю если нет и получаю id адресов
-  const senderAddressId = await getOrCreateAddress(orderCreator);
-  const recipientAddressId = await getOrCreateAddress(noOrderCreator);
+  const { id: senderAddressId, country_name: senderCountry_name, city_name: senderCity_name }
+    = await getOrCreateAddress(orderCreator);
+  const { id: recipientAddressId, country_name: recipientCountry_name, city_name: recipientCity_name }
+    = await getOrCreateAddress(noOrderCreator);
 
 
   // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
-  const senderId = await getOrCreateUser(getOrCreateUserFromData);
+  const { id: senderId, name: senderName, type_acc: senderType_acc, name_OOO: senderName_OOO, fio_gd_OOO: senderFio_gd_OOO, fio_IP: senderFio_IP }
+    = await getOrCreateUser(getOrCreateUserFromData);
 
   // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
-  const recipientId = await getOrCreateUser(getOrCreateUserWhereData);
+  const { id: recipientId, name: recipientName, type_acc: recipientType_acc, name_OOO: recipientName_OOO, fio_gd_OOO: recipientFio_gd_OOO, fio_IP: recipientFio_IP }
+    = await getOrCreateUser(getOrCreateUserWhereData);
 
   // формирую данные для создания заказа
   const { orderData } = await fabricForOrder({
@@ -46,12 +52,28 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
     senderAddressId,
     recipientAddressId,
     discount: 0,
-    status: "new" as const
+    status: "new" as const,
+    document,
+    senderName,
+    senderType_acc,
+    senderName_OOO,
+    senderFio_gd_OOO,
+    senderFio_IP,
+    recipientName,
+    recipientType_acc,
+    recipientName_OOO,
+    recipientFio_gd_OOO,
+    recipientFio_IP,
+    senderCountry_name,
+    recipientCountry_name,
+    senderCity_name,
+    recipientCity_name,
+    isSender
   }
   )
 
   //создаю заказ и получаю его id и номер заказа
-  let orderId: number[] = []
+  let orderId: orderIdForDataUploadFiles = []
   if (orderData && senderId && senderAddressId && recipientId && recipientAddressId) {
     orderId = await createOrder(orderData, isInternal, nds);
   }

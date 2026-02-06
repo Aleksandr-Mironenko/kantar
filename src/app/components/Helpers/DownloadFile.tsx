@@ -8,7 +8,10 @@ export default function DownloadFile({
   invoiceFiles,
   setInvoiceFiles,
   showInvois,
-  setShowInvois
+  setShowInvois,
+  isOrder,
+  isUserSender,
+  isUserRecipient
 }: DownloadFileProps) {
 
   const delInvoiceFiles = (id: number) => {
@@ -65,8 +68,12 @@ export default function DownloadFile({
           }}
         />
         < div className={styles.whoAmI__buttonСhoice} >
-          Приложить файл
+          {el.file ?
+            "Заменить файл" :
+            "Приложить файл"
+          }
         </div>
+
       </label >
       {/* Имя файла — под кнопкой */}
       {
@@ -89,6 +96,7 @@ export default function DownloadFile({
           ()}
 
       {
+        !isOrder && !isUserSender && !isUserRecipient &&
         invoiceFiles.length - 1 === index && <button // добавляем возможность добавить файлы
           onClick={() => addInvoiceFiles()}
           className={styles.whoAmI__add} >
@@ -137,6 +145,32 @@ export default function DownloadFile({
     </div>
   )
   return (
-    buttonShow
+    <>
+      {!isOrder && !isUserSender && !isUserRecipient && buttonShow}
+      {isOrder && !isUserSender && !isUserRecipient && < div
+        style={{ backgroundColor: "white", border: "none" }}
+        className={styles.goods__loadBack} >
+        <h4 style={{ marginBottom: "0" }}> Загрузка в заказ: </h4>
+        < ol className={styles.whoAmI} style={{ listStyleType: "none" }}>
+          {mapAddFile}
+        </ol>
+      </div>}
+      {!isOrder && isUserSender && !isUserRecipient && < div
+        style={{ backgroundColor: "white", border: "none" }}
+        className={styles.goods__loadBack} >
+        <h4 style={{ marginBottom: "0" }}> Загрузка в профиль: </h4>
+        < ol className={styles.whoAmI} style={{ listStyleType: "none" }}>
+          {mapAddFile}
+        </ol>
+      </div>}
+      {!isOrder && !isUserSender && isUserRecipient && < div
+        style={{ backgroundColor: "white", border: "none" }}
+        className={styles.goods__loadBack} >
+        <h4 style={{ marginBottom: "0" }}> Загрузка в профиль: </h4>
+        < ol className={styles.whoAmI} style={{ listStyleType: "none" }}>
+          {mapAddFile}
+        </ol>
+      </div>}
+    </>
   )
-}
+}  

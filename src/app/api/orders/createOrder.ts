@@ -1,9 +1,9 @@
 import supabaseServer from '../lib/supabase/server-secret';
-import { DataCreateOrder } from '../../components/DTO/DTO'
+import { DataCreateOrder, orderIdForDataUploadFiles } from '../../components/DTO/DTO'
 
 export async function createOrder(
   data: DataCreateOrder, isInternal: boolean, nds: number
-): Promise<number[]> {
+): Promise<orderIdForDataUploadFiles> {
 
 
 
@@ -24,9 +24,30 @@ export async function createOrder(
       price_full: isInternal ? Math.ceil(data.price * nds) : Math.ceil(data.price),
       is_paid: data.isPaid,
       heft_full: data.isFinalHeft,
+      heft_only_full: data.isFinalOnlyHeft,
+      volume_only_full: data.isFinalOnlyVolume,
       status: data.status,
       agree: data.agree,
-      is_individual: data.isIndividual
+      is_individual: data.isIndividual,
+      document: data.document,
+      loading_date: data.loadingDate,
+      unloading_date: data.unloadingDate,
+      sender_name: data.senderName,
+      sender_type_acc: data.senderType_acc,
+      sender_name_OOO: data.senderName_OOO,
+      sender_fio_gd_OOO: data.senderFio_gd_OOO,
+      sender_fio_IP: data.senderFio_IP,
+      recipient_name: data.recipientName,
+      recipient_type_acc: data.recipientType_acc,
+      recipient_name_OOO: data.recipientName_OOO,
+      recipient_fio_gd_OOO: data.recipientFio_gd_OOO,
+      recipient_fio_IP: data.recipientFio_IP,
+      sender_country_name: data.sender_country_name,
+      recipient_country_name: data.recipient_country_name,
+      sender_city_name: data.sender_city_name,
+      recipient_city_name: data.recipient_city_name,
+      isSender: data.isSender ? "sender" : "recipient",
+      product: data.product
     })
     .select("id,order_number")
     .single();
@@ -34,5 +55,5 @@ export async function createOrder(
   //если ошибка - кидаем её выше
   if (error) throw error;
   //возвращаем id созданного заказа 
-  return [order.id, order.order_number] as number[];
-} 
+  return [order.id, order.order_number] as orderIdForDataUploadFiles;
+}  

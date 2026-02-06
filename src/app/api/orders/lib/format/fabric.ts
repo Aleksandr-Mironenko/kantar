@@ -15,6 +15,8 @@ export default async function fabric(data: DataCreateOrderProcess) {
     emailWhere,
     fileArray,
     isFinalHeft,
+    isFinalOnlyHeft,
+    isFinalOnlyVolume,
     price,
     count,
     fromCountryObj,
@@ -52,6 +54,8 @@ export default async function fabric(data: DataCreateOrderProcess) {
     emailWhere: emailWhere.toLowerCase(),
     fileArray,
     isFinalHeft,
+    isFinalOnlyHeft,
+    isFinalOnlyVolume,
     price,
     count,
     fromCountryObj,
@@ -109,6 +113,9 @@ export default async function fabric(data: DataCreateOrderProcess) {
   //определяем кто получатель заказа  
   const noOrderCreator = client !== "sender" ? allFrom : allWhere
 
+  //флаг отправителя
+  const isSender = client === "sender" ? true : false
+
   const correctFio = (stringFio: string): string => {
     const arrFio = stringFio.trim().split(/\s+/)
     let res = ''
@@ -146,6 +153,8 @@ export default async function fabric(data: DataCreateOrderProcess) {
     getOrCreateUserFromData,
     getOrCreateUserWhereData,
     isInternal,
-    nds
+    nds,
+    document,
+    isSender
   }
 }

@@ -19,6 +19,8 @@ export default function CalkSend() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<boolean>(false)
   const [isFinalHeft, setIsFinalHeft] = useState<number>(0.5)
+  const [isFinalOnlyHeft, setIsFinalOnlyHeft] = useState<number>(0)
+  const [isFinalOnlyVolume, setIsFinalOnlyVolume] = useState<number>(0)
 
   const [argsNotification, setArgsNotification] = useState<PropsNotification>({
     titleAlert: "",
@@ -368,10 +370,13 @@ export default function CalkSend() {
         return acc + el.heft * el.places;
       }, 0)
     setIsFinalHeft(totalVolume > totalHeft ? totalVolume : totalHeft)
+    setIsFinalOnlyHeft(totalHeft)
+    setIsFinalOnlyVolume(totalVolume)
 
   }, [places]
   )
-
+  console.log(isFinalOnlyHeft, "isFinalOnlyHeft CalkSendLong")
+  console.log(isFinalOnlyVolume, "isFinalOnlyVolume CalkSendLong")
 
   //формируем пропс для передачи в форму заявки
   const orderData = {
@@ -382,6 +387,8 @@ export default function CalkSend() {
     koefficient,
     document,
     isFinalHeft,
+    isFinalOnlyHeft,
+    isFinalOnlyVolume,
     isModalOpen,
     fromCountryObj,
     fromCityObj,

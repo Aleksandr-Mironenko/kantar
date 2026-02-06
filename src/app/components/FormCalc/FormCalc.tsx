@@ -214,7 +214,10 @@ export default function FormCalc() {
                 invoiceFiles={invoiceFiles}
                 setInvoiceFiles={setInvoiceFiles}
                 showInvois={showInvois}
-                setShowInvois={setShowInvois} />
+                setShowInvois={setShowInvois}
+                isOrder={false}
+                isUserSender={false}
+                isUserRecipient={false} />
             </div>
 
 

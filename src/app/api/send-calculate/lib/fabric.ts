@@ -7,6 +7,8 @@ export default async function fabric(formData: FormData) {
   const filesWithId: { id: number; file: File }[] = [];
   let agree: boolean = false;
   let isFinalHeft: number = 0;
+  let isFinalOnlyHeft: number = 0;
+  let isFinalOnlyVolume: number = 0;
   let price: number = 0;
   let count: number = 0;
   let fromCountryObj: Country = { id: 0, name: "", zone: 0 };
@@ -51,6 +53,10 @@ export default async function fabric(formData: FormData) {
         showInvois = value === "1" ? true : false
       } else if (key === "isFinalHeft") {
         isFinalHeft = Number(value)
+      } else if (key === "isFinalOnlyHeft") {
+        isFinalOnlyHeft = Number(value)
+      } else if (key === "isFinalOnlyVolume") {
+        isFinalOnlyVolume = Number(value)
       } else if (key === "price") {
         price = Number(value)
       } else if (key === "count") {
@@ -316,6 +322,8 @@ ${price !== 0 ? `Цена: ${Math.ceil(isInternal ? price * nds : price)}` : `С
 
   return {
     isFinalHeft,
+    isFinalOnlyHeft,
+    isFinalOnlyVolume,
     price,
     nds,
     count,

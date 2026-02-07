@@ -12,7 +12,7 @@ import { Place, Country, City, PropsNotification } from "../DTO/DTO"
 import Notification from "../NotificationAntd/NotificationAntd"
 import { Modal, Button } from 'antd';
 
-export default function CalkSendExpress() {
+export default function CalkSendExpress({ getLongCalc }: { getLongCalc: () => void }) {
   const [fromCountryObj, setFromCountryObj] = useState<Country | null>(null);
   const [fromCityObj, setFromCityObj] = useState<City | null>(null);
   const [whereCountryObj, setWhereCountryObj] = useState<Country | null>(null);
@@ -225,13 +225,13 @@ export default function CalkSendExpress() {
               footer={
                 <>
                   <Button className={styles.total__buttonmodal} type="primary"
-                    onClick={() => individualModal1()}>
+                    onClick={() => getLongCalc()}>
                     Заполнить запрос на рассчет
                   </Button>
                   <Button className={styles.total__buttonmodal} type="primary"
                     onClick={() => individualModal2()}>
                     Заключить договор
-                  </Button>
+                  </Button>ф
                 </>
               }
               open={individualOffer && !refusedTheIndividualOffer}

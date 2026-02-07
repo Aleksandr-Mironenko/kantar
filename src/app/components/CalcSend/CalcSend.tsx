@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./CalcSend.module.scss";
 import CalkSendExpress from "../CalkSendExpress/CalkSendExpress"
 import CalkSendLong from "../CalkSendLong/CalkSendLong"
@@ -8,6 +8,23 @@ import CalkSendLong from "../CalkSendLong/CalkSendLong"
 
 export default function CalcSend() {
   const [calc, setCalc] = useState<"express" | "long">("express")
+
+  useEffect(() => {
+    if (calc === "long") {
+      setTimeout(() => {
+        document
+          .getElementById("calculator_long")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }, 0);
+    }
+  }, [calc]);
+
+  const getLongCalc = () => {
+    setCalc("long");
+  };
+
+
+
 
   return (
     <section className={styles.formcalc} id="calculator" >
@@ -34,7 +51,7 @@ export default function CalcSend() {
 
           </div>
 
-          {calc === "express" && <CalkSendExpress />}
+          {calc === "express" && <CalkSendExpress getLongCalc={getLongCalc} />}
           {calc === "long" && <CalkSendLong />}
 
         </div>

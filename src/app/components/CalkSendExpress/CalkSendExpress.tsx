@@ -231,7 +231,7 @@ export default function CalkSendExpress({ getLongCalc }: { getLongCalc: () => vo
                   <Button className={styles.total__buttonmodal} type="primary"
                     onClick={() => individualModal2()}>
                     Заключить договор
-                  </Button>ф
+                  </Button>
                 </>
               }
               open={individualOffer && !refusedTheIndividualOffer}

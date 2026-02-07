@@ -5,10 +5,7 @@ import {
   getCoreRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import Order from '../Оrder/Order'
-// import { columns } from "./columns";
-// import { orders } from "./data";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./PolingAdminPanel.module.scss";
 import { TableOrdersRecord, TableOrdersRecordMeta, TableOrdersRecorResponse, TableOrdersRecordWithEvent, WSMessage, PleaseInServer } from "../DTO/DTO";
 import { ColumnDef } from "@tanstack/react-table";
@@ -26,8 +23,8 @@ declare module '@tanstack/react-table' {
 
 
 
-export default function PolingeAdminPanel() {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+export default function PolingeAdminPanel({ searchParams }: { searchParams: { idUserProps?: string, headerPage: string } }) {
+
 
   const [orders, setOrders] = useState<TableOrdersRecord[]>([])
   const [meta, setMeta] = useState<TableOrdersRecordMeta>({
@@ -39,23 +36,28 @@ export default function PolingeAdminPanel() {
     hasPrev: false,
   })
 
-  // const [place, setPlace] = useState<PleaseInServer[]>([])
-  const [view, setView] = useState<boolean>(false)
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)  //прокинуть пропс в заказ
-
-
-  const [activeNumberOrder, setActiveNumberOrder] = useState<number>(100042)
-
   const [editingCell, setEditingCell] = useState<{
-    orderId: string;      // или string — как у тебя в orders
+    orderId: string;
     columnId: string;
     value: string;
   } | null>(null);
-  // const [url, setUrl] = useState<string[]>([]);
 
+
+
+  // const getOrders = async (page: number) => {
+  //   const request = await fetch(`api/admin/admin-panel-poling/orders/search-all-orders?page=${page}`)
   const getOrders = async (page: number) => {
-    const request = await fetch(`api/admin/admin-panel-poling/orders/search-all-orders?page=${page}`)
+    const params = new URLSearchParams({
+      page: String(page),
+    });
 
+    if (searchParams?.idUserProps) {
+      params.append("idUserProps", searchParams.idUserProps);
+    }
+
+    const request = await fetch(
+      `/api/admin/admin-panel-poling/orders/search-all-orders?${params.toString()}`
+    );
     if (!request.ok) {
       throw new Error("Ошибка получения заказов")
     }
@@ -78,23 +80,6 @@ export default function PolingeAdminPanel() {
     const bbb = aaa[0].split(".")
     return `${bbb[0]}.${bbb[1]}.${bbb[2]} в ${aaa[1]} `
   }
-
-
-
-  //       sender_name: data.senderName,
-  //       sender_type_acc: data.senderType_acc,
-  //       sender_name_OOO: data.senderName_OOO,
-  //       sender_fio_gd_OOO: data.senderFio_gd_OOO,
-  //       sender_fio_IP: data.senderFio_IP,
-  //       recipient_name: data.recipientName,
-  //       recipient_type_acc: data.recipientType_acc,
-  //       recipient_name_OOO: data.recipientName_OOO,
-  //       recipient_fio_gd_OOO: data.recipientFio_gd_OOO,
-  //       recipient_fio_IP: data.recipientFio_IP,
-  //       sender_country_name: data.sender_country_name,
-  //       recipient_country_name: data.recipient_country_name,
-  //       sender_city_name: data.sender_city_name,
-  //       recipient_city_name: data.recipient_city_name,0
 
 
   function getDisplayClient(
@@ -191,32 +176,16 @@ export default function PolingeAdminPanel() {
     return "Имя представителя клиента"
   }
 
-  {/* <Link href={`/admin/orders/${order.id}`}>
-  Открыть
-</Link> */}
 
   const columns: ColumnDef<TableOrdersRecord>[] = [
-    //я хочу описать поле поле клиент тут может быть и отправитель и получатель
-
-    // {
-    //   accessorKey: "order_number",
-    //   header: "№",
-    //   meta: {
-    //     editable: false,
-    //   },
-    // },
-
-
     {
       accessorKey: "order_number",
       header: "№",
       cell: info => {
-        const row = info.row.original;
         const value = info.getValue<string>();
 
         return (
           <Link href={`/admin/order/${value}`}
-            // onClick={() => setActiveNumberOrder(row.order_number)}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -799,119 +768,87 @@ export default function PolingeAdminPanel() {
     </>
   )
 
-
-  const closeModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
-
   return (
     <>
-      <button onClick={() => setIsOpen(prev => !prev)}>{isOpen ? "Закрыть админку" : "Открыть админку"} </button>
-      {
-        isOpen ? (<section className={styles.adminpages} id="adminpages">
-          <h2 className={styles.adminpages__title}>Админ панель</h2>
-          <h3 className={styles.adminpages__title_table}>Список заказов</h3>
-          <div className={styles.adminpages__block}>
-            <div className={styles.adminpages__block}>{/*блок  в котором будет 2 кномки переключения между новыми заказами и запросами на договор/*/}
+      <section className={styles.adminpages} id="adminpages">
+        <h2 className={styles.adminpages__title}>{searchParams.headerPage}</h2>
+        <h3 className={styles.adminpages__title_table}>Список заказов</h3>
+        <div className={styles.adminpages__block}>
+          <div className={styles.adminpages__block}>{/*блок  в котором будет 2 кномки переключения между новыми заказами и запросами на договор/*/}
 
-            </div>
-            <div className={styles.adminpages__block}>{/*в этом блоке будут все заказы*/}
-              {/* {message} */}
-              <table style={{ width: "100%", minWidth: "1709px" }} border={1} cellPadding={8}>
-                <thead>
-                  {table.getHeaderGroups().map(headerGroup => (
-                    <tr style={{ backgroundColor: "Gainsboro" }} key={headerGroup.id}>
-                      {headerGroup.headers.map(header => (
-                        <th style={{ padding: "5px" }} key={header.id}>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
+          </div>
+          <div className={styles.adminpages__block}>{/*в этом блоке будут все заказы*/}
+            {/* {message} */}
+            <table style={{ width: "100%", minWidth: "1709px" }} border={1} cellPadding={8}>
+              <thead>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <tr style={{ backgroundColor: "Gainsboro" }} key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <th style={{ padding: "5px" }} key={header.id}>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
 
-                <tbody>
-                  {table.getRowModel().rows.map(row => (
-                    <tr style={{ border: "2px solid red" }} key={row.id}>
-                      {row.getVisibleCells().map(cell => (
-                        <td
-                          key={cell.id}
-                          onClick={() => {
-                            if (cell.column.id === "order_number") {
-                              const value = cell.getValue() as number;
-                              console.log("Price clicked:", value)
-                              setActiveNumberOrder(value)
-                              setView(true)
-                              setIsModalOpen(true)
+              <tbody>
+                {table.getRowModel().rows.map(row => (
+                  <tr style={{ border: "2px solid red" }} key={row.id}>
+                    {row.getVisibleCells().map(cell => (
+                      <td
+                        key={cell.id}
+                        onClick={() => {
+                          if (cell.column.id === "order_number") {
 
-                            }
-                          }}
-                          onDoubleClick={() => {
-                            if (!cell.column.columnDef.meta?.editable) return;
+                          }
+                        }}
+                        onDoubleClick={() => {
+                          if (!cell.column.columnDef.meta?.editable) return;
 
-                            if (
-                              editingCell &&
-                              editingCell.orderId === row.original.id &&
-                              editingCell.columnId === cell.column.id
-                            ) {
-                              return;
-                            }
-
-                            const rawValue = cell.getValue();
-                            let value = "";
-
-                            if (cell.column.columnDef.meta?.editor === "date") {
-                              value = rawValue
-                                ? String(rawValue).split("T")[0] // <-- вот это главное
-                                : "";
-                            } else if (cell.column.id === "is_paid" || cell.column.id === "is_individual") {
-                              value = rawValue ? "true" : "false";
-                            } else {
-                              value = String(rawValue ?? "");
-                            }
-
-                            setEditingCell({
-                              orderId: row.original.id,
-                              columnId: cell.column.id,
-                              value,
-                            });
-                          }}
-                          style={{
-                            padding: "15px 7px",
-                            cursor: cell.column.columnDef.meta?.editable ? "pointer" : "default",
-                            textWrap: "nowrap",
-                            fontSize: "15px",
-                          }}
-                        >
-                          {editingCell &&
+                          if (
+                            editingCell &&
                             editingCell.orderId === row.original.id &&
-                            editingCell.columnId === cell.column.id ? (
-                            cell.column.columnDef.meta?.editor === "select" ? (
-                              <div className={styles.adminpages__select}>
-                                <select
-                                  autoFocus
-                                  value={editingCell.value}
-                                  onChange={(e) =>
-                                    setEditingCell(prev =>
-                                      prev ? { ...prev, value: e.target.value } : prev
-                                    )
-                                  }
-                                  style={{ width: "100%" }}
-                                >
-                                  {cell.column.columnDef.meta?.options?.map(opt => (
-                                    <option key={opt.value} value={String(opt.value)}>
-                                      {opt.label}
-                                    </option>
-                                  ))}
-                                </select>
-                                <button className={styles.adminpages__select_button} onClick={saveCell}> ✅</button>
-                              </div>
-                            ) : (
-                              <input
-                                type={cell.column.columnDef.meta?.inputType || "text"}
+                            editingCell.columnId === cell.column.id
+                          ) {
+                            return;
+                          }
+
+                          const rawValue = cell.getValue();
+                          let value = "";
+
+                          if (cell.column.columnDef.meta?.editor === "date") {
+                            value = rawValue
+                              ? String(rawValue).split("T")[0] // <-- вот это главное
+                              : "";
+                          } else if (cell.column.id === "is_paid" || cell.column.id === "is_individual") {
+                            value = rawValue ? "true" : "false";
+                          } else {
+                            value = String(rawValue ?? "");
+                          }
+
+                          setEditingCell({
+                            orderId: row.original.id,
+                            columnId: cell.column.id,
+                            value,
+                          });
+                        }}
+                        style={{
+                          padding: "15px 7px",
+                          cursor: cell.column.columnDef.meta?.editable ? "pointer" : "default",
+                          textWrap: "nowrap",
+                          fontSize: "15px",
+                        }}
+                      >
+                        {editingCell &&
+                          editingCell.orderId === row.original.id &&
+                          editingCell.columnId === cell.column.id ? (
+                          cell.column.columnDef.meta?.editor === "select" ? (
+                            <div className={styles.adminpages__select}>
+                              <select
                                 autoFocus
                                 value={editingCell.value}
                                 onChange={(e) =>
@@ -919,37 +856,57 @@ export default function PolingeAdminPanel() {
                                     prev ? { ...prev, value: e.target.value } : prev
                                   )
                                 }
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") saveCell();
-                                  if (e.key === "Escape") setEditingCell(null);
-                                }}
                                 style={{ width: "100%" }}
-                              />
-                            )
-
+                              >
+                                {cell.column.columnDef.meta?.options?.map(opt => (
+                                  <option key={opt.value} value={String(opt.value)}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                              <button className={styles.adminpages__select_button} onClick={saveCell}> ✅</button>
+                            </div>
                           ) : (
-                            flexRender(cell.column.columnDef.cell, cell.getContext())
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                            <input
+                              type={cell.column.columnDef.meta?.inputType || "text"}
+                              autoFocus
+                              value={editingCell.value}
+                              onChange={(e) =>
+                                setEditingCell(prev =>
+                                  prev ? { ...prev, value: e.target.value } : prev
+                                )
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") saveCell();
+                                if (e.key === "Escape") setEditingCell(null);
+                              }}
+                              style={{ width: "100%" }}
+                            />
+                          )
 
-            </div>
+                        ) : (
+                          flexRender(cell.column.columnDef.cell, cell.getContext())
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
           </div>
-          <div className={styles.adminpages__title_table_bottom}>{pagination}</div>
-          <div className={styles.adminpages__list}>{/*блок создать заказ*/}
-            {/* тут  */}
+        </div>
+        <div className={styles.adminpages__title_table_bottom}>{pagination}</div>
+        <div className={styles.adminpages__list}>{/*блок создать заказ*/}
+          {/* тут  */}
 
-          </div>
+        </div>
 
 
 
 
-        </section >) : null
-      }
+      </section >
+
     </>
   )
 }

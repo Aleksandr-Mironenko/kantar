@@ -1,15 +1,30 @@
+"use client";
+import { usePathname } from "next/navigation";
 import styles from "./Header.module.scss";
 import logo from "./photo.png";
 import Image from "next/image";
-
+import Link from "next/link";
 
 export default function Header() {
+  const pathname = usePathname();
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const hash = "#calculator_express";
+
+    if (pathname === "/") {
+      e.preventDefault();
+      const el = document.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+
   return (
     <header className={styles.header}>
       <div className={styles.header__wrapper} >
         <nav className={styles.header__nav}>
 
-          <a className="tn-atom" href="https://kantar-logistics.ru/">
+          <a className="tn-atom"
+            href="https://kantar-logistics.ru/">
             <Image
               className={styles.header__logo}
               src={logo}
@@ -20,23 +35,40 @@ export default function Header() {
             />
           </a>
           <div className={styles.header__nav_menu}>
-            <a className={styles.header__nav_link} href="#services">
+
+            <Link href={`/services`}
+              className={styles.header__nav_link}
+              target="_self"
+              rel="noopener"
+            >
               УСЛУГИ
-            </a>
-            <a className={styles.header__nav_link} href="#advantages">
+            </Link>
+
+            <Link href={`/info`}
+              className={styles.header__nav_link}
+              target="_self"
+              rel="noopener"
+            >
               О НАС
-            </a>
-            <a className={styles.header__nav_link} href="#contacts">
+            </Link>
+
+            <Link href={`/contacts`}
+              className={styles.header__nav_link}
+              target="_self"
+              rel="noopener"
+            >
               КОНТАКТЫ
-            </a>
+            </Link>
 
-
-            <a href="#calculator_express" className={styles.header__nav_button}>
+            <Link
+              href="/#calculator"
+              onClick={handleScroll}
+              className={styles.header__nav_button}
+            >
               <div className={styles.header__nav_button_content}>
                 <span>КАЛЬКУЛЯТОР</span>
               </div>
-            </a>
-
+            </Link>
           </div>
         </nav>
         {/* 

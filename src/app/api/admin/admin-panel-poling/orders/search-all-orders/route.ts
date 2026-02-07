@@ -1,7 +1,5 @@
 import findAllOrders from './findAllOrders';
-import findUser from '../search-one-order/findUser';
-import { TableOrdersRecord, NewTableOrdersRecord } from '@/app/components/DTO/DTO'
-// get  
+
 export async function GET(request: Request): Promise<Response> {
 
   try {

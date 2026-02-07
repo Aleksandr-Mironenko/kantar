@@ -5,9 +5,10 @@
    max-width: 990px;
    margin: 40px auto;
    padding: 30px;
-   border-radius: 20px;
+   border-radius: 0 0 20px 20px;
    gap: 20px;
    position: relative;
+   margin-top: 0;
 
    @media (max-width: 824px) {
      flex-direction: column;

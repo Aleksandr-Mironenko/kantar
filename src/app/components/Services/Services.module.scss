@@ -1,6 +1,8 @@
 .services {
-  padding: 80px 40px;
+  padding: 40px;
   background: #fafafa;
+  border-radius: 50px;
+  margin: 150px 40px;
 
   &__wrapper {
 
@@ -8,7 +10,7 @@
     flex-direction: column;
 
     width: 80%;
-    margin: 80px auto;
+    margin: 40px auto;
   }
 
   &__titles {
@@ -142,9 +144,7 @@
     }
   }
 
-  @media (min-width: 812px) {
-    width: 100vw;
-  }
+
 
 
 }

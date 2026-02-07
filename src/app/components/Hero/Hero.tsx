@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./Hero.module.scss";
 
 export default function Hero() {
@@ -17,9 +18,13 @@ export default function Hero() {
         <a href="#calculator" className={styles.hero__button} >
           Рассчитать доставку
         </a>
-        <a className={styles.hero__button} href="#advantages">
+        <Link href={`/info`}
+          className={styles.hero__button}
+          target="_self"
+          rel="noopener"
+        >
           О нас
-        </a>
+        </Link>
       </div>
     </section>
   );

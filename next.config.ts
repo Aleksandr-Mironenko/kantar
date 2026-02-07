@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         hostname: 'pyzpdyaqsrbgstfdlycz.supabase.co',
         pathname: '/storage/**',
       },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+      },
     ],
 
   },

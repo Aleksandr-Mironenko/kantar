@@ -2,17 +2,17 @@
 
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
-import WhoWeAre from './components/WhoWeAre/WhoWeAre';
+// import WhoWeAre from './components/WhoWeAre/WhoWeAre';
 // import Services from './components/Services/Services';
-import Advantages from './components/Advantages/Advantages';
-import Contacts from './components/Contacts/Contacts';
+// import Advantages from './components/Advantages/Advantages';
+// import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
 // import FormCalc from './components/FormCalc/FormCalc'
-import CalkSendExpress from './components/CalkSendExpress/CalkSendExpress'
+// import CalkSendExpress from './components/CalkSendExpress/CalkSendExpress'
 import ThirdPartyFix from './components/ThirdPartyFix/ThirdPartyFix';
-import CooperationRequestForm from './components/CooperationRequestForm/CooperationRequestForm'
-import CalkSendLong from './components/CalkSendLong/CalkSendLong';
-import PolingAdminPanel from './components/PolingAdminPanel/PolingAdminPanel';
+// import CooperationRequestForm from './components/CooperationRequestForm/CooperationRequestForm'
+// import CalkSendLong from './components/CalkSendLong/CalkSendLong';
+import CalcSend from './components/CalcSend/CalcSend';
 // import RealtimeAdminPanel from './components/RealtimeAdminPanel/RealtimeAdminPanel' //полностью котов к проду купить доступ и выгрузить папку сервера Render.com
 export default function Home() {
 
@@ -20,19 +20,19 @@ export default function Home() {
   return (
     <>
       <ThirdPartyFix />
-      <PolingAdminPanel />
       {/* <RealtimeAdminPanel /> //полностью котов к проду купить доступ и выгрузить папку сервера Render.com */}
       <Header />
       <Hero />
-      <WhoWeAre />
+      {/* <WhoWeAre /> */}
       {/* <Services />*/}
-      <Advantages />
+      {/* <Advantages /> */}
       {/* <FormCalc /> */}{/* форма запрос на персональный рассчет - не нужна */}
-      <Contacts />
-      <CalkSendExpress />
-      <CooperationRequestForm />{/* сделать условным по запросу типа внутри аккаунта
+      {/* <Contacts /> */}
+      {/* <CalkSendExpress /> */}
+      {/*<CooperationRequestForm /> сделать условным по запросу типа внутри аккаунта
       нахождение под авторизацией клиента */}
-      <CalkSendLong />
+      {/* <CalkSendLong /> */}
+      <CalcSend />
       <Footer />
     </>
   );

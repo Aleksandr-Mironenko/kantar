@@ -4,5 +4,5 @@ import PolingeAdminPanel from "@/app/components/PolingAdminPanel/PolingAdminPane
 export default function OrderPage() {
 
 
-  return <PolingeAdminPanel />;
+  return <PolingeAdminPanel searchParams={{ idUserProps: undefined, headerPage: "Админ панель" }} />;
 }

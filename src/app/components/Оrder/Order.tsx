@@ -222,7 +222,6 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   }
 
 
-
   const createPDFWaybill = async (data: PDFWayBillClient) => {
     const request = await fetch("/api/admin/admin-panel-poling/orders/PDFDocumentWaybillLoad", {
       method: "POST",
@@ -241,24 +240,12 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     getPlaces(numberOrder)
   }
 
-
-
-
   useEffect(() => {
     if (!numberOrder) return;
 
     getPlaces(numberOrder)
 
   }, [numberOrder]);
-
-
-
-
-
-
-
-
-
 
 
   function getFileType(path: string) {
@@ -284,20 +271,6 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     };
     return 'text';
   }
-
-
-  // fullPrice
-  // heft 
-  // height 
-  // id
-  // length
-  // nds
-  // order
-  // id
-  // order_number
-  // places_personal_id
-  // price
-  // volume width 
 
 
 
@@ -348,7 +321,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           {/* <p> id заказа: {el.order_id}</p> */}
 
           <div style={{}}>
-            <p> Условная стоимость места: {Math.ceil(el.price / el.sumPlaces)} р. </p>
+            <p> Условная стоимость места: {Math.ceil(el.price / el.sumPlaces)} ₽ </p>
             {el.nds > 0 && <p> Условный НДС: {Math.ceil(el.nds / el.sumPlaces)} p.</p>}
           </div>
 
@@ -358,7 +331,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
             <p> Ширина: {el.width} см.</p>
             <p> Высота: {el.height} см.</p>
             <p> Вес: {el.heft} кг.</p>
-            <p> Объем: {el.volume} </p>
+            <p> Объем: {el.volume} м³ </p>
           </div>
 
 
@@ -995,6 +968,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     <div key={order.id} style={{ display: "flex" }}>
       <div style={{ width: "100%", }}>
         <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+
           <h2 style={{ fontSize: "28px" }}> Номер заказа: {order.order_number}</h2>
 
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", position: "absolute", top: "0px", right: "0px" }}>
@@ -1037,16 +1011,16 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               }}>Открыть места заказа</button>}
           </div>
 
-
-
-
         </div>
-        <p> Статус заказа: {status} </p>
-        <p> Был создан: {order.created_at ? dateCreateOrder(order.created_at) : ""}</p>
-        <p> Полный рассчетный вес: {order.heft_full}</p>
-        <p> Полная стоимость: {order.price_full}   <span style={{ color: "red" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
-        <p> Индивидуальная скидка (заказа): {order.discount_this_send}</p>
-        <p> Поступление оплаты: {order.is_paid === true ? "Оплачен" : "Не оплачен"}</p>
+
+        <p> Статус заказа: <b>{status}</b></p>
+        <p> Был создан: <b>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
+        <p> Вес: <b>{order.heft_only_full} кг</b></p>
+        <p> Объем: <b>{order.volume_only_full} м³</b></p>
+        <p> Рассчетный вес: <b>{order.heft_full} кг</b></p>
+        <p> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
+        <p> Индивидуальная скидка (заказа): <b>{order.discount_this_send} %</b></p>
+        <p> Поступление оплаты: <b>{order.is_paid === true ? "Оплачен" : "Не оплачен"}</b></p>
         <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", marginTop: "20px", marginBottom: "20px" }}>
           {senderData}
           {recipientData}

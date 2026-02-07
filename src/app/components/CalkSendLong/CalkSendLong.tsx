@@ -445,7 +445,7 @@ export default function CalkSend() {
       {/* Контейнер */}
       < div className={styles.calculator__left} >
         {/* Заголовок */}
-        < h1 className={styles.calculator__title} > Расчет стоимости доставки</h1>
+        < h1 className={styles.calculator__title} > Запрос на рассчет</h1>
         <div className={styles.calculator__header}>
           {/* Блок "Откуда" */}
           <div className={styles.calculator__rows}>

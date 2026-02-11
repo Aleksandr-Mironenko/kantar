@@ -16,7 +16,10 @@ export default function Footer() {
           rel="noopener"
           target="_blank"        >
           Политика конфиденциальности</a>
-        <a href="#">Пользовательское соглашение</a>
+        <a href="/policy"
+          rel="noopener"
+          target="_blank"
+        >Пользовательское соглашение</a>
       </div>
     </footer>
   );

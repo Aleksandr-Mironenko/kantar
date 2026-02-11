@@ -11,6 +11,8 @@ export default async function fabric(formData: FormData) {
 
 
   const filesWithId: { id: number; file: File }[] = [];
+  let id: string = "";
+  let created_at: string = "";
   let agree: boolean = false;
   let client: 'ooo' | 'ip' | 'private' = 'private';
   let name: string = "";
@@ -42,6 +44,8 @@ export default async function fabric(formData: FormData) {
   }
 
   const getOrCreateUserWhereData: toCorrectUserAcc = {
+    id: null,
+    created_at: null,
     email: null,
     phone: null,
     name: null,
@@ -88,6 +92,10 @@ export default async function fabric(formData: FormData) {
       if (client === "ooo") {
         if (key === "client") {
           client = "ooo"
+        } else if (key === "id") {
+          id = value
+        } else if (key === "created_at") {
+          created_at = value
         } else if (key === "name") {
           name = value
         } else if (key === "phone") {
@@ -117,7 +125,8 @@ export default async function fabric(formData: FormData) {
         } else if (key === "kss") {
           kss = value
         }
-
+        getOrCreateUserWhereData.created_at = created_at
+        getOrCreateUserWhereData.id = id
         getOrCreateUserWhereData.email = email.toLowerCase()
         getOrCreateUserWhereData.phone = phone
         getOrCreateUserWhereData.name = name && name !== " " ? correctFio(name) : "Имя"
@@ -145,6 +154,10 @@ export default async function fabric(formData: FormData) {
           client = "ip"
         } else if (key === "name") {
           name = value
+        } else if (key === "id") {
+          id = value
+        } else if (key === "created_at") {
+          created_at = value
         } else if (key === "phone") {
           phone = value
         } else if (key === "email") {
@@ -167,6 +180,8 @@ export default async function fabric(formData: FormData) {
           kss = value
         }
 
+        getOrCreateUserWhereData.created_at = created_at
+        getOrCreateUserWhereData.id = id
         getOrCreateUserWhereData.email = email.toLowerCase()
         getOrCreateUserWhereData.phone = phone
         getOrCreateUserWhereData.name = name && name !== " " ? correctFio(name) : "Имя"
@@ -191,6 +206,10 @@ export default async function fabric(formData: FormData) {
           client = "ooo"
         } else if (key === "name") {
           name = value
+        } else if (key === "id") {
+          id = value
+        } else if (key === "created_at") {
+          created_at = value
         } else if (key === "phone") {
           phone = value
         } else if (key === "email") {
@@ -202,6 +221,8 @@ export default async function fabric(formData: FormData) {
         }
       }
 
+      getOrCreateUserWhereData.created_at = created_at
+      getOrCreateUserWhereData.id = id
       getOrCreateUserWhereData.email = email.toLowerCase()
       getOrCreateUserWhereData.phone = phone
       getOrCreateUserWhereData.name = name && name !== " " ? correctFio(name) : "Имя"

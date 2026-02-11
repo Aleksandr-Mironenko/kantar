@@ -1,7 +1,7 @@
 import supabaseServer from '../../../../lib/supabase/server-secret';
 
 //получние данных адреса по id пользователя
-export default async function findUser(sender_id: number) {
+export default async function findUser(sender_id: string) {
 
 
   const { data: dataUser, error: error4 } = await supabaseServer
@@ -14,3 +14,5 @@ export default async function findUser(sender_id: number) {
 
   return dataUser
 }
+
+//admin_comment

@@ -494,6 +494,8 @@ export interface UserInServer {
 
 
 export type toCorrectUserAcc = {
+  id: string | null,
+  created_at: string | null,
   email: string | null,
   phone: string | null,
   name: string | null,
@@ -567,6 +569,17 @@ export type CreateUserResult = {
   fio_IP: string | null;
 };
 
+
+
+export type CommentUserType = {
+
+  id: string;
+  user_id: string;
+  author_id: string;
+  text: string;
+  created_at: string;
+
+};
 
 export type TableOrdersRecordWithEvent = TableOrdersRecord & { eventType: string }
 

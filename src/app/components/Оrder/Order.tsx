@@ -4,9 +4,10 @@ import { TableOrdersRecord, FileObj } from "../DTO/DTO";
 import { Flex, QRCode } from 'antd';
 import type { QRCodeProps } from 'antd';
 import { createStyles } from 'antd-style';
-import { PDFWayBillClient, UserInServer, PleaseInServer, AddressInServer } from "../DTO/DTO";
+import { PDFWayBillClient, toCorrectUserAcc, PleaseInServer, AddressInServer } from "../DTO/DTO";
 import styles from './Order.module.scss'
 import DownloadFile from "../Helpers/DownloadFile"
+import Link from 'next/link';
 
 const useStyles = createStyles(() => ({
   root: {
@@ -55,32 +56,79 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const [filesUserRecipient, setFilesUserRecipient] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showFilesUserRecipient, setShowFilesUserRecipient] = useState<boolean>(false) //открыты ли файлы флаг
 
-  const [userSendler, setUserSendler] = useState<UserInServer>({
+  const [userSendler, setUserSendler] = useState<toCorrectUserAcc>({
     id: "",
+    created_at: "",
     email: "",
     phone: "",
     name: "",
-    address_id: 0,
+    address_id: 0,//надо изменить создав новый или получив старый
     is_client: false,
     is_dogovor: false,
     type_acc: "noAcc",
-    ref_code: "",
-    created_at: "",
-    discount: 0
+    ref_code: "",//поменять
+    count_refcode_use: null,
+    discount: 0,
+    passport: null,
+    snils: null,
+    fio_gd_OOO: null,
+    name_OOO: null,
+    oficial_adress_OOO: null,
+    actual_address_OOO: null,
+    inn_OOO: null,
+    kpp_OOO: null,
+    ogrn_OOO: null,
+    rs_OOO: null,
+    bic_OOO: null,
+    corr_score_OOO: null,
+    comment: null,
+    fio_IP: null,
+    actual_address_IP: null,
+    inn_IP: null,
+    ogrn_IP: null,
+    rs_IP: null,
+    bic_IP: null,
+    corr_score_IP: null,
   })
 
-  const [userRecipient, setUserRecipient] = useState<UserInServer>({
+
+
+
+
+
+  const [userRecipient, setUserRecipient] = useState<toCorrectUserAcc>({
     id: "",
+    created_at: "",
     email: "",
     phone: "",
     name: "",
-    address_id: 0,
+    address_id: 0,//надо изменить создав новый или получив старый
     is_client: false,
     is_dogovor: false,
     type_acc: "noAcc",
-    ref_code: "",
-    created_at: "",
-    discount: 0
+    ref_code: "",//поменять
+    count_refcode_use: null,
+    discount: 0,
+    passport: null,
+    snils: null,
+    fio_gd_OOO: null,
+    name_OOO: null,
+    oficial_adress_OOO: null,
+    actual_address_OOO: null,
+    inn_OOO: null,
+    kpp_OOO: null,
+    ogrn_OOO: null,
+    rs_OOO: null,
+    bic_OOO: null,
+    corr_score_OOO: null,
+    comment: null,
+    fio_IP: null,
+    actual_address_IP: null,
+    inn_IP: null,
+    ogrn_IP: null,
+    rs_IP: null,
+    bic_IP: null,
+    corr_score_IP: null,
   })
   const [addressSendler, setAddressSendler,] = useState<AddressInServer>({
     id: 0,
@@ -679,11 +727,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const propsPGF = {
     order_number: order.order_number,
     date_create_at: dateCreateOrder(order.created_at),
-    from_name: userSendler.name,
+    from_name: userSendler.name as string,
     from_full_adress: addressSendler.full_address,
     from_city: addressSendler.city_name,
     from_country: addressSendler.country_name,
-    where_name: userRecipient.name,
+    where_name: userRecipient.name as string,
     where_full_adress: addressRecipient.full_address,
     where_sity: addressRecipient.city_name,
     where_counter: addressRecipient.country_name,//назвал поле неправильно подразумевал страну получения
@@ -695,8 +743,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     total_heft: place_total_heft,
     sum_places: place?.[0]?.sumPlaces ?? 1,
     array_numbers_places: stringNumbersPlaces,
-    from_phone: userSendler.phone,
-    where_phone: userRecipient.phone,
+    from_phone: userSendler.phone as string,
+    where_phone: userRecipient.phone as string,
     product: order.product,
     payment: order.is_paid,
     shipping_invoice: "номер счета",
@@ -825,8 +873,15 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       <p>Персональная скидка клиента: {userSendler.discount}</p>
       {/* <p>{userSendler.id}</p> */}{/*айдишник клиента*/}
       <p>Делал заказы: {userSendler.is_client ? "да" : "нет"}</p>{/* логика смены */}
-      <p>Наличие договора: {typeAcc(userSendler.type_acc)}</p>
+      <p>Наличие договора: {typeAcc(userSendler.type_acc as string)}</p>
       {userSendler.type_acc !== "noAcc" && userSendler.type_acc !== "request" && <p>Реферальный код: {userSendler.ref_code ? userSendler.ref_code : "не задан"}</p>}
+
+      <Link
+        style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+        href={`/admin/user/${userSendler.id}`}>
+        Перейти в профиль
+      </Link>
+
 
       {openOrderFilesSender
         ?
@@ -915,8 +970,15 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       <p>Персональная скидка клиента: {userRecipient.discount}</p>
       {/* <p>{userSendler.id}</p> */}{/*айдишник клиента*/}
       <p>Делал заказы: {userRecipient.is_client ? "да" : "нет"}</p>{/* логика смены */}
-      <p>Наличие договора: {typeAcc(userRecipient.type_acc)}</p>
+      <p>Наличие договора: {typeAcc(userRecipient.type_acc as string)}</p>
       {userSendler.type_acc !== "noAcc" && userSendler.type_acc !== "request" && <p>Реферальный код: {userRecipient.ref_code ? userSendler.ref_code : "не задан"}</p>}
+
+
+      <Link
+        style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+        href={`/admin/user/${userRecipient.id}`}>
+        Перейти в профиль
+      </Link>
 
 
       {openOrderFilesRecipient

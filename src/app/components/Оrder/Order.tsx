@@ -1237,8 +1237,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         <p> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
         <p> Индивидуальная скидка (заказа): <b>{order.discount_this_send} %</b></p>
         <p> Поступление оплаты: <b>{order.is_paid === true ? "Оплачен" : "Не оплачен"}</b></p>
-        <p> Дата забора груза: <b>{order.loading_date ? dateCreateOrder(order.loading_date) : ""}</b></p>
-        <p> Дата вручения груза: <b>{order.unloading_date ? dateCreateOrder(order.loading_date) : ""}</b></p>
+        <p> Дата забора груза: <b>{order.loading_date ? dateCreateOrder(order.loading_date.toISOString()) : ""}</b></p>
+        <p> Дата вручения груза: <b>{order.unloading_date ? dateCreateOrder(order.unloading_date.toISOString()) : ""}</b></p>
         <p> Тип содержимого: <b>{order.document === "document" ? "Документ" : "Груз"}</b></p>
         <p> Факт оплаты: <b>{order.is_paid ? "Оплачен" : "Не оплачен"}</b></p>
 

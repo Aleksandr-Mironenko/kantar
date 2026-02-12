@@ -43,3 +43,19 @@
 
 
 }
+
+
+
+ .commentsButton {
+   padding: 0 5px;
+   border: none;
+   background-color: transparent;
+   font-size: 15px;
+   color: gray;
+
+   &:hover {
+     cursor: pointer;
+     color: red;
+     transform: scale(1.3);
+   }
+ }

@@ -253,7 +253,7 @@ export interface DataUploadFiles {
 }
 
 export interface DataUploadUserFiles {
-  userId: number;
+  userId: string;
   files: File[];
   name?: string
 }

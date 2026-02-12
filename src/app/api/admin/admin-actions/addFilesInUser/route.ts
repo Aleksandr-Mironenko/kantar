@@ -1,15 +1,12 @@
-//нужно переделать
-
 import retry from "@/app/api/orders/lib/function/retry";
-import { uploadFiles } from "@/app/api/orders/uploadFiles";
+import uploadFiles from "@/app/api/send-a-request-for-collaboration/uploadFiles";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
 
   const files: File[] = [];
 
-  let orderId: string | null = null;
-  let orderNumber: number | null = null;
+  let userId: string | null = null;
 
 
   for (const [key, value] of formData.entries()) {
@@ -20,17 +17,14 @@ export async function POST(req: Request) {
       continue;
     }
 
-    if (key === "orderId") {
-      orderId = String(value);
+    if (key === "userId") {
+      userId = String(value);
     }
 
-    if (key === "orderNumber") {
-      orderNumber = Number(value);
-    }
 
   }
 
-  if (orderId === null || orderNumber === null)
+  if (userId === null)
     return Response.json(
       { error: "orderId or orderNumber missing" },
       { status: 400 }
@@ -49,7 +43,7 @@ export async function POST(req: Request) {
     await retry(
       () =>
         uploadFiles({
-          orderId: [orderId, orderNumber],
+          userId,
           files,
         }),
       { retries: 5, delay: 100 }

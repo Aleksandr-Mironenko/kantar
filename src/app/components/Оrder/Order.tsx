@@ -4,11 +4,10 @@ import { TableOrdersRecord, FileObj } from "../DTO/DTO";
 import { Flex, QRCode } from 'antd';
 import type { QRCodeProps } from 'antd';
 import { createStyles } from 'antd-style';
-import { PDFWayBillClient, toCorrectUserAcc, PleaseInServer, AddressInServer } from "../DTO/DTO";
+import { CommentUserType, PDFWayBillClient, toCorrectUserAcc, PleaseInServer, AddressInServer } from "../DTO/DTO";
 import styles from './Order.module.scss'
 import DownloadFile from "../Helpers/DownloadFile"
 import Link from 'next/link';
-
 const useStyles = createStyles(() => ({
   root: {
     border: '1px solid #ccc',
@@ -55,6 +54,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const [filesUserRecipient, setFilesUserRecipient] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showFilesUserRecipient, setShowFilesUserRecipient] = useState<boolean>(false) //открыты ли файлы флаг
+
+  const [showComments, setShowComments] = useState<boolean>(false) //открыты ли файлы флаг
 
   const [userSendler, setUserSendler] = useState<toCorrectUserAcc>({
     id: "",
@@ -242,6 +243,13 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const [addFileInSendler, setAddFileInSendler] = useState<boolean>(false)
   const [addFileInRecipient, setAddFileInRecipient] = useState<boolean>(false)
   const [openOrderPlaces, setOpenOrderPlaces] = useState<boolean>(false)
+
+
+
+  const [comment, setComment] = useState<string>('')
+  const [comments, setComments] = useState<CommentUserType[]>([])
+  const [newComment, setNewComment] = useState<string>('')
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
 
 
   const getPlaces = async (numberOrder: number) => {
@@ -782,7 +790,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const onSubmitUserSender = async () => {
 
     const formData = new FormData();
-    filesOrder.forEach((el: {
+    filesUserSender.forEach((el: {
       id: number;
       file: File | null;
     }) => {
@@ -790,10 +798,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         formData.append(`files[${el.id}]`, el.file as File);
       }
     });
-    formData.append("orderId", String(order.id))       // число заказа из state
-    formData.append("orderNumber", String(order.order_number)); // номер заказа
+    formData.append("userId", String(userSendler.id))       // id отправителя
 
-    const response = await fetch("/api/admin/admin-actions/addFilesInOrder", {
+    const response = await fetch("/api/admin/admin-actions/addFilesInUser", {
       method: "POST", body: formData,
     });
     if (!response.ok) {
@@ -809,7 +816,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const onSubmitUserRecipient = async () => {
 
     const formData = new FormData();
-    filesOrder.forEach((el: {
+    filesUserRecipient.forEach((el: {
       id: number;
       file: File | null;
     }) => {
@@ -817,10 +824,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         formData.append(`files[${el.id}]`, el.file as File);
       }
     });
-    formData.append("orderId", String(order.id))       // число заказа из state
-    formData.append("orderNumber", String(order.order_number)); // номер заказа
+    formData.append("userId", String(userRecipient.id))       // id отправителя
 
-    const response = await fetch("/api/admin/admin-actions/addFilesInOrder", {
+    const response = await fetch("/api/admin/admin-actions/addFilesInUser", {
       method: "POST", body: formData,
     });
     if (!response.ok) {
@@ -916,7 +922,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 isOrder={false}
                 isUserSender={true}
                 isUserRecipient={false} />
-              <button style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmit()}>❱❱❱</button>
+              <button style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmitUserSender()}>❱❱❱</button>
             </div>
             :
             <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInSendler(true)}>Добавить файл</button>
@@ -1010,7 +1016,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   isUserSender={false}
                   isUserRecipient={true} />
 
-                <button style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmit()}>❱❱❱</button>
+                <button style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmitUserRecipient()}>❱❱❱</button>
               </div>
               :
               <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInRecipient(true)}>Добавить файл</button>
@@ -1025,6 +1031,146 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     </div >)
 
 
+
+  const getComment = async () => {
+    console.log(numberOrder)
+    if (!numberOrder) return; // безопасная проверка
+    const request = await fetch(
+      "/api/admin/admin-panel-poling/orders/comment-In_order/get",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order_number: numberOrder
+        }),
+      }
+    );
+
+    if (!request.ok) {
+      throw new Error("Ошибка получения комментариев");
+    }
+    const response = await request.json();
+    setComments(response);
+    console.log(response)
+  };
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      getComment();
+    }, 5000);
+    return () => clearTimeout(timerId);
+  }, []);
+
+
+
+  const commentAction = async (type: string, props: string | object) => {
+    const request = await fetch("/api/admin/admin-panel-poling/orders/comment-In_order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type, props
+      })
+    })
+
+    if (!request.ok) {
+      throw new Error(`Ошибка действий с комментарием ${type}`)
+    }
+
+    const response = await request.json();
+    console.log(response)
+    if (type === "add") { setComment("") }
+    getComment()
+  }
+
+
+  const commentsMap = (comments ?? []).map((el: { id: string, user_id: string, author_id: string, text: string, created_at: string }) =>
+  (<li style={{ borderBottom: "1px solid black", borderRadius: "30px" }} key={el.id} >
+    <p style={{ display: "flex", margin: "10px 0", alignItems: "center" }}>
+      <span
+        style={{ color: "gray", paddingTop: "5px", paddingLeft: "10px", fontSize: "10px", borderRadius: "30px 0 ", borderTop: "1px solid black" }}>
+        {dateCreateOrder(el.created_at)}
+        :
+      </span>
+
+      {editingCommentId === el.id
+        &&
+
+        <textarea
+          style={{
+            resize: "vertical",     // менять высоту
+            minHeight: "60px",
+            width: "100%",
+            margin: "10px 0"
+          }}
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+        />
+      }
+      {editingCommentId === el.id
+        ?
+        <>
+
+          <button className={styles.commentsButton}
+            onClick={() => {
+              commentAction("update", { commentId: el.id, newText: newComment })
+              setEditingCommentId(null)
+            }}>
+            ✓
+          </button>
+        </>
+        :
+        <>
+          <span style={{ paddingLeft: "10px", textDecoration: "underline", whiteSpace: "pre-wrap", wordWrap: "break-word", }}>{(el.text)}</span>
+          <span>
+            <button className={styles.commentsButton}
+              onClick={() => {
+                setEditingCommentId(el.id)
+                setNewComment(el.text) // загружаем текст комментария для редактирования
+              }}>
+              🖉
+            </button>
+          </span>
+        </>}
+      <span>
+        <button className={styles.commentsButton}
+          onClick={() => commentAction("del", { commentId: el.id })} >
+          ×
+        </button>
+      </span>
+    </p>
+  </li >
+  )
+  )
+
+
+
+
+
+  const commentBlock = (<div style={{ position: "relative", display: "inline-block", margin: "1vh", padding: "1vh", border: "1px solid #000000", borderRadius: "10px", background: 'rgba(255, 255, 255, 0.7)' }}>
+    <div
+      onClick={() => setShowComments(false)}
+      className={styles.closeButton} >
+      ×
+    </div>
+    <p style={{ marginTop: "10px", marginRight: "20px" }}>
+      <b>Служебные отметки о заказе:</b>
+    </p>
+    <div style={{ display: "flex" }}> <textarea
+
+      style={{ padding: "5px 10px", borderRadius: "10px", resize: "vertical", minHeight: "60px", width: "100%" }}
+      value={comment}
+      onChange={(e) => setComment(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          setComment((e.target as HTMLInputElement).value)
+        }
+      }}
+    />
+      <button className={styles.commentsButton} style={{ border: "none", padding: "5px 10px", backgroundColor: "transparent" }}
+        onClick={() => commentAction("add", { order_number: numberOrder, text: comment, authorId: "937d1ef3-f9e8-4d4c-9a12-afcfabec996a" })}>❱❱❱</button>
+    </div>
+    <ol style={{ listStyleType: "none" }}>{commentsMap}</ol>
+  </div>)
 
   const mapOrder = (
     <div key={order.id} style={{ display: "flex" }}>
@@ -1071,6 +1217,14 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 e.preventDefault()
                 setOpenOrderPlaces(true)
               }}>Открыть места заказа</button>}
+
+            {!showComments && <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+              onClick={(e) => {
+                e.preventDefault()
+                setShowComments(true)
+              }}>Комментарии к заказу</button>}
+
+
           </div>
 
         </div>
@@ -1083,6 +1237,12 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         <p> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
         <p> Индивидуальная скидка (заказа): <b>{order.discount_this_send} %</b></p>
         <p> Поступление оплаты: <b>{order.is_paid === true ? "Оплачен" : "Не оплачен"}</b></p>
+        <p> Дата забора груза: <b>{order.loading_date ? dateCreateOrder(order.loading_date) : ""}</b></p>
+        <p> Дата вручения груза: <b>{order.unloading_date ? dateCreateOrder(order.loading_date) : ""}</b></p>
+        <p> Тип содержимого: <b>{order.document === "document" ? "Документ" : "Груз"}</b></p>
+        <p> Факт оплаты: <b>{order.is_paid ? "Оплачен" : "Не оплачен"}</b></p>
+
+        {showComments && commentBlock}
         <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", marginTop: "20px", marginBottom: "20px" }}>
           {senderData}
           {recipientData}
@@ -1138,10 +1298,6 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     </div >
   )
 
-
-
-
-
   return (
     <>
       <div className={styles.modalOverlay}>
@@ -1154,4 +1310,4 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     </>
   )
 }
-export default Order
+export default Order 

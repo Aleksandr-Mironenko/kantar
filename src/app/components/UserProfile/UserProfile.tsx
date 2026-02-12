@@ -100,7 +100,7 @@ export default function UserProfile({ searchParams }: { searchParams: { id: stri
 
         <textarea
           style={{
-            resize: "vertical",     // можно менять высоту
+            resize: "vertical",     // менять высоту
             minHeight: "60px",
             width: "100%",
             margin: "10px 0"

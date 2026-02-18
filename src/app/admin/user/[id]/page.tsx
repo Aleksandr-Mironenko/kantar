@@ -1,6 +1,6 @@
 
 import findUser from "@/app/api/admin/admin-panel-poling/orders/search-one-order/findUser";
-import PolingeAdminPanel from "@/app/components/PolingAdminPanel/PolingAdminPanel";
+import OrderTable from "@/app/components/OrderTable/OrderTable";
 import UserProfile from "@/app/components/UserProfile/UserProfile";
 import { toCorrectUserAcc, CommentUserType } from "@/app/components/DTO/DTO";
 import readComment from '@/app/api/admin/admin-panel-poling/users/comment-In_user/get/readComment'
@@ -17,6 +17,6 @@ export default async function OrderPage({ params }: {
       searchParams={{ id, idUserProps: dataUserSendler }}
 
     />
-    <PolingeAdminPanel searchParams={{ idUserProps: id, headerPage: `Заказы клиента` }} />;
+    <OrderTable searchParams={{ idUserProps: id, headerPage: `Заказы клиента` }} />;
   </>)
 }

@@ -606,7 +606,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                       type="checkbox"
                       {...register("agree")}
                     />
-                    <span>Согласен с обработкой персональных данных</span>
+                    <span>Согласен с обработкой <a style={{ fontWeight: "800", textDecoration: "underline" }} href="policy">персональных данных</a></span>
                   </label>
                   {errors.agree && <p className={styles.agreeErrmsg}>Согласие обязательно</p>}
                 </div>

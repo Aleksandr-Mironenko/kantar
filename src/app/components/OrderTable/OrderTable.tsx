@@ -6,7 +6,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import styles from "./PolingAdminPanel.module.scss";
+import styles from "./OrderTable.module.scss";
 import { TableOrdersRecord, TableOrdersRecordMeta, TableOrdersRecorResponse, TableOrdersRecordWithEvent, WSMessage, PleaseInServer } from "../DTO/DTO";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -212,8 +212,14 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
       header: "ДАТА ЗАГРУЗКИ",
       cell: info => {
         const value = info.getValue<string>();
-        return new Date(value).toLocaleDateString("ru-RU")
-          ;
+
+        if (!value) return "";
+
+        const date = new Date(value);
+
+        if (isNaN(date.getTime())) return "";
+
+        return date.toLocaleDateString("ru-RU");
       },
       meta: {
         editable: true,
@@ -406,8 +412,14 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
       header: "ДАТА ЗАВЕРШЕНИЯ",
       cell: info => {
         const value = info.getValue<string>();
-        return new Date(value).toLocaleDateString("ru-RU")
-          ;
+
+        if (!value) return "";
+
+        const date = new Date(value);
+
+        if (isNaN(date.getTime())) return "";
+
+        return date.toLocaleDateString("ru-RU");
       },
       meta: {
         editable: true,
@@ -433,7 +445,9 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
       header: "Стоимость",
       cell: info => `${info.getValue<number>()} ₽`,
       meta: {
-        editable: false,
+        editable: true,
+        editor: "input",
+        inputType: "text",
       },
     },
     {

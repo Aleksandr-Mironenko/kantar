@@ -144,7 +144,7 @@ export default function Home() {
 от неправомерного или случайного доступа, уничтожения, изменения, блокирования, копирования, распространения, а также от иных неправомерных 
 действий третьих лиц.`
   return (
-    <>
+    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", }}>
       <ThirdPartyFix />
       {/* <RealtimeAdminPanel /> //полностью котов к проду купить доступ и выгрузить папку сервера Render.com */}
       <Header />
@@ -156,8 +156,8 @@ export default function Home() {
       </div>
 
       < Footer />
-    </>
-  );
+    </main>
+  )
 }
 
 

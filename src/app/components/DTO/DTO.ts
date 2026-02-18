@@ -80,6 +80,7 @@ export type DownloadFileProps = {
   isOrder: boolean;
   isUserSender: boolean;
   isUserRecipient: boolean;
+  isService?: boolean;
 };
 
 export interface IPFields {
@@ -131,6 +132,12 @@ export interface ValuesFromCalc {
   email: string;
   comment: string;
   agree: boolean
+}
+export interface ValuesServicesAdmin {
+  name: string;
+  phone: string;
+  email: string;
+  comment: string
 }
 
 export interface PropsNotification {
@@ -580,6 +587,21 @@ export type CommentUserType = {
   created_at: string;
 
 };
+
+export interface ServicesAdminType {
+  id: string,
+  name: string,
+  description: string,
+  full_description: string,
+  url_image: string,
+  url_page: string,
+  is_active: boolean,
+  created_at: string,
+  updated_at: string
+  url_vizual_name: string,
+  url_image_signed: string,
+  is_main_component: boolean
+}
 
 export type TableOrdersRecordWithEvent = TableOrdersRecord & { eventType: string }
 

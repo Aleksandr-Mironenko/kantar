@@ -337,6 +337,12 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     return `${bbb[0]}.${bbb[1]}.${bbb[2]} в ${aaa[1]} `
   }
 
+  const dateCreateOrderLoad = (date: string) => {
+    const qweqwe = new Date(date).toLocaleString()
+    const aaa = qweqwe.split(",")
+    const bbb = aaa[0].split(".")
+    return `${bbb[0]}.${bbb[1]}.${bbb[2]}`
+  }
 
   const status = order.status === "new" ? "новый" :
     order.status === "pickup_required_(processed)" ? "требуется забор (обработано)" :
@@ -370,24 +376,24 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       <li key={el.id} style={{ marginTop: "10px", display: "flex", marginBottom: "10px", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
         <div style={{ width: "90%", display: "flex", flexDirection: "column" }}>
           <p style={{ fontSize: "28px", alignSelf: "center" }}>{personalMarker}</p>
-          <p> Проверка фактических характеристик: {statusEl}</p>
-          <p> Номер места: {el.id}</p>
+          <p style={{ display: "flex", flexWrap: "wrap" }}> Проверка фактических характеристик: <b style={{ marginLeft: "5px" }}>{statusEl === "не проверен" ? <span style={{ color: "red" }}>{statusEl}</span> : statusEl}</b></p>
+          <p style={{ display: "flex", flexWrap: "wrap" }}> Номер места: <b style={{ marginLeft: "5px" }}>{el.id}</b></p>
           {/* <p>{new Date(order.created_at).toLocaleString()}</p> */}
 
           {/* <p> id заказа: {el.order_id}</p> */}
 
           <div style={{}}>
-            <p> Условная стоимость места: {Math.ceil(el.price / el.sumPlaces)} ₽ </p>
+            <p style={{ display: "flex", flexWrap: "wrap" }}> Условная стоимость места: <b style={{ marginLeft: "5px" }}>{Math.ceil(el.price / el.sumPlaces)} ₽ </b></p>
             {el.nds > 0 && <p> Условный НДС: {Math.ceil(el.nds / el.sumPlaces)} p.</p>}
           </div>
 
 
-          <div style={{ alignSelf: "flex-end" }}>
-            <p> Длина: {el.length} см.</p>
-            <p> Ширина: {el.width} см.</p>
-            <p> Высота: {el.height} см.</p>
-            <p> Вес: {el.heft} кг.</p>
-            <p> Объем: {el.volume} м³ </p>
+          <div style={{ alignSelf: "flex-end", borderTop: "1px solid black" }}>
+            <p style={{ display: "flex", flexWrap: "wrap" }}> Длина: <b style={{ marginLeft: "5px" }}>{el.length} см.</b></p>
+            <p style={{ display: "flex", flexWrap: "wrap" }}> Ширина: <b style={{ marginLeft: "5px" }}>{el.width} см.</b></p>
+            <p style={{ display: "flex", flexWrap: "wrap" }}> Высота: <b style={{ marginLeft: "5px" }}>{el.height} см.</b></p>
+            <p style={{ display: "flex", flexWrap: "wrap" }}> Вес: <b style={{ marginLeft: "5px" }}>{el.heft} кг.</b></p>
+            <p style={{ display: "flex", flexWrap: "wrap" }}> Объем: <b style={{ marginLeft: "5px" }}>{el.volume} м³</b> </p>
           </div>
 
 
@@ -824,7 +830,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         formData.append(`files[${el.id}]`, el.file as File);
       }
     });
-    formData.append("userId", String(userRecipient.id))       // id отправителя
+    formData.append("userId", String(userRecipient.id))
 
     const response = await fetch("/api/admin/admin-actions/addFilesInUser", {
       method: "POST", body: formData,
@@ -839,15 +845,20 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
   const senderData = openDataSendler && (
-    <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+    <div style={{ maxWidth: "350px", position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
       <div
         onClick={() => setOpenDataSendler(false)}
         className={styles.closeButton} >
         ×
       </div>
       <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные отправителя</h2>
-      <p>ФИО: {userSendler.name}</p>
-      <p  >
+      <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        ФИО:
+        <b style={{ marginLeft: "5px" }}>
+          {userSendler.name}
+        </b>
+      </p>
+      <p style={{ display: "flex", flexWrap: "wrap" }}>
         Телефон:
         <b>
           <a style={{ fontSize: "15px", padding: "7px" }}
@@ -856,7 +867,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           </a>
         </b>
       </p>
-      <p style={{ marginBottom: "0" }}>
+      <p style={{ marginBottom: "0", display: "flex", flexWrap: "wrap" }}>
         Эл. почта:
         <b>
           <a
@@ -866,6 +877,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
             {userRecipient.email}
           </a>
         </b>
+
       </p>
       <a
         href={`${yandexMapsLink(addressSendler.full_address)}`}
@@ -876,11 +888,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
       {/* <p>{userSendler.created_at}</p>  */}
       {/*уже известно когда созданы места*/}
-      <p>Персональная скидка клиента: {userSendler.discount}</p>
+      <p style={{ display: "flex", flexWrap: "wrap" }}>Персональная скидка клиента: <b style={{ marginLeft: "5px" }}>{userSendler.discount} %</b></p>
       {/* <p>{userSendler.id}</p> */}{/*айдишник клиента*/}
-      <p>Делал заказы: {userSendler.is_client ? "да" : "нет"}</p>{/* логика смены */}
-      <p>Наличие договора: {typeAcc(userSendler.type_acc as string)}</p>
-      {userSendler.type_acc !== "noAcc" && userSendler.type_acc !== "request" && <p>Реферальный код: {userSendler.ref_code ? userSendler.ref_code : "не задан"}</p>}
+      <p style={{ display: "flex", flexWrap: "wrap" }}>Делал заказы: <b style={{ marginLeft: "5px" }}> {userSendler.is_client ? "да" : "нет"}</b></p>{/* логика смены */}
+      <p style={{ display: "flex", flexWrap: "wrap" }}>Наличие договора: <b style={{ marginLeft: "5px" }}> {userSendler.type_acc === "noAcc" || userSendler.type_acc === "request" ? "нет" : "да"}</b></p>
+      {userSendler.type_acc !== "noAcc" && userSendler.type_acc !== "request" && <p style={{ display: "flex", flexWrap: "wrap" }}>Реферальный код: <b style={{ marginLeft: "5px" }}>{userRecipient.ref_code ? userSendler.ref_code : "не задан"}</b></p>}
 
       <Link
         style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
@@ -937,7 +949,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     </div>)
 
   const recipientData = openDataRecipient && (
-    <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+    <div style={{ maxWidth: "350px", position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
 
       <div
         onClick={() => setOpenDataRecipient(false)}
@@ -945,8 +957,13 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         ×
       </div>
       <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные получателя</h2>
-      <p>ФИО: {userRecipient.name}</p>
-      <p style={{}}>
+      <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        ФИО:
+        <b style={{ marginLeft: "5px" }}>
+          {userRecipient.name}
+        </b>
+      </p>
+      <p style={{ display: "flex", flexWrap: "wrap" }}>
         Телефон:
         <b>
           <a style={{ fontSize: "15px", padding: "7px" }} href={`tel:${userRecipient.phone}`} >
@@ -954,7 +971,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
           </a>
         </b>
       </p>
-      <p style={{ marginBottom: "0" }}>
+      <p style={{ marginBottom: "0", display: "flex", flexWrap: "wrap" }}>
         Эл. почта:
         <b>
           <a
@@ -973,12 +990,13 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       </a>
       {/* <p>{userSendler.created_at}</p>  */}
       {/*уже известно когда созданы места*/}
-      <p>Персональная скидка клиента: {userRecipient.discount}</p>
+      <p style={{ display: "flex", flexWrap: "wrap" }}>Персональная скидка клиента:
+        <b style={{ marginLeft: "5px" }}>
+          {userRecipient.discount} %</b></p>
       {/* <p>{userSendler.id}</p> */}{/*айдишник клиента*/}
-      <p>Делал заказы: {userRecipient.is_client ? "да" : "нет"}</p>{/* логика смены */}
-      <p>Наличие договора: {typeAcc(userRecipient.type_acc as string)}</p>
-      {userSendler.type_acc !== "noAcc" && userSendler.type_acc !== "request" && <p>Реферальный код: {userRecipient.ref_code ? userSendler.ref_code : "не задан"}</p>}
-
+      <p style={{ display: "flex", flexWrap: "wrap" }}>Делал заказы:  <b style={{ marginLeft: "5px" }}>{userRecipient.is_client ? "да" : "нет"}</b></p>{/* логика смены */}
+      <p style={{ display: "flex", flexWrap: "wrap" }}>Наличие договора: <b style={{ marginLeft: "5px" }}> {userRecipient.type_acc === "noAcc" || userRecipient.type_acc === "request" ? "нет" : "да"}</b></p>
+      {userRecipient.type_acc !== "noAcc" && userRecipient.type_acc !== "request" && <p style={{ display: "flex", flexWrap: "wrap" }}>Реферальный код: <b style={{ marginLeft: "5px" }}>{userRecipient.ref_code ? userSendler.ref_code : "не задан"}</b></p>}
 
       <Link
         style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
@@ -1146,7 +1164,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
 
-  const commentBlock = (<div style={{ position: "relative", display: "inline-block", margin: "1vh", padding: "1vh", border: "1px solid #000000", borderRadius: "10px", background: 'rgba(255, 255, 255, 0.7)' }}>
+  const commentBlock = (<div style={{ position: "relative", display: "inline-block", margin: "1vh", padding: "1vh", border: "1px solid #000000", borderRadius: "10px", background: 'rgba(255, 255, 255, 0.7)', marginTop: "20px" }}>
     <div
       onClick={() => setShowComments(false)}
       className={styles.closeButton} >
@@ -1177,7 +1195,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       <div style={{ width: "100%", }}>
         <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
 
-          <h2 style={{ fontSize: "28px" }}> Номер заказа: {order.order_number}</h2>
+          <h2 style={{ fontSize: "28px" }}> Номер заказа: {numberOrder}</h2>
 
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", position: "absolute", top: "0px", right: "0px" }}>
             <Flex gap="middle"  >
@@ -1229,18 +1247,20 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
         </div>
 
-        <p> Статус заказа: <b>{status}</b></p>
-        <p> Был создан: <b>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
-        <p> Вес: <b>{order.heft_only_full} кг</b></p>
+        <p style={{ marginTop: "15px" }}> Статус заказа: <b>{status}</b></p>
+        <p style={{ marginTop: "15px" }}> Был создан: <b>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
+        <p style={{ marginTop: "15px" }}> Тип содержимого: <b>{order.document === "document" ? "Документ" : "Груз"}</b></p>
+
+        <p style={{ marginTop: "15px" }}> Вес: <b>{order.heft_only_full} кг</b></p>
         <p> Объем: <b>{order.volume_only_full} м³</b></p>
         <p> Рассчетный вес: <b>{order.heft_full} кг</b></p>
-        <p> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
+
+        <p style={{ marginTop: "15px" }}> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
         <p> Индивидуальная скидка (заказа): <b>{order.discount_this_send} %</b></p>
-        <p> Поступление оплаты: <b>{order.is_paid === true ? "Оплачен" : "Не оплачен"}</b></p>
-        <p> Дата забора груза: <b>{order.loading_date ? dateCreateOrder(order.loading_date.toISOString()) : ""}</b></p>
-        <p> Дата вручения груза: <b>{order.unloading_date ? dateCreateOrder(order.unloading_date.toISOString()) : ""}</b></p>
-        <p> Тип содержимого: <b>{order.document === "document" ? "Документ" : "Груз"}</b></p>
-        <p> Факт оплаты: <b>{order.is_paid ? "Оплачен" : "Не оплачен"}</b></p>
+        <p> Поступление оплаты: <b>{order.is_paid ? "Оплачен" : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>Не оплачен</span>}</b></p>
+
+        <p style={{ marginTop: "15px" }}> Дата забора груза: <b>{order.loading_date ? dateCreateOrderLoad(String(order.loading_date)) : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не выбрана</span>}</b></p>
+        <p> Дата вручения груза: <b>{order.unloading_date ? dateCreateOrderLoad(String(order.unloading_date)) : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не выбрана</span>}</b></p>
 
         {showComments && commentBlock}
         <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", marginTop: "20px", marginBottom: "20px" }}>

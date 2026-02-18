@@ -11,7 +11,8 @@ export default function DownloadFile({
   setShowInvois,
   isOrder,
   isUserSender,
-  isUserRecipient
+  isUserRecipient,
+  isService
 }: DownloadFileProps) {
 
   const delInvoiceFiles = (id: number) => {
@@ -81,7 +82,10 @@ export default function DownloadFile({
           const file = whatInFilesInInvoiceFiles(el.id);
           if (file != null) {
             return (
-              <div className={styles.whoAmI__fileName} >
+              <div
+                className={styles.whoAmI__fileName}
+                {...(isService && { style: { backgroundColor: "transparent" } })}
+              >
                 {file.name}
                 < button onClick={(e) => {
                   e.stopPropagation()
@@ -96,7 +100,7 @@ export default function DownloadFile({
           ()}
 
       {
-        !isOrder && !isUserSender && !isUserRecipient &&
+        !isOrder && !isUserSender && !isUserRecipient && !isService &&
         invoiceFiles.length - 1 === index && <button // добавляем возможность добавить файлы
           onClick={() => addInvoiceFiles()}
           className={styles.whoAmI__add} >
@@ -146,15 +150,16 @@ export default function DownloadFile({
   )
   return (
     <>
-      {!isOrder && !isUserSender && !isUserRecipient && buttonShow}
-      {isOrder && !isUserSender && !isUserRecipient && < div
-        style={{ backgroundColor: "white", border: "none" }}
-        className={styles.goods__loadBack} >
-        <h4 style={{ marginBottom: "0" }}> Загрузка в заказ: </h4>
-        < ol className={styles.whoAmI} style={{ listStyleType: "none" }}>
-          {mapAddFile}
-        </ol>
-      </div>}
+      {!isOrder && !isUserSender && !isUserRecipient && !isService && buttonShow}
+      {isOrder && !isUserSender && !isUserRecipient &&
+        < div
+          style={{ backgroundColor: "white", border: "none" }}
+          className={styles.goods__loadBack} >
+          <h4 style={{ marginBottom: "0" }}> Загрузка в заказ: </h4>
+          < ol className={styles.whoAmI} style={{ listStyleType: "none" }}>
+            {mapAddFile}
+          </ol>
+        </div>}
       {!isOrder && isUserSender && !isUserRecipient && < div
         style={{ backgroundColor: "white", border: "none" }}
         className={styles.goods__loadBack} >
@@ -171,6 +176,15 @@ export default function DownloadFile({
           {mapAddFile}
         </ol>
       </div>}
+      {!isOrder && !isUserSender && !isUserRecipient && isService &&
+        < div
+          style={{ backgroundColor: "transparent", border: "none" }}
+          className={styles.goods__loadBack} >
+          <h4 style={{ marginBottom: "0" }}> Загрузка в сервис: </h4>
+          < ol className={styles.whoAmI} style={{ listStyleType: "none" }}>
+            {mapAddFile}
+          </ol>
+        </div>}
     </>
   )
 }  

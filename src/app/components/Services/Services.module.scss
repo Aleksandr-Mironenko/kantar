@@ -1,8 +1,26 @@
 .services {
-  padding: 40px;
+  padding: 40px 40px;
   background: #fafafa;
-  border-radius: 50px;
-  margin: 150px 40px;
+  border-radius: 30px;
+  margin: auto 40px;
+
+
+  @media (max-width: 469px) {
+    padding: 40px 30px;
+  }
+
+  @media (max-width: 435px) {
+    padding: 40px 20px;
+  }
+
+  @media (max-width: 405px) {
+    padding: 40px 10px;
+  }
+
+  @media (max-width: 397px) {
+    padding: 40px 0;
+  }
+
 
   &__wrapper {
 
@@ -11,6 +29,14 @@
 
     width: 80%;
     margin: 40px auto;
+
+    @media (max-width: 375px) {
+      margin: 40px 25px;
+    }
+
+    @media (max-width: 375px) {
+      margin: 40px 25px;
+    }
   }
 
   &__titles {
@@ -28,15 +54,31 @@
       margin-bottom: 25px;
     }
 
-    @media (max-width: 400px) {
-      margin-bottom: 0
-    }
   }
 
   &__title {
     text-align: center;
     font-size: 36px;
 
+    @media (max-width: 495px) {
+
+      font-size: 30px
+    }
+
+    @media (max-width: 435px) {
+
+      font-size: 25px
+    }
+
+    @media (max-width: 400px) {
+
+      font-size: 20px
+    }
+
+    @media (max-width: 370px) {
+
+      font-size: 15px
+    }
   }
 
   &__all_item {
@@ -50,12 +92,17 @@
       font-size: 25px;
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 530px) {
       font-size: 20px
     }
 
     @media (max-width: 450px) {
       font-size: 15px;
+    }
+
+    @media (max-width: 400px) {
+
+      font-size: 10px
     }
   }
 
@@ -79,17 +126,21 @@
 
   &__item {
     display: flex;
-    padding: 5px;
-    list-style-type: none;
     padding: 25px;
-    width: 300px;
+    list-style-type: none;
     border: 1px solid #ddd;
     border-radius: 12px;
     text-align: center;
-    background: #fff;
-    transition: 0.2s;
     background-color: #e31e24;
-    height: 180px;
+    transition: 0.2s;
+
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 5 / 3;
+    min-width: 200px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
       border-color: #e31e24;
@@ -97,50 +148,38 @@
     }
 
     &_image {
-      max-width: 80px; // фиксированная ширина
-      min-width: 80px;
-      height: 127px; // фиксированная высота
-      overflow: hidden; // скрыть лишнее
+      width: 25%; // относительно карточки, чтобы масштабировалось
+      max-width: 80px; // ограничение для больших экранов
+      height: auto;
       display: block;
-      object-fit: cover; // самое важное — обрезка изображения
-      border-radius: 8px
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
 
     &_textBlock {
       padding-left: 5px;
       min-width: 0;
       flex-grow: 1;
-      word-break: break-word; // переносим длинные слова
+      word-break: break-word;
       overflow-wrap: break-word;
       hyphens: auto;
+      text-align: center;
     }
 
     &_title {
-      font-size: 20px;
+      font-size: clamp(15px, 1.2vw, 20px); // адаптивный размер текста
       font-weight: 700;
       margin-bottom: 10px;
       color: white;
-
-      @media (max-width: 445px) {
-
-        font-size: 15px;
-      }
-
-
     }
 
     &_text {
-      font-size: 16px;
-      color: #666;
+      font-size: clamp(12px, 1vw, 16px); // адаптивный размер текста
       color: white;
-
-      // word-break: break-all;
-      // line-break: normal;
-      // hyphens: auto
-      @media (max-width: 445px) {
-
-        font-size: 15px;
-      }
+      word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
     }
   }
 

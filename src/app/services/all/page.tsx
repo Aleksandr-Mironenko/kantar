@@ -1,12 +1,12 @@
 // import Image from "next/image";
 
-import Header from '../components/Header/Header';
+import Header from '../../components/Header/Header';
 
-import Services from '../components/Services/Services';
+import Services from '../../components/Services/Services';
 
-import Footer from '../components/Footer/Footer';
-import ThirdPartyFix from '../components/ThirdPartyFix/ThirdPartyFix';
-export default function Home() {
+import Footer from '../../components/Footer/Footer';
+import ThirdPartyFix from '../../components/ThirdPartyFix/ThirdPartyFix';
+export default function services() {
 
 
   return (
@@ -17,10 +17,10 @@ export default function Home() {
       {/* <RealtimeAdminPanel /> //полностью котов к проду купить доступ и выгрузить папку сервера Render.com */}
       <Header />
 
-      <Services all={false} />
+      <Services all={true} />
 
       <Footer />
-    </section >
+    </section>
   );
 }
 

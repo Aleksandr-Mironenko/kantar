@@ -403,7 +403,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const cost = watch("costOfCargo")
 
   useEffect(() => {
-    if (cost === "" || cost === undefined || cost === null || Number.isNaN(cost)) {
+    if (cost === undefined || cost === null || Number.isNaN(cost)) {
       setValue("costOfCargo", 1)
     }
   }, [cost, setValue]
@@ -751,7 +751,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                   <label className={errors.costOfCargo ? styles.label_error : styles.label}>
                     Стоимость груза в ₽
                     <input autoComplete="off"
-                      {...register("costOfCargo")}
+                      {...register("costOfCargo", { valueAsNumber: true })}
                       type="number"
                       className={`${styles.input} ${errors.costOfCargo ? styles.error : ""}`}
                       placeholder="Укажите стоимость груза"

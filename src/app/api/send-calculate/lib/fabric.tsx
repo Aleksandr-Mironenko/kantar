@@ -16,6 +16,10 @@ export default async function fabric(formData: FormData) {
   let fromCityObj: City | null = null;
   let whereCityObj: City | null = null;
   let showInvois: boolean = false;
+  let nameOrganizer: string | null = null;
+  let phoneOrganizer: string | null = null;
+  let emailOrganizer: string | null = null;
+  let costOfCargo: number = 0;
   let nameFrom: string = "";
   let nameWhere: string = "";
   let phoneFrom: string = "";
@@ -29,13 +33,14 @@ export default async function fabric(formData: FormData) {
   let where: string = "";
   let indexFrom: string = "";
   let indexWhere: string = "";
-  let client: "sender" | "recipient" = "sender";
+  let client: "sender" | "recipient" | "organizer" = "sender";
   let places: Place[] | [] = [];
   let nds: number = 1;
   let fs: number = 0;
   let fsRF: number = 0;
   let koefficient: number = 0;
-  let descriptionOfCargo: string = ""
+  let descriptionOfCargo: { value: string }[] = [{ value: "" }]
+
 
 
   for (const [key, value] of formData.entries()) {
@@ -46,6 +51,7 @@ export default async function fabric(formData: FormData) {
       filesWithId.push({ id, file: value });
       continue;
     }
+
     if (typeof value === "string") {
       if (key === "agree") {
         agree = value === "1" ? true : false
@@ -59,6 +65,8 @@ export default async function fabric(formData: FormData) {
         isFinalOnlyVolume = Number(value)
       } else if (key === "price") {
         price = Number(value)
+      } else if (key === "costOfCargo") {
+        costOfCargo = Number(value)
       } else if (key === "count") {
         count = Number(value)
       } else if (key === "nds") {
@@ -69,6 +77,12 @@ export default async function fabric(formData: FormData) {
         fsRF = Number(value)
       } else if (key === "koefficient") {
         koefficient = Number(value)
+      } else if (key === "nameOrganizer") {
+        nameOrganizer = value
+      } else if (key === "phoneOrganizer") {
+        phoneOrganizer = value
+      } else if (key === "emailOrganizer") {
+        emailOrganizer = value
       } else if (key === "fromCountryObj") {
         fromCountryObj = JSON.parse(value as string)
       } else if (key === "fromCityObj") {
@@ -106,9 +120,9 @@ export default async function fabric(formData: FormData) {
       } else if (key === "where") {
         where = value
       } else if (key === "client") {
-        client = value as "sender" | "recipient"
+        client = value as "sender" | "recipient" | "organizer"
       } else if (key === "descriptionOfCargo") {
-        descriptionOfCargo = value
+        descriptionOfCargo = JSON.parse(value)
       }
     }
   }
@@ -118,7 +132,11 @@ export default async function fabric(formData: FormData) {
       whereCountryObj.name === "Россия") ? true : false
 
 
-
+  const description = descriptionOfCargo.map((el, index) => (
+    <li key={index} >
+      <p>{el.value} </p>
+    </li>
+  ))
 
   const mapPlaces = places.map(el => (
     `
@@ -167,10 +185,10 @@ export default async function fabric(formData: FormData) {
 
   const bodyTextMessage = `
     <div style="font-size:15px"> 
-      <p style="margin: 5px"><b>${client === "sender" ? nameFrom : nameWhere}</b> в ${createTime} создал новую заявку.</p>
+      <p style="margin: 5px"><b>${client === "sender" ? nameFrom : client === "recipient" ? nameWhere : client === "organizer" ? nameOrganizer : ""}</b> в ${createTime} создал новую заявку.</p>
       <p style="margin: 5px"><b>${document === "document" ? "ДОКУМЕНТЫ" : "ГРУЗ"}</b></p>
-      <p style="margin: 5px; text-decoration: underline">Описание груза: <b>${descriptionOfCargo}</b></p>
-      <p style="margin: 5px">Заказчик <b style="font-size:15px">${client === "sender" ? "отправитель" : "получатель"}</b></p>
+      <p style="margin: 5px; text-decoration: underline">Описание груза: <b><ol style={{ listStyleType: "none"}}>${description}</ol></b></p>
+      <p style="margin: 5px">Заказчик <b style="font-size:15px">${client === "sender" ? "отправитель" : client === "recipient" ? "получатель" : client === "organizer" ? "организатор" : ""}</b></p>
       <p style="margin: 5px">Рассчетный вес: <b>${isFinalHeft} кг.</b></p>
       ${price !== 0 ? `<p style="margin: 5px">Полная стоимость: <b>${Math.ceil(isInternal ? price * nds : price)} р.</b></p>` : `<p style="margin: 5px"><b>ТРЕБУЕТСЯ ИНДИВИДУАЛЬНЫЙ РАССЧЕТ СТОИМОСТИ И СРОКОВ</b></p>`}
       <p style="margin: 5px">Всего мест: <b>${count}</b> </p>
@@ -302,7 +320,7 @@ ${adressWhere},
 
 Вес: ${isFinalHeft}, 
 ${price !== 0 ? `Цена: ${Math.ceil(isInternal ? price * nds : price)}` : `Стоимость и сроки нужно согласовать!`} 
-Оформитель: ${client === "sender" ? phoneFrom : phoneWhere} `
+Оформитель: ${client === "sender" ? phoneFrom : client === "recipient" ? phoneWhere : client === "organizer" ? phoneOrganizer : ""} `
 
 
   const messageUserSMS =
@@ -321,6 +339,10 @@ ${price !== 0 ? `Цена: ${Math.ceil(isInternal ? price * nds : price)}` : `С
       .replace(/^7/, '+7')
 
   return {
+    nameOrganizer,
+    phoneOrganizer,
+    emailOrganizer,
+    costOfCargo,
     isFinalHeft,
     isFinalOnlyHeft,
     isFinalOnlyVolume,

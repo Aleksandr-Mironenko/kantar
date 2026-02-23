@@ -22,17 +22,25 @@ function isValidRussianPhone(phone: string | undefined): boolean {
 export function validate(data: DataCreateOrderProcess) {
   const errors: string[] = [];
 
-  // 1. Согласие
+  // Согласие
   if (!data.agree) {
     errors.push("Необходимо согласие на обработку персональных данных");
   }
 
-  // 2. Кто создаёт заявку (sender или recipient)
-  if (data.client !== "sender" && data.client !== "recipient") {
+  // Кто создаёт заявку (sender или recipient)
+  if (data.client !== "sender" && data.client !== "recipient" && data.client !== "organizer") {
     errors.push("Некорректное значение client");
   }
 
-  // 3. Основные контакты отправителя
+  if (data.client === "organizer" && typeof data.nameOrganizer !== "string" && typeof data.phoneOrganizer !== "string" && typeof data.emailOrganizer !== "string") {
+    errors.push("Некорректные поля организатора");
+  }
+
+  if (!data.costOfCargo) {
+    errors.push("Нет объявленной стоимости");
+  }
+
+  // Основные контакты отправителя
   if (!isValidEmail(data.emailFrom)) {
     errors.push("Некорректный или пустой email отправителя (emailFrom)");
   }
@@ -41,7 +49,7 @@ export function validate(data: DataCreateOrderProcess) {
     errors.push("Некорректный или пустой телефон отправителя (phoneFrom)");
   }
 
-  // 4. Контакты получателя
+  // Контакты получателя
   if (!isValidEmail(data.emailWhere)) {
     errors.push("Некорректный или пустой email получателя (emailWhere)");
   }
@@ -50,7 +58,7 @@ export function validate(data: DataCreateOrderProcess) {
     errors.push("Некорректный или пустой телефон получателя (phoneWhere)");
   }
 
-  // 5. Имена и адреса
+  // Имена и адреса
   if (isEmpty(data.nameFrom)) {
     errors.push("Имя отправителя (nameFrom) обязательно");
   }
@@ -96,11 +104,6 @@ export function validate(data: DataCreateOrderProcess) {
   // 8. Тип отправления
   if (data.document !== "document" && data.document !== "goods") {
     errors.push("Некорректный тип отправления (document)");
-  }
-
-  // 9. Описание груза
-  if (data.document !== "document" && isEmpty(data.descriptionOfCargo)) {
-    errors.push("Описание груза обязательно");
   }
 
   // 10. Цена и расчёты

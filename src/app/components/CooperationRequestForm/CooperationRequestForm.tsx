@@ -13,8 +13,8 @@ export default function CooperationRequestForm() {
   const [client, setClient] = useState<"OOO" | "IP" | "privateIndividual">("privateIndividual")
   const [notification, setNotification] = useState<boolean>(false)
   const [argsNotification, setArgsNotification] = useState<PropsNotification>({
-    titleAlert: "",
-    message: ""
+    title: "",
+    description: ""
   })
 
   //закрытие уведомления через 30 секунд
@@ -27,10 +27,10 @@ export default function CooperationRequestForm() {
     }
   }, [notification])
 
-  const alertNotification = ({ titleAlert, message }: PropsNotification) => {
-    setArgsNotification({ titleAlert, message })
+  const alertNotification = ({ title, description }: PropsNotification) => {
+    setArgsNotification({ title, description })
     setNotification(true)
-    console.log("alertNotification", titleAlert, message)
+    console.log("alertNotification", title, description)
   }
   return (
     <section className={styles.formcalc} id="requestForCooperation" >
@@ -67,8 +67,8 @@ export default function CooperationRequestForm() {
           {client === "IP" && <FormIp alertNotification={alertNotification} />}
           {client === "OOO" && < FormOOO alertNotification={alertNotification} />}
           {client === "privateIndividual" && <FormPrivate alertNotification={alertNotification} />}
-          {notification && <Notification titleAlert={argsNotification.titleAlert}
-            message={argsNotification.message} />}
+          {notification && <Notification title={argsNotification.title}
+            description={argsNotification.description} />}
         </div>
       </div>
     </section >

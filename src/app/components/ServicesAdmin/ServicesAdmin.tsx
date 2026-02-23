@@ -3,10 +3,9 @@
 import DownloadFile from '../Helpers/DownloadFile';
 import styles from './FormCalc.module.scss'
 
-
 import { FileObj, ServicesAdminType } from '@/app/components/DTO/DTO'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const dateCreateOrder = (date: string) => {
   const qweqwe = new Date(date).toLocaleString()
@@ -16,6 +15,7 @@ const dateCreateOrder = (date: string) => {
 }
 
 export default function ServicesAdmin() {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [showServicesAdmin, setShowServicesAdmin] = useState<boolean>(false)
   const [showAddService, setShowAddService] = useState<boolean>(false)
   const [name, setName] = useState<string>('')
@@ -132,15 +132,31 @@ export default function ServicesAdmin() {
         setIsMainComponent(false)
         setUrlVizualName("")// url_vizual_name    urlVizualName
         setUrlImageSigned("")
+
+        setShowAddService(false)
+        setFilesOrder([{ file: null, id: 0 }])
         console.log("данные отправлены")
-      }
-      if (type === "update") {
+
+        timerRef.current = setTimeout(() => {
+          getServices()
+        }, 1000)
+      } else if (type === "update") {
         setEditingId(null)
         setEditValues(null)
+
+        timerRef.current = setTimeout(() => {
+          getServices()
+        }, 500)
+      } else if (type === "del") {
+        timerRef.current = setTimeout(() => {
+          getServices()
+        }, 1000)
       }
 
 
-      getServices()
+
+
+
     }
   }
 
@@ -427,10 +443,14 @@ export default function ServicesAdmin() {
                 setEditValues(null)
               }}>Отмена</button>
 
-            <button className={styles.commentsButton} onClick={() => {
-              onSubmit("update", el.id)
 
-            }}>✓</button>    </>
+            <button className={styles.commentsButton}
+              onClick={async (e) => {
+                e.preventDefault()
+
+                await onSubmit("update", el.id)
+
+              }}>✓</button>    </>
           :
           <button className={styles.commentsButton}
             onClick={() => {
@@ -447,7 +467,12 @@ export default function ServicesAdmin() {
               setUrlImageSigned(el.url_image_signed)
 
             }}>🖉</button>}
-        <button className={styles.closeButton} onClick={() => onSubmit("del", el.id)}> ×</button></div>
+
+        <button className={styles.closeButton} onClick={async (e) => {
+          e.preventDefault()
+          await onSubmit("del", el.id)
+
+        }}> ×</button></div>
     </li >
   ))
   useEffect(() => {
@@ -480,6 +505,13 @@ export default function ServicesAdmin() {
     return false
   }
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [])
 
   return (
 
@@ -500,16 +532,27 @@ export default function ServicesAdmin() {
               marginBottom: "20px",
               justifyContent: "center"
             }}>
-              <h2 style={{ color: "white" }} >Список сервисов</h2>
+              <h2 style={{ color: "white" }} >{services.length ? "Список сервисов" : "Список сервисов пуст"} </h2>
             </div>
             <h2></h2>
             <ol style={{ listStyleType: "none" }}>{mapServices}</ol>
 
 
 
-            {!showAddService && <button onClick={() => setShowAddService(true)} className={styles.add__service}> +</button>}
+            {!showAddService &&
+              <button
+                onClick={() => setShowAddService(true)} className={styles.add__service}>
+                +
+              </button>
+            }
             {showAddService &&
-              (<form style={{ marginTop: "20px" }} onSubmit={() => onSubmit("add")}>   {/*  */}
+              (<form
+                style={{ marginTop: "20px" }}
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  await onSubmit("add")
+                }}
+              >
 
                 < div className={styles.formcalc__container} >
                   <div className={styles.section} style={{ position: "relative" }}>
@@ -634,13 +677,15 @@ export default function ServicesAdmin() {
                             className={styles.services__link}
                             target='blanc'>
                             <div style={{ maxWidth: "80px", minWidth: "80px" }}>
-                              <Image
-                                className={styles.services__item_image}
-                                src={previewUrl as string}
-                                alt={urlVizualName}
-                                width={242}
-                                height={127}
-                                priority />
+                              {previewUrl && (
+                                <Image
+                                  className={styles.services__item_image}
+                                  src={previewUrl}
+                                  alt="Image create"
+                                  width={242}
+                                  height={127}
+                                  priority />
+                              )}
                             </div>
 
                             <div className={styles.services__item_textBlock} >
@@ -656,6 +701,7 @@ export default function ServicesAdmin() {
 
                     <div className={styles.label__wrapper}  >
                       <button
+                        disabled={!name || !description || !fullDescription || !urlVizualName || filesOrder[0].file === null}
                         className={styles.submit} type="submit" >
                         Создать
                       </button>

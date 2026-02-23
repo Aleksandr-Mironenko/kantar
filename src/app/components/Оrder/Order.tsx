@@ -226,7 +226,18 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       sender_city_name: "",
       recipient_city_name: "",
       isSender: "sender",
-      product: "express-RF"
+      product: "express-RF",
+      name_organizer: undefined,
+      phone_organizer: undefined,
+      email_organizer: undefined,
+      organizer_type_acc: "noAcc",
+      organizer_name_OOO: undefined,
+      organizer_fio_gd_OOO: undefined,
+      organizer_fio_IP: undefined,
+      address_organizer_id: undefined,
+      cost_of_cargo: 0,
+      descriptionOfCargo: [{ value: "" }],
+      agree: false
     }
   )
 
@@ -852,12 +863,43 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         ×
       </div>
       <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные отправителя</h2>
+
+      {userSendler.type_acc === "OOO" &&
+        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          Название компании:
+          <b style={{ marginLeft: "5px" }}>
+            {userSendler.fio_gd_OOO}
+          </b>
+        </p>
+      }
+
+      {userSendler.type_acc === "OOO" &&
+        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          ФИО Ген.Директора:
+          <b style={{ marginLeft: "5px" }}>
+            {userSendler.fio_gd_OOO}
+          </b>
+        </p>
+      }
+
+      {userSendler.type_acc === "IP" &&
+        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          Имя ИП:
+          <b style={{ marginLeft: "5px" }}>
+            {userSendler.fio_IP}
+
+          </b>
+        </p>
+      }
+
       <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
-        ФИО:
+        {userSendler.type_acc === "private" ? "ФИО клиента" : (userSendler.type_acc === "noAcc" || userSendler.type_acc === "request") ? "ФИО" : userSendler.type_acc === "OOO" ? "Представитель клиента" : userSendler.type_acc === "IP" ? "Представитель ИП" : "ФИО"}
         <b style={{ marginLeft: "5px" }}>
           {userSendler.name}
         </b>
       </p>
+
+
       <p style={{ display: "flex", flexWrap: "wrap" }}>
         Телефон:
         <b>
@@ -957,12 +999,44 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         ×
       </div>
       <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные получателя</h2>
+
+
+      {userRecipient.type_acc === "OOO" &&
+        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          Название компании:
+          <b style={{ marginLeft: "5px" }}>
+            {userRecipient.fio_gd_OOO}
+          </b>
+        </p>
+      }
+
+      {userRecipient.type_acc === "OOO" &&
+        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          ФИО Ген.Директора:
+          <b style={{ marginLeft: "5px" }}>
+            {userRecipient.fio_gd_OOO}
+          </b>
+        </p>
+      }
+
+      {userRecipient.type_acc === "IP" &&
+        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          Имя ИП:
+          <b style={{ marginLeft: "5px" }}>
+            {userRecipient.fio_IP}
+
+          </b>
+        </p>
+      }
+
       <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
-        ФИО:
+        {userRecipient.type_acc === "private" ? "ФИО клиента" : (userRecipient.type_acc === "noAcc" || userRecipient.type_acc === "request") ? "ФИО" : userRecipient.type_acc === "OOO" ? "Представитель клиента" : userRecipient.type_acc === "IP" ? "Представитель ИП" : "ФИО"}
         <b style={{ marginLeft: "5px" }}>
           {userRecipient.name}
         </b>
       </p>
+
+
       <p style={{ display: "flex", flexWrap: "wrap" }}>
         Телефон:
         <b>

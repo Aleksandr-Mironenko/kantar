@@ -50,8 +50,8 @@ export default function FormCalc() {
   const [showInvois, setShowInvois] = useState<boolean>(false)
   const [notification, setNotification] = useState<boolean>(false)
   const [argsNotification, setArgsNotification] = useState<PropsNotification>({
-    titleAlert: "",
-    message: ""
+    title: "",
+    description: ""
   })
 
   const { register, handleSubmit, control, formState: { errors, isSubmitted, isValid, }, reset, setValue, trigger, watch } = useForm<ValuesFromCalc>({
@@ -76,10 +76,10 @@ export default function FormCalc() {
   //   return () => subscription.unsubscribe();
   // }, [watch, trigger]);
 
-  const alertNotification = ({ titleAlert, message }: PropsNotification) => {
-    setArgsNotification({ titleAlert, message })
+  const alertNotification = ({ title, description }: PropsNotification) => {
+    setArgsNotification({ title, description })
     setNotification(true)
-    console.log("alertNotification", titleAlert, message)
+    console.log("alertNotification", title, description)
   }
 
   //закрытие уведомления через 30 секунд
@@ -117,8 +117,8 @@ export default function FormCalc() {
 
     } else {
       alertNotification({
-        titleAlert: "Заявка на индивидуальный рассчет отправлена",
-        message: "С вами свяжется сотрудник компании после обработки вашей заявки и подробно расскажет, каким способом отправка возможна, сколько это будет стоить и всех сопутствующих особенностях"
+        title: "Заявка на индивидуальный рассчет отправлена",
+        description: "С вами свяжется сотрудник компании после обработки вашей заявки и подробно расскажет, каким способом отправка возможна, сколько это будет стоить и всех сопутствующих особенностях"
       });
       setInvoiceFiles([{ file: null, id: 0 }])
       // reset()
@@ -241,8 +241,8 @@ export default function FormCalc() {
             </div>
             {notification && (
               <Notification
-                titleAlert={argsNotification.titleAlert}
-                message={argsNotification.message}
+                title={argsNotification.title}
+                description={argsNotification.description}
               />
             )}
           </div>

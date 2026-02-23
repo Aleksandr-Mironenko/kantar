@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./OrderModal.module.scss"
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
-import { useForm, Controller, useWatch, set } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { OrderModalProps, FileObj, FormValues } from "../DTO/DTO"
 // import DownloadButton from "../DownloadButton/DownloadButton"
@@ -12,10 +12,18 @@ import DownloadFile from "../Helpers/DownloadFile"
 
 
 
-
 const schema = yup.object({
+  nameOrganizer: yup.string().required("Имя обязательно"),
   nameFrom: yup.string().required("Имя обязательно"),
   nameWhere: yup.string().required("Имя обязательно"),
+  phoneOrganizer: yup
+    .string()
+    .required("Телефон обязателен")
+    .test("valid-phone", "Введите корректный номер", (value) => {
+      if (!value) return false;
+      const digits = value.replace(/\D/g, "");
+      return digits.length === 10;
+    }),
   phoneFrom: yup
     .string()
     .required("Телефон обязателен")
@@ -32,6 +40,13 @@ const schema = yup.object({
       const digits = value.replace(/\D/g, "");
       return digits.length === 10;
     }),
+  emailOrganizer: yup
+    .string()
+    .required("Email обязателен")
+    .matches(
+      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+      "Введите корректный email"
+    ),
   emailFrom: yup
     .string()
     .required("Email обязателен")
@@ -49,6 +64,10 @@ const schema = yup.object({
   adressFrom: yup.string().required("Укажите полный адресс"),
   adressWhere: yup.string().required("Укажите полный адресс"),
   agree: yup.boolean().required("Согласие обязательно").oneOf([true], "Согласие обязательно"),
+  costOfCargo: yup
+    .number()
+    .required("Укажите стоимость").min(1,
+      "Введите корректную стоимость"),
 });
 
 
@@ -77,11 +96,11 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const [where, setWhere] = useState<string>("") //полная строка куда
   const [indexFrom, setIndexFrom] = useState<string>("") //индекс откуда
   const [indexWhere, setIndexWhere] = useState<string>("") //индекс куда
-  const [client, setClient] = useState<"sender" | "recipient">("sender") //отправитель или получатель
+  const [client, setClient] = useState<"sender" | "recipient" | "organizer">("organizer") //отправитель или получатель
 
   const [invoiceFiles, setInvoiceFiles] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showInvois, setShowInvois] = useState<boolean>(false) //открыты ли файлы флаг
-  const [descriptionOfCargo, setDescriptionOfCargo] = useState<string>("")
+  const [descriptionOfCargo, setDescriptionOfCargo] = useState<{ value: string }[]>([{ value: "" }]);
   const [isCode, setIsCode] = useState<boolean>(false) //флаг подтверждения
   const [code, setCode] = useState<string>("") //код подтверждения
   const [trueCode, setTrueCode] = useState<boolean>(false) //верный код подтверждения
@@ -96,6 +115,9 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     criteriaMode: "all",
     shouldUnregister: false,
     defaultValues: {
+      nameOrganizer: "N/A",
+      phoneOrganizer: "0000000000",
+      emailOrganizer: "na@example.com",
       nameFrom: "",
       phoneFrom: "",
       emailFrom: "",
@@ -105,6 +127,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       emailWhere: "",
       adressWhere: where,
       agree: true,
+      costOfCargo: 1
     },
   });
 
@@ -116,19 +139,29 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
+
+
+
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
-    formData.append("nameFrom", data.nameFrom);
-    formData.append("nameWhere", data.nameWhere);
+
+    formData.append("nameOrganizer", data.nameOrganizer);
+    formData.append("phoneOrganizer", `+7${data.phoneOrganizer}`);
+    formData.append("emailOrganizer", data.emailOrganizer);
+
+    formData.append("costOfCargo", String(data.costOfCargo));
+
+    formData.append("nameFrom", String(data.nameFrom));
+    formData.append("nameWhere", String(data.nameWhere));
     formData.append("phoneFrom", `+7${data.phoneFrom}`);//телефон
     formData.append("phoneWhere", `+7${data.phoneWhere}`);//телефон
-    formData.append("emailFrom", data.emailFrom);
-    formData.append("emailWhere", data.emailWhere);
-    formData.append("adressFrom", data.adressFrom);
-    formData.append("adressWhere", data.adressWhere);
+    formData.append("emailFrom", String(data.emailFrom));
+    formData.append("emailWhere", String(data.emailWhere));
+    formData.append("adressFrom", String(data.adressFrom));
+    formData.append("adressWhere", String(data.adressWhere));
     formData.append("agree", data.agree ? "1" : "0");
     formData.append("document", document);
-    formData.append("descriptionOfCargo", descriptionOfCargo);
+    formData.append("descriptionOfCargo", JSON.stringify(descriptionOfCargo.map(el => el.value)))
     formData.append("isFinalHeft", String(isFinalHeft))
     formData.append("isFinalOnlyHeft", String(isFinalOnlyHeft))
     formData.append("isFinalOnlyVolume", String(isFinalOnlyVolume))
@@ -159,6 +192,8 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     });
 
 
+
+
     const response = await fetch("/api/send-calculate", {
       method: "POST", body: formData,
     });
@@ -168,8 +203,8 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     } else {
       const res = await response.json();
       alertNotification({
-        titleAlert: `Заявка на экспресс доставку отправлена (№ ${res.orderNumbers.orderId})`,
-        message: `С вами свяжется сотрудник компании после обработки вашего заказа с целью забора посылки`
+        title: `Заявка на экспресс доставку отправлена (№ ${res.orderNumbers.orderId})`,
+        description: `С вами свяжется сотрудник компании после обработки вашего заказа с целью забора посылки`
       });
       setCode("")
       setTrueCode(false)
@@ -182,7 +217,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       setWhere("")
       setIndexFrom("")
       setIndexWhere("")
-      setClient("sender")
+      setClient("organizer")
       setValue("nameFrom", "");
       setValue("nameWhere", "");
       setValue("phoneFrom", "");
@@ -191,6 +226,13 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       setValue("emailWhere", "");
       setValue("adressFrom", from)
       setValue("adressWhere", where);
+
+      setValue("nameOrganizer", "");
+      setValue("phoneOrganizer", "")
+      setValue("emailOrganizer", "");
+      setValue("costOfCargo", 0);
+      setDescriptionOfCargo([{ value: '' }])
+
       onClose()//при отправке обнуление очистить поля формы и закрыть ее
     }
   };
@@ -223,6 +265,10 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const requiredFields = useWatch({
     control,
     name: [
+      "nameOrganizer",
+      "phoneOrganizer",
+      "emailOrganizer",
+      "costOfCargo",
       "nameFrom",
       "nameWhere",
       "phoneFrom",
@@ -236,11 +282,15 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
   const agree = useWatch({ control, name: "agree" });
 
-  // Проверяем, что все обязательные поля заполнены (не пустые) и нет ошибок по ним
+  // Проверяем, что все обязательные поля заполнены(не пустые) и нет ошибок по ним
   const allFieldsFilled = requiredFields.every(v => (typeof v === "string" || typeof v === "number") && String(v).trim() !== "");
 
   // Проверяем, что в errors нет ошибок для обязательных полей
-  const REQUIRED_FIELDS = [
+  const REQUIRED_FIELDS: (keyof FormValues)[] = [
+    "nameOrganizer",
+    "phoneOrganizer",
+    "emailOrganizer",
+    "costOfCargo",
     "nameFrom",
     "nameWhere",
     "phoneFrom",
@@ -249,19 +299,19 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
     "emailWhere",
     "adressFrom",
     "adressWhere",
-  ] as const;
+  ]
 
   const noErrorsInRequiredFields = REQUIRED_FIELDS.every(
     field => !errors[field]
   );
 
   const isFilled = !!(allFieldsFilled && noErrorsInRequiredFields && agree
-    && (document !== "goods" || descriptionOfCargo) && from && where && indexFrom && indexWhere)
+    && (document !== "goods" || descriptionOfCargo.length) && from && where && indexFrom && indexWhere)
 
 
 
-  const email = client === "sender" ? getValues("emailFrom") : getValues("emailWhere");
-  const phone = client === "sender" ? `+7${getValues("phoneFrom")}` : `+7${getValues("phoneWhere")}`;
+  const email = client === "sender" ? getValues("emailFrom") : client === "recipient" ? getValues("emailWhere") : client === "organizer" ? getValues("emailOrganizer") : "";
+  const phone = client === "sender" ? `+7${getValues("phoneFrom")}` : client === "recipient" ? `+7${getValues("phoneWhere")}` : client === "organizer" ? `+7${getValues("phoneOrganizer")}` : "";
 
   const sendVerificationCode = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -314,6 +364,51 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
       setCode(value);
     }
   }
+
+
+
+  useEffect(() => {
+    if (client !== "organizer") {
+      // ставим "валидные" значения, чтобы yup не ругался
+      setValue("nameOrganizer", "N/A", { shouldValidate: true });
+      setValue("phoneOrganizer", "0000000000", { shouldValidate: true });
+      setValue("emailOrganizer", "na@example.com", { shouldValidate: true });
+    } else {
+      // если снова organizer — очищаем поля
+      setValue("nameOrganizer", "", { shouldValidate: true });
+      setValue("phoneOrganizer", "7", { shouldValidate: true });
+      setValue("emailOrganizer", "", { shouldValidate: true });
+    }
+  }, [client, setValue]);
+
+
+
+  const handleChangeDescription = (index: number, value: string) => {
+    const updated = [...descriptionOfCargo];
+    updated[index].value = value;
+    setDescriptionOfCargo(updated);
+  };
+
+  const addCargo = () => {
+    setDescriptionOfCargo(prev => [...prev, { value: "" }]);
+  };
+
+  const delCargo = (index: number) => {
+    setDescriptionOfCargo(prev =>
+      prev.filter((_, i) => i !== index)
+    );
+  };
+
+
+  const cost = watch("costOfCargo")
+
+  useEffect(() => {
+    if (cost === "" || cost === undefined || cost === null || Number.isNaN(cost)) {
+      setValue("costOfCargo", 1)
+    }
+  }, [cost, setValue]
+  )
+
 
   return (
     <>
@@ -413,7 +508,75 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                       onChange={(e) => setClient(e.target.value as "recipient")}
                     /> Я получатель
                   </label >
+                  <label className={styles.radio}>
+                    <input
+                      className={styles.radioButtonChenge}
+                      type="radio"
+                      name="type"
+                      value="organizer"
+                      checked={client === "organizer"}
+                      onChange={(e) => setClient(e.target.value as "organizer")}
+                    /> Я организатор
+                  </label >
                 </div>
+
+
+                {client === "organizer" &&
+                  <>
+                    <div className={styles.label__wrapper}  >
+                      <label className={errors.nameOrganizer ? styles.label_error : styles.label}>
+                        Ф.И.О. организатора
+                        <input autoComplete="given-name" {...register("nameOrganizer")} className={`${styles.input} ${errors.nameOrganizer ? styles.error : ""}`} placeholder="Ф.И.О. организатора"
+                        />
+
+                        {errors.nameOrganizer && <p className={styles.errmsg}>{errors.nameOrganizer.message}</p>}
+                      </label>
+                    </div>
+                    <div className={styles.label__wrapper} >
+                      <label className={`${styles.phone} ${errors.phoneOrganizer ? styles.label_error : styles.label}`}>
+                        Телефон организатора
+                        <Controller
+                          name="phoneOrganizer"
+                          control={control}
+                          render={({ field: { onChange, onBlur, value, ref } }) => (
+                            <IMaskInput
+                              id="phoneOrganizer"
+                              autoComplete="tel"
+                              mask="+7 (000) 000-00-00"
+                              placeholder="+7 (___) ___-__-__"
+                              value={value ?? ""}
+                              onAccept={(formatted) => {
+
+                                const digits = formatted.replace(/\D/g, "");
+                                const withoutFirst7 = digits.slice(1);
+                                onChange(withoutFirst7);
+                              }}
+                              onBlur={onBlur}
+                              inputRef={ref}
+                              className={`${styles.input} ${errors.phoneOrganizer ? styles.error : ""}`}
+                            />
+                          )}
+                        />
+
+                        {errors.phoneOrganizer && (
+                          <p className={styles.errmsg}>{errors.phoneOrganizer.message}</p>
+                        )}
+
+
+                      </label>
+                    </div>
+                    <div className={styles.label__wrapper} >
+                      <label className={errors.emailOrganizer ? styles.label_error : styles.label}>
+                        Эл. почта организатора
+                        <input autoComplete="email" {...register("emailOrganizer")} className={`${styles.input} ${errors.emailOrganizer ? styles.error : ""}`} placeholder="example@mail.ru"
+                        />
+                        {errors.emailOrganizer && <p className={styles.errmsg}>{errors.emailOrganizer.message}</p>}
+                      </label>
+                    </div>
+                  </>
+                }
+
+
                 <div className={styles.label__wrapper}  >
                   <label className={errors.nameFrom ? styles.label_error : styles.label}>
                     Ф.И.О. отправителя
@@ -583,22 +746,89 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                   isUserRecipient={false}
                 />
                 }
+
+                <div className={styles.label__wrapper}  >
+                  <label className={errors.costOfCargo ? styles.label_error : styles.label}>
+                    Стоимость груза в ₽
+                    <input autoComplete="off"
+                      {...register("costOfCargo")}
+                      type="number"
+                      className={`${styles.input} ${errors.costOfCargo ? styles.error : ""}`}
+                      placeholder="Укажите стоимость груза"
+                      min={1}
+                      step={1}
+                      onKeyDown={(e) => {
+                        // разрешаем только цифры, Backspace, Delete, стрелки
+                        const currentValue = Number(watch("costOfCargo") || 0);
+                        if ((e.key === "Backspace" || e.key === "Delete" || e.key === "0") && currentValue <= 1) {
+                          e.preventDefault();
+                        }
+                        if (
+                          !/[0-9]/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Delete" &&
+                          e.key !== "ArrowLeft" &&
+                          e.key !== "ArrowRight" &&
+                          e.key !== "Tab" &&
+                          e.key !== "."
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
+                    />
+
+                    {errors.costOfCargo && <p className={styles.errmsg}>{errors.costOfCargo.message}</p>}
+                  </label>
+                </div>
+
                 {document === "goods" &&
                   <div className={styles.label__wrapper}  >
-                    < label htmlFor="descriptionOfCargo" className={`${styles.index} ${styles.label}`}>
-                      Описание груза
-                      <input
-                        autoComplete="off"
-                        name="descriptionOfCargo"
-                        id="descriptionOfCargo"
-                        placeholder="Описание и код ТНВЭД"
-                        value={descriptionOfCargo ?? ""}
-                        onChange={e => setDescriptionOfCargo(e.target.value)}
-                        className={styles.input}
-                      />
-                    </label>
+                    {descriptionOfCargo.map((item, index) => (
+                      <div className={styles.label__wrapper_div}
+                        key={index} >
+                        <label
+                          htmlFor={`descriptionOfCargo-${index}`}
+                          className={`${styles.index} ${styles.label} ${index > 0 && styles.label_descriptionOfCargo
+                            }`}
+                        >
+                          {descriptionOfCargo.length > 1
+                            ? `Описание груза ${index + 1}`
+                            : `Описание груза`}
+
+                          <input
+                            autoComplete="off"
+                            id={`descriptionOfCargo-${index}`}
+                            placeholder="Описание и код ТНВЭД"
+                            value={item.value}
+                            onChange={(e) =>
+                              handleChangeDescription(index, e.target.value)
+                            }
+                            className={styles.input}
+                          />
+                        </label>
+
+                        {descriptionOfCargo.length > 1 ? (
+                          <button
+                            type="button"
+                            onClick={() => delCargo(index)}
+                            className={styles.delButton}
+                          >
+                            ⨯
+                          </button>
+                        ) : null}
+                      </div>
+                    ))}
+
+                    < button type="button" onClick={() => addCargo()} className={styles.addButton}
+                    > Добавить описание
+                    </button>
                   </div>
+
                 }
+
+
+
+
 
                 <div className={styles.label__wrapper}  >
                   <label className={styles.modal__checkbox}>
@@ -606,14 +836,14 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                       type="checkbox"
                       {...register("agree")}
                     />
-                    <span>Согласен с обработкой <a style={{ fontWeight: "800", textDecoration: "underline" }} href="policy">персональных данных</a></span>
+                    <span>Согласен с обработкой <a className={styles.modal__checkbox_policy} href="policy">персональных данных</a></span>
+
                   </label>
                   {errors.agree && <p className={styles.agreeErrmsg}>Согласие обязательно</p>}
                 </div>
-                {isCode ?//если флаг подтверждения true то показать поле ввода кода
+                {isCode ?
                   <div className={styles.label__wrapper}  >
-                    {lastCode ? <p>{`Проверьте почту, 
-повторная отправка через 10минут`}</p> : null}
+                    {lastCode ? <p>{`Проверьте почту, повторная отправка через 10минут`}</p> : null}
 
 
                     <label htmlFor="code" className={`${styles.index} ${styles.label}`}>

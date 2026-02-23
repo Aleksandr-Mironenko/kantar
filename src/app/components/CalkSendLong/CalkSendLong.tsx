@@ -23,8 +23,8 @@ export default function CalkSend() {
   const [isFinalOnlyVolume, setIsFinalOnlyVolume] = useState<number>(0)
 
   const [argsNotification, setArgsNotification] = useState<PropsNotification>({
-    titleAlert: "",
-    message: ""
+    title: "",
+    description: ""
   })
   const [places, setPlaces] = useState<Place[]>([
     {
@@ -430,8 +430,8 @@ export default function CalkSend() {
     );
   };
 
-  const alertNotification = ({ titleAlert, message }: PropsNotification) => {
-    setArgsNotification({ titleAlert, message })
+  const alertNotification = ({ title, description }: PropsNotification) => {
+    setArgsNotification({ title, description })
     setNotification(true)
   }
 
@@ -600,8 +600,8 @@ export default function CalkSend() {
         />
       </div>
       {
-        notification && <Notification titleAlert={argsNotification.titleAlert}
-          message={argsNotification.message} />
+        notification && <Notification title={argsNotification.title}
+          description={argsNotification.description} />
       }
     </div >
   );

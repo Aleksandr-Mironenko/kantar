@@ -31,6 +31,7 @@ export async function getOrCreateUser(data: DataCreateUser): Promise<CreateUserR
       phone: data.phone,
       name: data.name,
       address_id: 56,
+      is_register: false,
       is_client: data.isClient,
       is_dogovor: false,
       type_acc: data.typeAcc,

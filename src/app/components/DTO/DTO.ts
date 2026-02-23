@@ -22,7 +22,7 @@ export interface City {
   numberZoneRF: number;
   numberZoneForeign: number
 }
-type Type_acc = "noAcc" | "request" | "private" | "OOO" | "IP";
+export type Type_acc = "noAcc" | "request" | "private" | "OOO" | "IP";
 
 export interface InitialData {
   nds: number;
@@ -48,7 +48,10 @@ export interface OrderModalProps {
   alertNotification: (notification: PropsNotification) => void;
 }
 
-export interface FormValues {
+export type FormValues = {
+  nameOrganizer: string;
+  phoneOrganizer: string;
+  emailOrganizer: string;
   nameFrom: string;
   nameWhere: string;
   phoneFrom: string;
@@ -58,6 +61,7 @@ export interface FormValues {
   adressFrom: string;
   adressWhere: string;
   agree: boolean;
+  costOfCargo: number
 }
 
 export interface FileObj {
@@ -141,8 +145,8 @@ export interface ValuesServicesAdmin {
 }
 
 export interface PropsNotification {
-  titleAlert: string,
-  message: string
+  title: string,
+  description: string
 }
 export interface CooperationProps {
   alertNotification: (notification: PropsNotification) => void;
@@ -150,8 +154,12 @@ export interface CooperationProps {
 
 
 export type DataCreateOrderProcess = {
+  costOfCargo: number,
+  nameOrganizer: string | null,
+  phoneOrganizer: string | null,
+  emailOrganizer: string | null,
   agree: boolean,
-  client: "sender" | "recipient",
+  client: "sender" | "recipient" | "organizer",
   phoneFrom: string,
   phoneWhere: string,
   emailFrom: string,
@@ -181,7 +189,7 @@ export type DataCreateOrderProcess = {
   fs: number,
   fsRF: number,
   koefficient: number,
-  descriptionOfCargo: string,
+  descriptionOfCargo: { value: string }[],
 }
 
 export type DataCreateAddress = {
@@ -200,6 +208,7 @@ export type DataCreateAddress = {
 export type Product = "individual-RF" | "express-RF" | "individual-international" | "express-international"
 
 export type DataCreateOrder = {
+  costOfCargo: number,
   senderId: number,
   recipientId: number,
   senderAddressId: number,
@@ -245,8 +254,21 @@ export type DataCreateOrder = {
   recipient_country_name: string,
   sender_city_name: string | null,
   recipient_city_name: string | null,
-  isSender: boolean,
-  product: Product
+  client: string,
+  product: Product,
+  organizerName: string | null,
+  phoneOrganizer: string | null,
+  emailOrganizer: string | null,
+  organizerId: string | null,
+  organizerType_acc: Type_acc | null,
+  organizerName_OOO: string | null,
+  organizerFio_gd_OOO: string | null,
+  organizerFio_IP: string | null,
+  // recipientAddressId2: number | null,
+  // recipientCountry_name2: string | null,
+  // recipientCity_name2: string | null,
+  descriptionOfCargo: { value: string }[],
+
 }
 
 
@@ -273,9 +295,9 @@ export interface DataCreatePlases {
 }
 
 export type DataCreateUser = {
-  email: string;
-  phone: string;
-  name: string;
+  email: string | null;
+  phone: string | null;
+  name: string | null;
   isClient: boolean;
   typeAcc: Type_acc;
   discount: number;
@@ -284,6 +306,8 @@ export type DataCreateUser = {
 
 
 export type DataFabricForOrder = {
+  costOfCargo: number,
+  descriptionOfCargo: { value: string }[],
   nds: number,
   dataprops: DataCreateOrderProcess,
   senderId: number,
@@ -316,7 +340,19 @@ export type DataFabricForOrder = {
   recipientCountry_name: string,
   senderCity_name: string | null,
   recipientCity_name: string | null,
-  isSender: boolean
+  client: "sender" | "recipient" | "organizer",
+  // recipientAddressId2: number | null,
+  // recipientCountry_name2: string | null,
+  // recipientCity_name2: string | null,
+  organizerId: string | null,
+  organizerName: string | null,
+  phoneOrganizer: string | null,
+  emailOrganizer: string | null,
+  organizerType_acc: Type_acc | null,
+  organizerName_OOO: string | null,
+  organizerFio_gd_OOO: string | null,
+  organizerFio_IP: string | null,
+
 }
 
 // серверный
@@ -326,6 +362,7 @@ export type TableOrdersRecord = {
   created_at: string,
   sender_id: number,
   recipient_id: number
+  price_full: number,
   address_from_id: number,
   address_where_id: number,
   name_from: string,
@@ -334,12 +371,8 @@ export type TableOrdersRecord = {
   phone_where: string,
   email_from: string,
   email_where: string,
-  discount_this_send: number,
-  price_full: number,
   is_paid: boolean,
   heft_full: number,
-  heft_only_full: number,
-  volume_only_full: number,
   status: "new" | // новый заказ 
   "pickup_required_(processed)" | // требуется забор (обработано)
   "awaiting_payment_(shipped)" | // ожидает оплаты(отправлен)
@@ -350,26 +383,40 @@ export type TableOrdersRecord = {
   "delivered" | // вручено
   "canceled" | //отменено
   "archived" //архивный
+  agree: boolean,
+  discount_this_send: number,
   is_individual: boolean,
   document: "document" | "goods" | null,
   loading_date: Date | null,
   unloading_date: Date | null,
-  sender_type_acc: Type_acc,
-  recipient_type_acc: Type_acc,
+  heft_only_full: number,
+  volume_only_full: number,
   sender_name: string,
-  recipient_name: string,
+  sender_type_acc: Type_acc,
   sender_name_OOO: string | undefined,
   sender_fio_gd_OOO: string | undefined,
   sender_fio_IP: string | undefined,
+  recipient_name: string,
+  recipient_type_acc: Type_acc,
   recipient_name_OOO: string | undefined,
   recipient_fio_gd_OOO: string | undefined,
   recipient_fio_IP: string | undefined,
   sender_country_name: string,
-  recipient_country_name: string,
   sender_city_name: string | undefined,
+  recipient_country_name: string,
   recipient_city_name: string | undefined,
   isSender: "sender" | "recipient",
-  product: Product
+  product: Product,
+  name_organizer: string | undefined,
+  phone_organizer: string | undefined,
+  email_organizer: string | undefined,
+  organizer_type_acc: Type_acc,
+  organizer_name_OOO: string | undefined,
+  organizer_fio_gd_OOO: string | undefined,
+  organizer_fio_IP: string | undefined,
+  address_organizer_id: string | undefined,
+  cost_of_cargo: number,
+  descriptionOfCargo: { value: string }[],
 };
 
 export type NewTableOrdersRecord = {

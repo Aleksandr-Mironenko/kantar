@@ -14,12 +14,23 @@ export async function createOrder(
       recipient_id: data.recipientId,
       address_from_id: data.senderAddressId,
       address_where_id: data.recipientAddressId,
+      // address_where_id2: data.recipientAddressId2,
+      cost_of_cargo: data.costOfCargo,
+      address_organizer_id: data.organizerId,
+
       name_from: data.nameFrom,
       name_where: data.nameWhere,
+      name_organizer: data.organizerName,
+
       phone_from: data.phoneFrom,
       phone_where: data.phoneWhere,
+      phone_organizer: data.phoneOrganizer,
+
+
       email_from: data.emailFrom,
       email_where: data.emailWhere,
+      email_organizer: data.emailOrganizer,
+
       discount_this_send: data.discount,
       price_full: isInternal ? Math.ceil(data.price * nds) : Math.ceil(data.price),
       is_paid: data.isPaid,
@@ -42,15 +53,32 @@ export async function createOrder(
       recipient_name_OOO: data.recipientName_OOO,
       recipient_fio_gd_OOO: data.recipientFio_gd_OOO,
       recipient_fio_IP: data.recipientFio_IP,
+
+      organizer_type_acc: data.organizerType_acc,
+      organizer_name_OOO: data.organizerName_OOO,
+      organizer_fio_gd_OOO: data.organizerFio_gd_OOO,
+      organizer_fio_IP: data.organizerFio_IP,
+
       sender_country_name: data.sender_country_name,
       recipient_country_name: data.recipient_country_name,
+      // recipient_country_name2: data.recipientCountry_name2,
+
       sender_city_name: data.sender_city_name,
       recipient_city_name: data.recipient_city_name,
-      isSender: data.isSender ? "sender" : "recipient",
-      product: data.product
+      // recipient_city_name2: data.recipientCity_name2,
+
+      isSender: data.client,
+      product: data.product,
+
+      descriptionOfCargo: data.descriptionOfCargo
+
+
     })
+
+
     .select("id,order_number")
     .single();
+
 
   //если ошибка - кидаем её выше
   if (error) throw error;

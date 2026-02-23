@@ -7,7 +7,12 @@ export default async function fabric(data: DataCreateOrderProcess) {
 
 
   //деструктуризация для общего доступа
-  const { agree,
+  const {
+    costOfCargo,
+    nameOrganizer,
+    phoneOrganizer,
+    emailOrganizer,
+    agree,
     client,
     phoneFrom,
     phoneWhere,
@@ -38,7 +43,8 @@ export default async function fabric(data: DataCreateOrderProcess) {
     fs,
     fsRF,
     koefficient,
-    descriptionOfCargo } = data
+    descriptionOfCargo
+  } = data
   console.log(price, 40)
   const isInternal =
     (fromCountryObj.name === "Россия" &&
@@ -46,6 +52,10 @@ export default async function fabric(data: DataCreateOrderProcess) {
 
   //константа только для валидации
   const validateData: DataCreateOrderProcess = {
+    costOfCargo,
+    nameOrganizer,
+    phoneOrganizer,
+    emailOrganizer,
     agree,
     client,
     phoneFrom,
@@ -81,7 +91,7 @@ export default async function fabric(data: DataCreateOrderProcess) {
   }
 
   //формируем объект полного адреса отправления
-  const allFrom: DataCreateAddress = {
+  const orderAdressFrom: DataCreateAddress = {
     fullAddress: from,
     countryName: fromCountryObj.name,
     countryZone: fromCountryObj.zone,
@@ -94,7 +104,7 @@ export default async function fabric(data: DataCreateOrderProcess) {
     index: indexFrom
   }
   //формируем объект полного адреса получения
-  const allWhere: DataCreateAddress = {
+  const orderAdressWhere: DataCreateAddress = {
     fullAddress: where,
     countryName: whereCountryObj.name,
     countryZone: whereCountryObj.zone,
@@ -107,20 +117,67 @@ export default async function fabric(data: DataCreateOrderProcess) {
     index: indexWhere
   }
 
+  const orderAdressOrganizer: DataCreateAddress = {
+    fullAddress: "",
+    countryName: " ",
+    countryZone: 0,
+    countryId: 0,
+    cityName: "",
+    cityZone: "",
+    cityIdRF: 0,
+    cityIdForeign: 0,
+    cityZoneId: 0,
+    index: ""
+  }
+
   //определяем кто создатель заказа  
-  const orderCreator = client === "sender" ? allFrom : allWhere
+  // const orderCreator = client === "sender" ? allFrom : client === "recipient" ? allWhere : client === "organizer" ? allOrganizer : allOrganizer
 
-  //определяем кто получатель заказа  
-  const noOrderCreator = client !== "sender" ? allFrom : allWhere
+  //определяем кто не создатель заказа  
 
-  //флаг отправителя
-  const isSender = client === "sender" ? true : false
+  // const noOrderCreator =
+  //   client === "recipient"
+  //     ? allFrom
+  //     : client === "sender"
+  //       ? allWhere
+  //       : client === "organizer"
+  //         ? allWhere
+  //         : allOrganizer
+
+  // const noOrderCreator2 =
+  //   client === "recipient"
+  //     ? allFrom
+  //     : client === "sender"
+  //       ? allWhere
+  //       : client === "organizer"
+  //         ? allFrom
+  //         : allOrganizer
+
+
 
   const correctFio = (stringFio: string): string => {
     const arrFio = stringFio.trim().split(/\s+/)
     let res = ''
     arrFio.forEach((el, index) => res += `${index > 0 ? " " : ""}${el[0].toUpperCase()}${el.slice(1).toLowerCase()}`)
     return res
+  }
+  let getOrCreateUserORGData: DataCreateUser = {
+    email: '',
+    phone: '',
+    name: '',
+    isClient: false,
+    typeAcc: 'noAcc',
+    discount: 0,
+  }
+
+  // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
+  getOrCreateUserORGData = {
+    email: emailOrganizer?.toLowerCase() || null,
+    phone: phoneOrganizer || null,
+    name: nameOrganizer && nameOrganizer !== " " ? correctFio(nameOrganizer) : "Имя организатора",
+    isClient: client === 'organizer',
+    typeAcc: "noAcc" as const,
+    discount: 0,
   }
 
   // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
@@ -145,16 +202,25 @@ export default async function fabric(data: DataCreateOrderProcess) {
 
 
   return {
+    costOfCargo,
+    client,
     places,
     fileArray,
     validateData,
-    orderCreator,
-    noOrderCreator,
+    orderAdressFrom,//упростить
+    orderAdressWhere,  //упростить
+    orderAdressOrganizer,//нужно для проверки если адреса будет - он не перетрется новым пустым значением а если не будет - создастся
+
+    // noOrderCreator2,
     getOrCreateUserFromData,
+    getOrCreateUserORGData,
     getOrCreateUserWhereData,
     isInternal,
     nds,
     document,
-    isSender
+    nameOrganizer,
+    phoneOrganizer,
+    emailOrganizer,
+    descriptionOfCargo
   }
 }

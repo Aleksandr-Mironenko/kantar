@@ -4,7 +4,7 @@ import { getOrCreateAddress } from "./getOrCreateAddress";
 import { createPlaces } from "./createPlaces";
 import { uploadFiles } from "./uploadFiles";
 import { createOrder } from "./createOrder";
-import { DataCreateOrderProcess, orderIdForDataUploadFiles } from '../../components/DTO/DTO'
+import { DataCreateOrderProcess, orderIdForDataUploadFiles, } from '../../components/DTO/DTO'
 import fabric from "./lib/format/fabric";
 import fabricForOrder from "./lib/format/fabricForOrder";
 import retry from "./lib/function/retry";
@@ -15,36 +15,57 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
   const { places,
     fileArray,
     validateData,
-    orderCreator,
-    noOrderCreator,
+    orderAdressFrom,
+    orderAdressWhere,
+    orderAdressOrganizer,
     getOrCreateUserFromData,
+    getOrCreateUserORGData,
     getOrCreateUserWhereData,
     isInternal,
     nds,
     document,
-    isSender } = await fabric(data)
+    client,
+    phoneOrganizer,
+    emailOrganizer,
+    costOfCargo,
+    descriptionOfCargo
+  } = await fabric(data)
 
   // валидация входящих данных
   validate(validateData);
 
 
   // проверяю адрес на наличие в бд, добавляю если нет и получаю id адресов
+
   const { id: senderAddressId, country_name: senderCountry_name, city_name: senderCity_name }
-    = await getOrCreateAddress(orderCreator);
+    = await getOrCreateAddress(orderAdressFrom);
+
   const { id: recipientAddressId, country_name: recipientCountry_name, city_name: recipientCity_name }
-    = await getOrCreateAddress(noOrderCreator);
+    = await getOrCreateAddress(orderAdressWhere);
+
+  const { id: organizerAddressId, country_name: organizerCountry_name, city_name: organizerCity_name }
+    = await getOrCreateAddress(orderAdressOrganizer);
 
 
-  // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
+
+  // проверяю отправителя на наличие в бд, добавляю если нет и получаю id пользователя
   const { id: senderId, name: senderName, type_acc: senderType_acc, name_OOO: senderName_OOO, fio_gd_OOO: senderFio_gd_OOO, fio_IP: senderFio_IP }
     = await getOrCreateUser(getOrCreateUserFromData);
 
-  // проверяю пользователей на наличие в бд, добавляю если нет и получаю id пользователя
+  // проверяю получателя на наличие в бд, добавляю если нет и получаю id пользователя
   const { id: recipientId, name: recipientName, type_acc: recipientType_acc, name_OOO: recipientName_OOO, fio_gd_OOO: recipientFio_gd_OOO, fio_IP: recipientFio_IP }
     = await getOrCreateUser(getOrCreateUserWhereData);
 
+  // проверяю организатора на наличие в бд, добавляю если нет и получаю id пользователя
+  const { id: organizerId, name: organizerName, type_acc: organizerType_acc, name_OOO: organizerName_OOO, fio_gd_OOO: organizerFio_gd_OOO, fio_IP: organizerFio_IP
+  }
+    = await getOrCreateUser(getOrCreateUserORGData)
+
+
   // формирую данные для создания заказа
   const { orderData } = await fabricForOrder({
+    costOfCargo,
+    descriptionOfCargo,
     nds,
     dataprops: data,
     senderId,
@@ -68,7 +89,19 @@ export default async function createOrderProcess(data: DataCreateOrderProcess) {
     recipientCountry_name,
     senderCity_name,
     recipientCity_name,
-    isSender
+    client,
+    // recipientAddressId2,
+    // recipientCountry_name2,
+    // recipientCity_name2,
+
+    organizerId: String(organizerId),
+    organizerName,
+    phoneOrganizer,
+    emailOrganizer,
+    organizerType_acc,
+    organizerName_OOO,
+    organizerFio_gd_OOO,
+    organizerFio_IP,
   }
   )
 

@@ -28,8 +28,8 @@ export default function CalkSendExpress({ getLongCalc }: { getLongCalc: () => vo
   const [individualOffer, setIndividualOffer] = useState<boolean>(false)// больше ли вес чем personalRequestContant
   const [refusedTheIndividualOffer, setRefusedTheIndividualOffer] = useState<boolean>(false)// отказся ли уже
   const [argsNotification, setArgsNotification] = useState<PropsNotification>({
-    titleAlert: "",
-    message: ""
+    title: "",
+    description: ""
   })
   const [places, setPlaces] = useState<Place[]>([
     {
@@ -628,9 +628,9 @@ export default function CalkSendExpress({ getLongCalc }: { getLongCalc: () => vo
     );
   };
 
-  const alertNotification = ({ titleAlert, message }: PropsNotification) => {
+  const alertNotification = ({ title, description }: PropsNotification) => {
     console.log('alertNotification called');
-    setArgsNotification({ titleAlert, message })
+    setArgsNotification({ title, description })
     setNotification(true)
   }
 
@@ -803,8 +803,8 @@ export default function CalkSendExpress({ getLongCalc }: { getLongCalc: () => vo
           alertNotification={alertNotification}
         />
       </div>
-      {notification && <Notification titleAlert={argsNotification.titleAlert}
-        message={argsNotification.message} />}
+      {notification && <Notification title={argsNotification.title}
+        description={argsNotification.description} />}
     </div >
   );
 } 

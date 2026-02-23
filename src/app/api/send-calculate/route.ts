@@ -7,12 +7,12 @@ import fabric from "./lib/fabric";
 export async function POST(req: Request) {
   const formData = await req.formData();
 
-
+  // { value: string }[]>([{ value: "" }]);descriptionOfCargo
   const {
-    agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage, isFinalHeft, isFinalOnlyHeft, isFinalOnlyVolume, price, nds, count,
+    nameOrganizer, phoneOrganizer, emailOrganizer, agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, sms, emailMessage, isFinalHeft, isFinalOnlyHeft, isFinalOnlyVolume, price, nds, count,
     fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
-    adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
-
+    adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo,
+    costOfCargo,
   } = await fabric(formData)
   console.log(isFinalOnlyHeft, "isFinalOnlyHeft route send-calculate")
   console.log(isFinalOnlyVolume, "isFinalOnlyVolume route send-calculate")
@@ -22,7 +22,8 @@ export async function POST(req: Request) {
 
     //создание заказа в бд
     orderNumbers = await createOrderProcess({
-      agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, isFinalHeft, isFinalOnlyHeft,
+      costOfCargo,
+      nameOrganizer, phoneOrganizer, emailOrganizer, agree, client, phoneFrom, phoneWhere, emailFrom, emailWhere, fileArray, isFinalHeft, isFinalOnlyHeft,
       isFinalOnlyVolume, price, nds, count, fromCountryObj, whereCountryObj, fromCityObj, whereCityObj, showInvois, nameFrom, nameWhere,
       adressFrom, adressWhere, document, from, where, indexFrom, indexWhere, places, fs, fsRF, koefficient, descriptionOfCargo
     })
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
 
     //отправка сообщения создателю заявки
     sendEmail(
-      client === "sender" ? emailFrom : emailWhere,
+      client === "sender" ? emailFrom : client === "recipient" ? emailWhere : client === "organizer" ? String(emailOrganizer) : "",
       "Вы создали заявку на отправление груза KANTAR",
       `${orderNumbers && `<p style="font-size:20px">Номер вашего заказа: ${JSON.stringify(JSON.stringify(orderNumbers?.orderId))}</p>`}
         ${emailMessage.bodyTextMessageUser}`
@@ -71,7 +72,7 @@ export async function POST(req: Request) {
       ${sms.messageAdminSMS}`),
 
     //отправка клиенту
-    sendSMS(`${client === "sender" ? phoneFrom : phoneWhere} `,
+    sendSMS(`${client === "sender" ? phoneFrom : client === "recipient" ? phoneWhere : client === "organizer" ? phoneOrganizer : ""} `,
       `${orderNumbers && `Номер вашего заказа: ${JSON.stringify(orderNumbers?.orderId)}`}
         ${sms.messageUserSMS} `),
   )
@@ -79,7 +80,7 @@ export async function POST(req: Request) {
   //отправка сообщения второй стороне
   if (emailWhere !== emailFrom) {
     // if (client === "sender" ? emailWhere : emailFrom) {
-    if (client !== "sender") {
+    if (client !== "sender" && client !== "organizer") {
       tasks.push(sendEmail(
         // client === "sender" ? emailWhere : emailFrom,
         emailFrom,

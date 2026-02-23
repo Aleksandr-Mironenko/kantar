@@ -197,8 +197,19 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
         editable: false,
       },
     },
-
-
+    {
+      accessorKey: "is_individual",
+      header: "вид",
+      cell: info => `${info.getValue<number>() ? "Индивидульный" : "Экспресс"}`,
+      meta: {
+        editable: true,
+        editor: "select",
+        options: [
+          { value: "true", label: "Индивидульный" },
+          { value: "false", label: "Экспресс" },
+        ],
+      },
+    },
     {
       accessorKey: "created_at",
       header: "дата",
@@ -208,28 +219,8 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
       },
     },
     {
-      accessorKey: "loading_date",
-      header: "ДАТА ЗАГРУЗКИ",
-      cell: info => {
-        const value = info.getValue<string>();
-
-        if (!value) return "";
-
-        const date = new Date(value);
-
-        if (isNaN(date.getTime())) return "";
-
-        return date.toLocaleDateString("ru-RU");
-      },
-      meta: {
-        editable: true,
-        editor: "date",
-        inputType: "date",
-      },
-    },
-    {
       accessorKey: "status",
-      header: "Статус",
+      header: "статус",
       cell: info => `${info.getValue<string>() === "new" ? "новый" :
         info.getValue<string>() === "pickup_required_(processed)" ? "требуется забор (обработано)" :
           info.getValue<string>() === "awaiting_payment_(shipped)" ? "ожидает оплаты(отправлен)" :
@@ -259,157 +250,8 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
       },
     },
     {
-      accessorKey: "is_paid",
-      header: "Оплачен",
-      cell: info => `${info.getValue<number>() ? "да" : "нет"}`,
-      meta: {
-        editable: true,
-        editor: "select",
-        options: [
-          { value: "true", label: "да" },
-          { value: "false", label: "нет" },
-        ],
-      },
-    },
-    {
-      accessorFn: (row) => {
-        if (row.isSender === "sender") {
-          return getDisplayClient(
-            row.sender_type_acc,
-            row.sender_name,
-            row.name_from,
-            row.sender_name_OOO,
-            row.sender_fio_IP,
-            row.sender_fio_gd_OOO,
-
-          );
-        }
-        return getDisplayClient(
-          row.recipient_type_acc,
-          row.recipient_name,
-          row.name_where,
-          row.recipient_name_OOO,
-          row.recipient_fio_IP,
-          row.recipient_fio_gd_OOO
-
-        );
-      },
-      id: "client",
-      header: "клиент",
-      meta: {
-        editable: false,
-      },
-    },
-    {
-      accessorFn: (row) => {
-        if (row.isSender === "sender") {
-          return getDisplayClientRepresentative(
-            row.sender_type_acc,
-            row.sender_name,
-            row.name_from,
-            row.sender_name_OOO,
-            row.sender_fio_IP,
-            row.sender_fio_gd_OOO,
-
-          );
-        }
-        return getDisplayClientRepresentative(
-          row.recipient_type_acc,
-          row.recipient_name,
-          row.name_where,
-          row.recipient_name_OOO,
-          row.recipient_fio_IP,
-          row.recipient_fio_gd_OOO,
-
-        );
-      },
-      id: "clientRepresentative",
-      header: "Представитель клиента",
-      meta: {
-        editable: false,
-      },
-    },
-    {
-      accessorFn: (row) => {
-
-        return getDisplayClient(
-          row.sender_type_acc,
-          row.sender_name,
-          row.name_from,
-          row.sender_name_OOO,
-          row.sender_fio_IP,
-          row.sender_fio_gd_OOO,
-        );
-      },
-      id: "sender",
-      header: "отправитель",
-      meta: {
-        editable: false,
-      },
-    },
-    {
-      accessorFn: (row) => {
-        return getDisplayClientRepresentative(
-          row.sender_type_acc,
-          row.sender_name,
-          row.name_from,
-          row.sender_name_OOO,
-          row.sender_fio_IP,
-          row.sender_fio_gd_OOO,
-        );
-      },
-      id: "senderRepresentative",
-      header: "Представитель отправителя",
-      meta: {
-        editable: false,
-      },
-    },
-    {
-      accessorFn: (row) => {
-        return getDisplayClient(
-          row.recipient_type_acc,
-          row.recipient_name,
-          row.name_where,
-          row.recipient_name_OOO,
-          row.recipient_fio_IP,
-          row.recipient_fio_gd_OOO,
-        );
-      },
-      id: "recipient",
-      header: "получатель",
-      meta: {
-        editable: false,
-      },
-    },
-    {
-      accessorFn: (row) => {
-        return getDisplayClientRepresentative(
-          row.recipient_type_acc,
-          row.recipient_name,
-          row.name_from,
-          row.recipient_name_OOO,
-          row.recipient_fio_IP,
-          row.recipient_fio_gd_OOO,
-        );
-      },
-      id: "resipientRepresentative",
-      header: "Представитель получателя",
-      meta: {
-        editable: false,
-      },
-    },
-    {
-      accessorKey: "heft_full",
-      header: "вес",
-      meta: {
-        editable: true,
-        editor: "input",
-        inputType: "text",
-      },
-    },
-    {
-      accessorKey: "unloading_date",
-      header: "ДАТА ЗАВЕРШЕНИЯ",
+      accessorKey: "loading_date",
+      header: "дата ЗАГРУЗКИ",
       cell: info => {
         const value = info.getValue<string>();
 
@@ -427,27 +269,41 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
         inputType: "date",
       },
     },
-
-
-
     {
+      accessorKey: "unloading_date",
+      header: "дата ЗАВЕРШЕНИЯ",
+      cell: info => {
+        const value = info.getValue<string>();
 
-      accessorFn: row => `${row.heft_only_full} / ${row.volume_only_full}`,
-      id: "weight_volume",
-      header: "ВЕС / ОБЪЕМ",
+        if (!value) return "";
+
+        const date = new Date(value);
+
+        if (isNaN(date.getTime())) return "";
+
+        return date.toLocaleDateString("ru-RU");
+      },
       meta: {
-        editable: false, // редактировать объединённое поле обычно нельзя
+        editable: true,
+        editor: "date",
+        inputType: "date",
       },
     },
-
     {
-      accessorKey: "price_full",
-      header: "Стоимость",
-      cell: info => `${info.getValue<number>()} ₽`,
+      accessorKey: "heft_full",
+      header: "рассчетный вес",
       meta: {
         editable: true,
         editor: "input",
         inputType: "text",
+      },
+    },
+    {
+      accessorFn: row => `${row.heft_only_full} / ${row.volume_only_full}`,
+      id: "weight_volume",
+      header: "вес / объём",
+      meta: {
+        editable: false, // редактировать объединённое поле обычно нельзя
       },
     },
     {
@@ -562,8 +418,18 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
       },
     },
     {
-      accessorKey: "is_individual",
-      header: "индивидуальное",
+      accessorKey: "price_full",
+      header: "стоимость",
+      cell: info => `${info.getValue<number>()} ₽`,
+      meta: {
+        editable: true,
+        editor: "input",
+        inputType: "text",
+      },
+    },
+    {
+      accessorKey: "is_paid",
+      header: "оплачен",
       cell: info => `${info.getValue<number>() ? "да" : "нет"}`,
       meta: {
         editable: true,
@@ -574,14 +440,130 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
         ],
       },
     },
-    // {
-    //   accessorKey: "name_from",
-    //   header: "Отправитель",
-    //   meta: {
-    //     editable: true,
-    //     editor: "input",
-    //   },
-    // },
+    {
+      accessorFn: (row) => {
+        if (row.isSender === "sender") {
+          return getDisplayClient(
+            row.sender_type_acc,
+            row.sender_name,
+            row.name_from,
+            row.sender_name_OOO,
+            row.sender_fio_IP,
+            row.sender_fio_gd_OOO,
+
+          );
+        } else if (row.isSender === "recipient") {
+          return getDisplayClient(
+            row.recipient_type_acc,
+            row.recipient_name,
+            row.name_where,
+            row.recipient_name_OOO,
+            row.recipient_fio_IP,
+            row.recipient_fio_gd_OOO
+
+          )
+        } else if (row.isSender === "organizer") {
+          return getDisplayClient(
+            row.organizer_type_acc,
+            row.name_organizer ? row.name_organizer : "",
+            row.name_organizer ? row.name_organizer : "",
+            row.organizer_name_OOO,
+            row.organizer_fio_IP,
+            row.organizer_fio_gd_OOO
+          )
+        }
+      },
+      id: "client",
+      header: "клиент",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+        if (row.isSender === "sender") {
+          return getDisplayClientRepresentative(
+            row.sender_type_acc,
+            row.sender_name,
+            row.name_from,
+            row.sender_name_OOO,
+            row.sender_fio_IP,
+            row.sender_fio_gd_OOO,
+
+          )
+        }
+        else if (row.isSender === "recipient") {
+          return getDisplayClientRepresentative(
+            row.recipient_type_acc,
+            row.recipient_name,
+            row.name_where,
+            row.recipient_name_OOO,
+            row.recipient_fio_IP,
+            row.recipient_fio_gd_OOO,
+
+          )
+        }
+        else if (row.isSender === "organizer") {
+          return getDisplayClientRepresentative(
+            row.organizer_type_acc,
+            row.name_organizer ? row.name_organizer : "",
+            row.name_organizer ? row.name_organizer : "",
+            row.organizer_name_OOO,
+            row.organizer_fio_IP,
+            row.organizer_fio_gd_OOO,
+
+          )
+        }
+      },
+      id: "clientRepresentative",
+      header: "представитель клиента",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorKey: "phone_organizer",
+      header: "номер клиента",
+      meta: {
+        editable: true,
+        editor: "input",
+      },
+    },
+    {
+      accessorFn: (row) => {
+
+        return getDisplayClient(
+          row.sender_type_acc,
+          row.sender_name,
+          row.name_from,
+          row.sender_name_OOO,
+          row.sender_fio_IP,
+          row.sender_fio_gd_OOO,
+        );
+      },
+      id: "sender",
+      header: "отправитель",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+        return getDisplayClientRepresentative(
+          row.sender_type_acc,
+          row.sender_name,
+          row.name_from,
+          row.sender_name_OOO,
+          row.sender_fio_IP,
+          row.sender_fio_gd_OOO,
+        );
+      },
+      id: "senderRepresentative",
+      header: "представитель отправителя",
+      meta: {
+        editable: false,
+      },
+    },
     {
       accessorKey: "phone_from",
       header: "номер отправителя",
@@ -590,6 +572,58 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
         editor: "input",
       },
     },
+    {
+      accessorFn: (row) => {
+        return getDisplayClient(
+          row.recipient_type_acc,
+          row.recipient_name,
+          row.name_where,
+          row.recipient_name_OOO,
+          row.recipient_fio_IP,
+          row.recipient_fio_gd_OOO,
+        );
+      },
+      id: "recipient",
+      header: "получатель",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorFn: (row) => {
+        return getDisplayClientRepresentative(
+          row.recipient_type_acc,
+          row.recipient_name,
+          row.name_from,
+          row.recipient_name_OOO,
+          row.recipient_fio_IP,
+          row.recipient_fio_gd_OOO,
+        );
+      },
+      id: "resipientRepresentative",
+      header: "представитель получателя",
+      meta: {
+        editable: false,
+      },
+    },
+    {
+      accessorKey: "phone_where",
+      header: "номер получателя",
+      meta: {
+        editable: true,
+        editor: "input",
+      },
+    },
+
+    // {
+    //   accessorKey: "name_from",
+    //   header: "Отправитель",
+    //   meta: {
+    //     editable: true,
+    //     editor: "input",
+    //   },
+    // },
+
     // {
     //   accessorKey: "email_from",
     //   header: "Почта отправителя",
@@ -606,14 +640,7 @@ export default function PolingeAdminPanel({ searchParams }: { searchParams: { id
     //     editor: "input",
     //   },
     // },
-    {
-      accessorKey: "phone_where",
-      header: "номер получателя",
-      meta: {
-        editable: true,
-        editor: "input",
-      },
-    },
+
     // {
     //   accessorKey: "email_where",
     //   header: "Почта получателя",

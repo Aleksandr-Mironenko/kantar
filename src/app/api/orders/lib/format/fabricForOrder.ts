@@ -30,8 +30,20 @@ export default async function fabricForOrder(data: DataFabricForOrder) {
     recipientCountry_name,
     senderCity_name,
     recipientCity_name,
-    isSender
-
+    client,
+    // recipientAddressId2,
+    // recipientCountry_name2,
+    // recipientCity_name2,
+    organizerId,
+    organizerName,
+    phoneOrganizer,
+    emailOrganizer,
+    organizerType_acc,
+    organizerName_OOO,
+    organizerFio_gd_OOO,
+    organizerFio_IP,
+    costOfCargo,
+    descriptionOfCargo
   } = data
 
   const { nameFrom, nameWhere, phoneFrom, phoneWhere, emailFrom, emailWhere, price, isFinalHeft, isFinalOnlyHeft, isFinalOnlyVolume, agree } = dataprops
@@ -50,7 +62,7 @@ export default async function fabricForOrder(data: DataFabricForOrder) {
 
   }
 
-  //константа только для валидации
+  //создание результирующего объекта
   const orderData = {
     nds,
     senderId,
@@ -85,12 +97,25 @@ export default async function fabricForOrder(data: DataFabricForOrder) {
     recipientName_OOO,
     recipientFio_gd_OOO,
     recipientFio_IP,
-    sender_country_name: isSender ? senderCountry_name : recipientCountry_name,
-    recipient_country_name: isSender ? recipientCountry_name : senderCountry_name,
-    sender_city_name: isSender ? senderCity_name : recipientCity_name,
-    recipient_city_name: isSender ? recipientCity_name : senderCity_name,
-    isSender,
-    product: propsProduct()
+    organizerName,
+    organizerId,
+    phoneOrganizer,
+    emailOrganizer,
+    organizerType_acc,
+    organizerName_OOO,
+    organizerFio_gd_OOO,
+    organizerFio_IP,
+    // recipientAddressId2,
+    // recipientCountry_name2,
+    // recipientCity_name2,
+    sender_country_name: senderCountry_name,
+    recipient_country_name: recipientCountry_name,
+    sender_city_name: senderCity_name,
+    recipient_city_name: recipientCity_name,
+    client,
+    product: propsProduct(),
+    costOfCargo,
+    descriptionOfCargo
   }
   return {
     orderData

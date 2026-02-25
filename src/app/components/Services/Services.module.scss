@@ -1,9 +1,14 @@
 .services {
-  padding: 40px 40px;
+  padding: 40px;
   background: #fafafa;
   border-radius: 30px;
   margin: auto 40px;
+  min-height: 60vh;
 
+
+  @media (max-width: 670px) {
+    margin: 20px 40px;
+  }
 
   @media (max-width: 469px) {
     padding: 40px 30px;
@@ -58,12 +63,12 @@
 
   &__title {
     text-align: center;
-    font-size: 36px;
+    // font-size: 36px;
 
-    @media (max-width: 495px) {
+    // @media (max-width: 495px) {
 
-      font-size: 30px
-    }
+    //   font-size: 30px
+    // }
 
     @media (max-width: 435px) {
 
@@ -82,7 +87,7 @@
   }
 
   &__all_item {
-    font-size: 32px;
+    font-size: 25px;
     color: rgba(227, 30, 36, 0.6);
     margin-bottom: 0;
     align-self: flex-end;

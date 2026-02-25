@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <main style={{
-      minHeight: "100vh", display: "flex", flexDirection: "column",
+      minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: 'space-between'
     }}>
       <ThirdPartyFix />
       {/* <RealtimeAdminPanel /> //полностью котов к проду купить доступ и выгрузить папку сервера Render.com */}

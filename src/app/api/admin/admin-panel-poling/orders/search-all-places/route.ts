@@ -2,6 +2,7 @@ import supabaseServer from '../../../../lib/supabase/server-public';
 
 // get  
 export async function GET(request: Request): Promise<Response> {
+  const supabaseServers = supabaseServer();
   try {
     //ищу данные всей таблицы
     const { searchParams } = new URL(request.url);
@@ -13,7 +14,7 @@ export async function GET(request: Request): Promise<Response> {
     const to = offset + limit - 1;
 
 
-    const { data: arrayPlacesObjData, error, count } = await supabaseServer
+    const { data: arrayPlacesObjData, error, count } = await supabaseServers
       .from("order_places")
       .select("id, order_number, order_id,length,width,height,heft,fullPrice,price,nds,volume,places_personal_id", { count: 'exact' })
       .range(from, to);

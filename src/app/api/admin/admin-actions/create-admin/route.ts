@@ -6,8 +6,8 @@ import supabaseServer from '../../../lib/supabase/server-public';
 export async function POST(req: Request) {
   const { login_admin, password, name_admin, phone_admin } = await req.json();
   const password_hash = await bcrypt.hash(password, 10);
-
-  const { error } = await supabaseServer
+  const supabaseServers = supabaseServer();
+  const { error } = await supabaseServers
     .from('admins')
     .insert({ login_admin, password_hash, name_admin, phone_admin, admin_status: 'no_work' });
   if (error) {

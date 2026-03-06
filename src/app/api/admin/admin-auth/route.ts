@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 // POST /api/admin/login
 export async function POST(req: Request) {
+  const supabaseServers = supabaseServer();
   try {
     const { email, password } = await req.json();
 
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
     }
 
     // ищем админа по email
-    const { data: admin, error } = await supabaseServer
+    const { data: admin, error } = await supabaseServers
       .from('admins')
       .select('*')
       .eq('login_admin', email)
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
     }
 
     // обновляем статус admin_status →  work
-    const { error: updateError } = await supabaseServer
+    const { error: updateError } = await supabaseServers
       .from('admins').update({ admin_status: 'work' })
       .eq('id', admin.id);
     if (updateError) {

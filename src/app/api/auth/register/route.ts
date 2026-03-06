@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import supabaseServer from "../../lib/supabase/server-secret";
+import supabaseServerPublic from "../../lib/supabase/server-public";
 import { AuthApiError } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
-
-interface RegisterRequestBody {
-  email: string;
-  password: string;
-  phone: string;
-}
 
 interface RegisterResponse {
   success: boolean;
@@ -28,100 +23,247 @@ interface RegisterRequestBody {
 export async function POST(
   req: Request
 ): Promise<NextResponse<RegisterResponse>> {
-  const roleName = "user"
+  console.log("SERVICE ROLE:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
   try {
-    const { email, password, phone } = (await req.json()) as RegisterRequestBody;
+    const { email, password, phone, roleName = 'user' } = (await req.json()) as RegisterRequestBody;
     const normalizedEmail = email.toLowerCase();
 
-    // Проверяем email в auth.users
+
+
+    let isAuth: boolean = false
+
+    // Проверяем email + phone в auth.users
     const { data: existingAuthUsers, error: authCheckError } =
-      await supabaseServer.auth.admin.listUsers({ page: 1, perPage: 1000 });
-    if (authCheckError) throw authCheckError;
+      await supabaseServer.auth.admin.listUsers({ page: 1, perPage: 1000000000 });
 
-    if (existingAuthUsers.users.some(u => u.email?.toLowerCase() === normalizedEmail)) {
-      return NextResponse.json({ success: false, error: "Email уже зарегистрирован" }, { status: 400 });
+    if (authCheckError) {
+      console.log("ошибка 39")
+      throw authCheckError
+    };
+
+    // Ищем пользователя с совпадающими email и phone
+    const matchedUser = existingAuthUsers.users.find(
+      u => u.email?.toLowerCase() === normalizedEmail && u.phone === phone
+    );
+
+    if (matchedUser) {
+      const authId = matchedUser.id;
+
+      // a) Получаем роль пользователя из user_roles
+      const { data: userRole, error: userRoleError } = await supabaseServer
+        .from("user_roles")
+        .select("role_id")
+        .eq("user_id", authId)
+        .single();
+
+      if (userRoleError) {
+        console.log("ошибка 59")
+        throw userRoleError
+      };
+
+      const existingRoleId = userRole.role_id;
+
+      // b) Получаем roleId роли, которую пытаются зарегистрировать
+      const { data: targetRole, error: targetRoleError } = await supabaseServer
+        .from("roles")
+        .select("id")
+        .eq("name", roleName)
+        .single();
+
+      if (targetRoleError) {
+        console.log("ошибка 73")
+        throw targetRoleError
+      };
+
+      const targetRoleId = targetRole.id;
+
+
+
+      const { data: roleLastName, error: roleError } = await supabaseServer
+        .from("roles")
+        .select("name")
+        .eq("id", existingRoleId)
+        .single(); // ожидаем ровно одну запись
+
+      if (roleError || !roleLastName) {
+        console.log("ошибка 88")
+        throw roleError || new Error("Роль не найдена")
+      };
+
+      const existingRoleName = roleLastName.name;
+
+      // c) Сравниваем роли
+      if (existingRoleId === targetRoleId) {
+        console.log("return 102")
+
+        return NextResponse.json(
+          { success: false, error: "Этот mail с этим телефоном уже зарегистрированы" },
+          { status: 400 }
+        );
+      } else {
+        const { data: loginCheck, error: loginErrorCheck } =
+          await supabaseServer.auth.signInWithPassword({
+            email: normalizedEmail,
+            password,
+          });
+
+        if (loginErrorCheck) {
+          console.log("return 116")
+          return NextResponse.json(
+            {
+              success: false,
+              error: `У вас уже есть учётная запись для регистрации в качестве ${existingRoleName ? existingRoleName : "другой роли"}. Введите старый пароль.`,
+            },
+            { status: 400 }
+          );
+        } else if (loginCheck?.session) {
+          isAuth = false
+        }
+
+      }
+
+      // Если роли разные — разрешаем регистрацию
+      // (например, пользователь уже есть как user, но регистрируется как admin)
+    } else {
+      isAuth = true
     }
 
-    // Проверяем телефон в public.users
-    const { data: existingPhone, error: phoneCheckError } =
-      await supabaseServer.from("users").select("id").eq("phone", phone).maybeSingle();
-    if (phoneCheckError) throw phoneCheckError;
-    if (existingPhone) {
-      return NextResponse.json({ success: false, error: "Телефон уже зарегистрирован" }, { status: 400 });
-    }
+
+
+
+
+
+
+    // дублирующий код
+    // if (roleName === 'user') {
+    //   // Проверяем телефон или email в public.users
+    //   const { data: existingUser, error: checkError } =
+    //     await supabaseServer
+    //       .from("users")
+    //       .select("id")
+    //       .eq("phone", phone).eq("email", normalizedEmail)
+    //       .maybeSingle();
+
+    //   if (checkError) throw checkError;
+
+    //   if (existingUser) {
+    //     //тут ошибку кидать не нужно нужно просто пропустить тогда
+    //     //
+    //     return NextResponse.json(
+    //       { success: false, error: "Телефон или email уже зарегистрированы" },
+    //       { status: 400 }
+    //     );
+    //   }
+    // }
+
 
     // Создаём auth пользователя
-    const { data: authUser, error: createError } = await supabaseServer.auth.admin.createUser({
-      email: normalizedEmail,
-      password,
-      email_confirm: true,
-    });
+    let authUser: { user: { id: string } | null } = { user: null }
 
-    if (createError) {
-      if (createError instanceof AuthApiError) {
-        return NextResponse.json({ success: false, error: createError.message }, { status: 400 });
+    if (isAuth) {
+      const { data: createUser, error: createError } = await supabaseServer.auth.admin.createUser({
+        email: normalizedEmail,
+        phone,
+        password,
+        email_confirm: true,
+      });
+
+      if (createError) {
+        if (createError instanceof AuthApiError) {
+          console.log("return 178")
+          return NextResponse.json({ success: false, error: createError.message }, { status: 400 });
+        }
+        console.log("ошибка 181")
+        throw createError;
       }
-      throw createError;
+
+      if (!createUser?.user) {
+        console.log("return 186")
+        return NextResponse.json({ success: false, error: "Не удалось создать пользователя" }, { status: 500 });
+      }
+      authUser = createUser;
     }
+    let authId: string;
 
-    if (!authUser?.user) {
-      return NextResponse.json({ success: false, error: "Не удалось создать пользователя" }, { status: 500 });
-    }
-
-    const authId = authUser.user.id;
-
-    // 4️⃣ Проверяем есть ли гость
-    const { data: guest, error: guestError } = await supabaseServer
-      .from("users")
-      .select("id")
-      .or(`email.eq.${normalizedEmail},phone.eq.${phone}`)
-      .is("auth_id", null)
-      .maybeSingle();
-
-    if (guestError) throw guestError;
-
-    let userProfileId: string;
-
-    if (guest) {
-      const { error: updateError } = await supabaseServer
-        .from("users")
-        .update({ auth_id: authId })
-        .eq("id", guest.id);
-      if (updateError) throw updateError;
-      userProfileId = guest.id;
+    if (matchedUser) {
+      authId = matchedUser.id;
     } else {
-      const { data: createdProfile, error: insertError } = await supabaseServer
+      authId = authUser.user!.id;
+    }
+
+    let userProfileId: string | undefined = authId;
+
+    if (roleName === 'user') {
+      // Проверяем есть ли гость
+      const { data: guest, error: guestError } = await supabaseServer
         .from("users")
-        .insert({
-          email: normalizedEmail,
-          phone,
-          name: "",
-          address_id: null,
-          is_register: true,
-          is_client: false,
-          is_dogovor: false,
-          type_acc: "noAcc",
-          discount: 0,
-          auth_id: authId,
-        })
         .select("id")
-        .single();
-      if (insertError) throw insertError;
-      if (!createdProfile) throw new Error("Профиль не создан");
-      userProfileId = createdProfile.id;
+        .eq("phone", phone).eq("email", normalizedEmail)
+        .is("auth_id", null)
+        .maybeSingle();
+
+      if (guestError) {
+        console.log("ошибка 211")
+        throw guestError
+      };
+
+
+
+      if (guest) {
+        const { error: updateError } = await supabaseServer
+          .from("users")
+          .update({ auth_id: authId })
+          .eq("id", guest.id);
+        if (updateError) {
+          console.log("ошибка 223")
+          throw updateError
+        };
+        userProfileId = guest.id;
+      } else {
+        const { data: createdProfile, error: insertError } = await supabaseServer
+          .from("users")
+          .insert({
+            email: normalizedEmail,
+            phone,
+            name: "",
+            address_id: null,
+            is_register: true,
+            is_client: false,
+            is_dogovor: false,
+            type_acc: "noAcc",
+            discount: 0,
+            auth_id: authId,
+          })
+          .select("id")
+          .single();
+        if (insertError) {
+          console.log("SERVICE ROLE:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+          console.log("ошибка 245")
+          throw insertError
+        };
+        if (!createdProfile) {
+          console.log("ошибка 249")
+          throw new Error("Профиль не создан")
+        };
+        userProfileId = createdProfile.id;
+      }
     }
 
     // Создание профиля
     const { error: profileError } = await supabaseServer
       .from("profiles")
-      .insert({
+      .upsert({
         id: authId,              // id из auth.users
         email: normalizedEmail,
         phone: phone,
         created_at: new Date().toISOString(),
       });
 
-    if (profileError) throw profileError;
+    if (profileError) {
+      console.log("ошибка 266")
+      throw profileError
+    };
 
     // Назначение роли (если передали roleName)
     if (roleName) {
@@ -132,19 +274,26 @@ export async function POST(
         .eq("name", roleName)
         .single(); // ожидаем ровно одну запись
 
-      if (roleError || !roleData) throw roleError || new Error("Роль не найдена");
+      if (roleError || !roleData) {
+        console.log("ошибка 280")
+        throw roleError || new Error("Роль не найдена")
+      };
 
       const roleId = roleData.id;
 
       // Вставляем связь user ↔ role в user_roles
       const { error: assignError } = await supabaseServer
         .from("user_roles")
-        .insert({
+        .upsert({
           user_id: authId,
           role_id: roleId,
-        });
+        },
+          { onConflict: "user_id,role_id" });
 
-      if (assignError) throw assignError;
+      if (assignError) {
+        console.log("ошибка 296")
+        throw assignError
+      };
     }
 
     // Авто-логин
@@ -171,9 +320,10 @@ export async function POST(
     });
 
     if (loginError || !loginData.session) {
+      console.log("return 325")
       return NextResponse.json({ success: false, error: "Не удалось создать сессию" }, { status: 500 });
     }
-
+    console.log("return 328")
     return NextResponse.json({
       success: true,
       jwt: loginData.session.access_token,
@@ -186,7 +336,7 @@ export async function POST(
     let message = "Ошибка сервера";
     if (err instanceof AuthApiError) message = err.message;
     else if (err instanceof Error) message = err.message;
-
+    console.log("return 341")
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

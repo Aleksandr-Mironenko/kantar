@@ -2,12 +2,49 @@ import retry from '../../orders/lib/function/retry';
 import supabaseServer from '../../lib/supabase/server-secret';
 
 export async function POST(req: Request) {
-  const { code, phone, email } = await req.json();
+  const { code, phone, email, fromDatabase } = await req.json();
+
+  const allowedTables = ["auth_codes", "auth_codes_login"];
+
+  if (!allowedTables.includes(fromDatabase)) {
+    return Response.json({ sendCode: false, error: "invalid_table" });
+  }
+
+  let resolvedPhone = phone;
+
+  if (!phone && email) {
+    const { error, data } = await retry(async () =>
+      supabaseServer
+        .from(fromDatabase)
+        .select("phone")
+        .eq("email", email)
+        .order("created_at", { ascending: false })
+        .limit(1),
+      { retries: 5, delay: 100 }
+    );
+
+    if (error) {
+      return Response.json({ sendCode: false, error: "db_error" });
+    }
+
+    const foundPhone = data?.[0]?.phone;
+
+    if (!foundPhone) {
+      return Response.json({ sendCode: false, error: "phone_not_found" });
+    }
+
+    resolvedPhone = foundPhone;
+  }
+
+  if (!resolvedPhone && !email) {
+    return Response.json({ sendCode: false, error: "phone_or_email_required" });
+  }
 
   const { error: error1, data: existing } = await retry(async () => await supabaseServer
-    .from("auth_codes") // ищем в таблице auth_codes
+    .from(fromDatabase) // ищем в таблице auth_codes
     .select("*") // выбираем все поля
-    .or(`phone.eq.${phone},email.eq.${email}`) // где телефон или email совпадает с введёнными
+    .eq("phone", resolvedPhone)
+    .eq("email", email)
     .order("created_at", { ascending: false })   // сортируем по дате создания по убыванию
     .limit(1), { retries: 5, delay: 100 }); // ограничиваем результат одним
 
@@ -28,23 +65,19 @@ export async function POST(req: Request) {
   const isExpired = expiresAt <= now;
 
   //код неверный
-  console.log("табличный code", record.code, typeof record.code)
-  console.log("клиентский code", code, typeof code)
-  console.log("сравнение", record.code === code)
   const isMatch = record.code === code;
 
 
   // функция удаления
   const deleteRecord = async () => {
     const { error: error2 } = await retry(async () => await supabaseServer
-      .from("auth_codes")
+      .from(fromDatabase)
       .delete()
       .eq("id", record.id)
       , { retries: 5, delay: 100 });
 
     if (error2) {
       console.log("Ошибка при удалении старого кода auth/check-code/route:", error2);
-      // return Response.json({ sendCode: false });
     }
   }
 

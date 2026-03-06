@@ -16,7 +16,9 @@ import CalcSend from './components/CalcSend/CalcSend';
 // import RealtimeAdminPanel from './components/RealtimeAdminPanel/RealtimeAdminPanel' //полностью котов к проду купить доступ и выгрузить папку сервера Render.com
 export default function Home() {
 
-
+  const ddd = async () => {
+    await fetch('/api/auth/reset-session', { method: 'GET' });
+  }
   return (
     <main style={{
       minHeight: "100vh", display: "flex", flexDirection: "column",

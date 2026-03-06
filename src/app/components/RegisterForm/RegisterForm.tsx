@@ -1,12 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import ButtonSendCode from "../ButtonSendCode/ButtonSendCode";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [check, setCheck] = useState<boolean>(false);
+  const [trueCode, setTrueCode] = useState<boolean>(false) //верный код подтверждения
+  const [isFiledCheck, setIsFiledCheck] = useState<'error' | 'noFailed' | 'filledTime' | 'filledCode'>('noFailed') //флаг ошибки при проверке кода
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +32,7 @@ export default function RegisterForm() {
       return;
     }
 
-    alert("Регистрация успешна!");
+    router.replace("/lk");
   };
 
   return (
@@ -84,8 +91,11 @@ export default function RegisterForm() {
         }}
       />
 
+      <ButtonSendCode check={check} trueCode={trueCode} isFiledCheck={isFiledCheck} email={email} phone={phone} setIsFiledCheck={setIsFiledCheck} setTrueCode={setTrueCode} setCheck={setCheck} />
+
+      {check && trueCode && <p>Код подтверждения верный</p>}
       <button
-        type="submit"
+        disabled={!check || !trueCode || !email || !password || !phone} type="submit"
         style={{
           padding: "10px",
           fontSize: "14px",
@@ -96,6 +106,7 @@ export default function RegisterForm() {
           cursor: "pointer",
         }}
       >
+
         Зарегистрироваться
       </button>
 

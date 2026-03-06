@@ -3,10 +3,43 @@ import { sendEmail } from "../../lib/helpers/sendEmail"
 import { sendSMS } from "../../lib/helpers/sendSms";
 import retry from '../../orders/lib/function/retry';
 export async function POST(req: Request) {
-  const { phone, email } = await req.json();
+  const { phone, email, fromDatabase } = await req.json();
+
+  const allowedTables = ["auth_codes", "auth_codes_login"];
+
+  if (!allowedTables.includes(fromDatabase)) {
+    return Response.json({ sendCode: false, error: "invalid_table" });
+  }
+
+  let resolvedPhone = phone;
+
+  if (!phone && email) {
+    const { error, data } = await retry(async () =>
+      supabaseServer
+        .from("users")
+        .select("phone")
+        .eq("email", email)
+        .order("created_at", { ascending: false })
+        .limit(1),
+      { retries: 5, delay: 100 }
+    );
+
+    if (error) {
+      return Response.json({ sendCode: false, error: "db_error" });
+    }
+
+    const foundPhone = data?.[0]?.phone;
+
+
+
+    resolvedPhone = foundPhone;
+  }
+
+
+
 
   // проверка входных данных на наличие
-  if (!phone || !email) {
+  if (!resolvedPhone && !email) {
     return Response.json({ sendCode: false, error: "phone_or_email_required" });
   }
 
@@ -14,11 +47,14 @@ export async function POST(req: Request) {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const since10min = new Date(Date.now() - 10 * 60 * 1000).toISOString();
 
+
+
   //проверка есть ли код за последние 10 минут
   const { error: error0, data: existing10min } = await retry(async () => await supabaseServer
-    .from("auth_codes") // ищем в таблице auth_codes
+    .from(fromDatabase) // ищем в таблице
     .select("*") // выбираем все поля
-    .or(`phone.eq.${phone},email.eq.${email}`) // где телефон или email совпадает с введёнными
+    .eq("phone", resolvedPhone)
+    .eq("email", email)
     .gte("created_at", since10min) // и создан позже чем 10 мин назад
     .order("created_at", { ascending: false })   // сортируем по дате создания по убыванию
     .limit(1), { retries: 5, delay: 100 }); // ограничиваем результат одним
@@ -29,25 +65,27 @@ export async function POST(req: Request) {
 
     // проверка, есть ли код за последние сутки используя retry для уверенности что не будет случайной ошибки
     const { error: error1, data: existing } = await retry(async () => await supabaseServer
-      .from("auth_codes") // ищем в таблице auth_codes
+      .from(fromDatabase) // ищем в таблице auth_codes
       .select("*") // выбираем все поля
-      .or(`phone.eq.${phone},email.eq.${email}`) // где телефон или email совпадает с введёнными
+      .eq("phone", resolvedPhone)
+      .eq("email", email)    // где телефон или email совпадает с введёнными
       .gte("created_at", since) // и создан позже чем 24 часа назад
       .order("created_at", { ascending: false })   // сортируем по дате создания по убыванию
       .limit(1), { retries: 5, delay: 100 }); // ограничиваем результат одним
 
 
 
+
     // 2. Если есть — удаляем
     if (!error1 && existing?.[0]) {
       const { error: error2 } = await retry(async () => await supabaseServer
-        .from("auth_codes")
+        .from(fromDatabase)
         .delete()
         .eq("id", existing[0].id)
         , { retries: 5, delay: 100 });
 
       if (error2) {
-        console.log("Ошибка при удалении старого кода auth/send-code/route/error2:", error2);
+        console.log(98, "Ошибка при удалении старого кода auth/send-code/route/error2:", error2);
       }
     }
 
@@ -55,9 +93,9 @@ export async function POST(req: Request) {
     const code = Math.floor(1000 + Math.random() * 9000).toString(); // 4 цыфры кода для проверки
 
     const { error: error3 } = await retry(async () => await supabaseServer
-      .from("auth_codes")
+      .from(fromDatabase)
       .insert({
-        phone,
+        phone: phone ? phone : resolvedPhone,
         email,
         code,
         is_entry: false,
@@ -83,7 +121,7 @@ export async function POST(req: Request) {
       ),
 
       //отправка смс клиенту 
-      sendSMS(phone,
+      sendSMS(resolvedPhone,
         `Ваш код подтверждения: ${code} `,
       )
 

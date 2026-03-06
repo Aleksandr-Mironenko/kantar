@@ -20,7 +20,6 @@ export async function GET(request: Request): Promise<Response> {
     //     };
     //   })
     // );
-    console.log("arrayOrderObjData", arrayOrderObjData)
     return new Response(
       JSON.stringify({
         ok: true,

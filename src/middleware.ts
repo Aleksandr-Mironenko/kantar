@@ -1,93 +1,78 @@
-// import { createServerClient } from "@supabase/ssr";
-// import { NextResponse } from "next/server";
-// import type { NextRequest } from "next/server";
-// import type { CookieOptions } from "@supabase/ssr";
-// export async function middleware(req: NextRequest) {
-//   const res = NextResponse.next();
-
-//   const supabase = createServerClient(
-//     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-//     {
-//       cookies: {
-//         get(name: string) {
-//           return req.cookies.get(name)?.value;
-//         },
-//         set(name: string, value: string, options: CookieOptions) {
-//           res.cookies.set({ name, value, ...options });
-//         },
-//         remove(name: string, options: CookieOptions) {
-//           res.cookies.set({ name, value: "", ...options });
-//         },
-//       },
-//     }
-//   );
-
-//   const {
-//     data: { user },
-//   } = await supabase.auth.getUser();
-
-//   if (!user) {
-//     return NextResponse.redirect(new URL("/login", req.url));
-//   }
-
-//   return res;
-// }
-
-// export const config = {
-//   matcher: ["/admin/:path*"],
-// };
-
-
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import type { CookieOptions } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
-  // Создаём ответ, который будет возвращён
+
   const res = NextResponse.next();
 
-  // Получаем все cookie из запроса
-  const allCookies = req.cookies.getAll().map(c => ({
-    name: c.name,
-    value: c.value,
-    options: {} as CookieOptions, // можно добавить secure, httpOnly и т.д.
-  }));
-
-  // Создаём Supabase SSR клиент с cookie
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll: () => allCookies,
-        setAll: (cookiesToSet) =>
+        getAll: () => req.cookies.getAll(),
+        setAll: (cookiesToSet) => {
           cookiesToSet.forEach(({ name, value, options }) =>
-            res.cookies.set({ name, value, ...options })
-          ),
+            res.cookies.set(name, value, options)
+          );
+        },
       },
     }
   );
 
-  // Получаем текущего пользователя из Supabase
   const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  // Если пользователь не найден, редиректим на /login
-  if (!user || error) {
+  const { pathname } = req.nextUrl;
+
+  // -------------------------
+  // НЕ АВТОРИЗОВАН
+  // -------------------------
+
+  if (!session) {
+
+    if (pathname.startsWith("/login")) {
+      return res;
+    }
+
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Пользователь авторизован — пропускаем middleware
+  // -------------------------
+  // РОЛИ
+  // -------------------------
+
+  const payload = JSON.parse(
+    Buffer.from(session.access_token.split(".")[1], "base64").toString()
+  );
+
+  const roles: string[] =
+    payload.app_metadata?.roles ??
+    payload.claims?.app_metadata?.roles ??
+    [];
+
+  const isAdmin = roles.includes("admin") || roles.includes("root");
+
+  // -------------------------
+  // ADMIN ROUTES
+  // -------------------------
+
+  if (pathname.startsWith("/admin") && !isAdmin) {
+    return NextResponse.redirect(new URL(`/lk`, req.url));
+  }
+
+  // -------------------------
+  // USER ROUTES
+  // -------------------------
+
+  if (pathname.startsWith("/lk") && isAdmin) {
+    return NextResponse.redirect(new URL(`/admin`, req.url));
+  }
+
   return res;
 }
 
-// Применяем middleware только к защищённым маршрутам
 export const config = {
-  matcher: ["/admin/:path*"], // здесь можно указать любые пути
+  matcher: ["/admin/:path*", "/lk/:path*", "/login"],
 };
-
-
-//СТОКА 76 ПОЛУЧЕНИЕ ДАННЫХ ИМЕННО ИЗ .getUser   User!!! - ЭТО НЕ АДМИНЫ

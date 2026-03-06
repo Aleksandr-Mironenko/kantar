@@ -1,7 +1,7 @@
 "use client"
 import { toCorrectUserAcc, TypeAcc, CommentUserType } from '../DTO/DTO'
 import { useEffect, useState } from 'react'
-import styles from './UserProfile.module.scss'
+import styles from './UserProfileClient.module.scss'
 
 export default function UserProfileClient({ searchParams }: { searchParams: { id: string, idUserProps: toCorrectUserAcc } }) {
   const [comment, setComment] = useState<string>('')

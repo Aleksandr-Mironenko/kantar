@@ -316,7 +316,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
   const sendVerificationCode = async (e: React.FormEvent) => {
     e.preventDefault()
     const request = await fetch("/api/auth/send-code", {
-      method: "POST", body: JSON.stringify({ phone, email }),
+      method: "POST", body: JSON.stringify({ phone, email, fromDatabase: "auth_codes" }),
     });
     const responseData = await request.json();
 
@@ -334,7 +334,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
 
     e.preventDefault()
     const request = await fetch("/api/auth/check-code", {
-      method: "POST", body: JSON.stringify({ code, phone, email }),
+      method: "POST", body: JSON.stringify({ code, phone, email, fromDatabase: "auth_codes" }),
     });
     const responseData = await request.json();
 

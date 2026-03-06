@@ -1,11 +1,17 @@
 "use client";
-
+import ButtonSendCode from "../ButtonSendCode/ButtonSendCode";
+// import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [check, setCheck] = useState<boolean>(false);
+  const [trueCode, setTrueCode] = useState<boolean>(false) //верный код подтверждения
+  const [isFiledCheck, setIsFiledCheck] = useState<'error' | 'noFailed' | 'filledTime' | 'filledCode'>('noFailed') //флаг ошибки при проверке кода
+
+  // const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +28,7 @@ export default function LoginForm() {
       setError(data.error || "Ошибка входа");
       return;
     }
-
+    //момент спорный    router.replace("/lk");
     alert("Вход выполнен!");
     window.location.href = "/";
   };
@@ -70,8 +76,13 @@ export default function LoginForm() {
         }}
       />
 
+      <ButtonSendCode check={check} trueCode={trueCode} isFiledCheck={isFiledCheck} email={email} phone={undefined} setIsFiledCheck={setIsFiledCheck} setTrueCode={setTrueCode} setCheck={setCheck} />
+
+      {check && trueCode && <p>Код подтверждения верный</p>}
       <button
+        disabled={!check || !trueCode || !email || !password}
         type="submit"
+
         style={{
           padding: "10px",
           fontSize: "14px",

@@ -16,13 +16,18 @@ export default function Header() {
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const ddd = async () => {
+    await fetch('/api/auth/reset-session', { method: 'GET' });
+  }
 
 
   return (
     <header className={styles.header}>
       <div className={styles.header__wrapper} >
         <nav className={styles.header__nav}>
-
+          <button onClick={() => {
+            ddd()
+          }}>сброс</button>
           <a className="tn-atom"
             href="https://kantar-logistics.ru/">
             <Image

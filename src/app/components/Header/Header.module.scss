@@ -166,7 +166,14 @@
   border: 1px solid transparent;
   cursor: pointer;
   overflow: hidden;
-  height: 30px
+
+  height: 30px;
+
+  @media (max-width: 670px) {
+    bottom: -30px;
+    right: unset;
+    left: 0
+  }
 }
 
 /* Обычный текст */

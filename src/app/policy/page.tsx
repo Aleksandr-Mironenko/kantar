@@ -185,7 +185,7 @@ export default function Home() {
       {/* <RealtimeAdminPanel /> //полностью котов к проду купить доступ и выгрузить папку сервера Render.com */}
       <Header />
 
-      <div style={{ backgroundColor: "white", margin: "10px", padding: "30px", borderRadius: "30px" }}>
+      <div style={{ backgroundColor: "white", margin: "23px", padding: "30px", borderRadius: "30px" }}>
         <h1>ПОЛИТИКА ОБРАБОТКИ ПЕРСОНАЛЬНЫХ ДАННЫХ</h1>
 
         {text}

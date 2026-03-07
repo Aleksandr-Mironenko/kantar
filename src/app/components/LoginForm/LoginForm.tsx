@@ -30,7 +30,7 @@ export default function LoginForm() {
     }
     //момент спорный    router.replace("/lk");
     alert("Вход выполнен!");
-    window.location.href = "/";
+    window.location.href = "/admin";
   };
 
   return (

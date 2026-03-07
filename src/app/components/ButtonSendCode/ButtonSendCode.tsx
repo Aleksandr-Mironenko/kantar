@@ -17,8 +17,8 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
     const responseData = await request.json();
 
     if (!responseData.sendCode) {
+      console.log("Ошибка отправки кода подтверждения")
       throw new Error("Ошибка отправки кода подтверждения")
-
     } else if (responseData.sendCode) {
       setLastCode(responseData.lastCode)
       setIsCode(true);
@@ -65,7 +65,8 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
     !check && !trueCode && <>
       {isCode ?
         <div className={styles.label__wrapper}  >
-          {lastCode ? <p>{`Проверьте почту, повторная отправка через 10минут`}</p> : null}
+          {lastCode ?
+            <p>{`Проверьте почту, повторная отправка через 10минут`}</p> : null}
 
 
           <label htmlFor="code" className={`${styles.index} ${styles.label}`}>
@@ -83,7 +84,8 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
           </label>
           <button
             type="button"
-            className={styles.modal__submit} onClick={(e) => checkodeSubmit(e)} >
+            className={styles.modal__submit}
+            onClick={(e) => checkodeSubmit(e)} >
             отправить код подтверждения
           </button>
 
@@ -91,7 +93,8 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
 
         </div> :
         <button type="button"
-          className={styles.modal__submit} onClick={(e) => sendVerificationCode(e)} >
+          className={styles.modal__submit}
+          onClick={(e) => sendVerificationCode(e)} >
           отправить код подтверждения
         </button>}
 

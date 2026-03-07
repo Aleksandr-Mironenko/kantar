@@ -4,8 +4,10 @@ import styles from "./Header.module.scss";
 import logo from "./photo.png";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+  const [loggedIn, setLoggedIn] = useState<boolean>(false)
   const pathname = usePathname();
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const hash = "#calculator_express";
@@ -16,18 +18,23 @@ export default function Header() {
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const ddd = async () => {
-    await fetch('/api/auth/reset-session', { method: 'GET' });
+  const exitLogin = async () => {
+    const res = await fetch('/api/auth/reset-session', { method: 'GET' });
+    if (res.ok) {
+      window.location.href = "/";
+    }
   }
-
+  useEffect(() => {
+    fetch("/api/auth/status", { credentials: "include" })
+      .then(res => res.json())
+      .then(data => setLoggedIn(data.loggedIn));
+  }, []);
 
   return (
     <header className={styles.header}>
       <div className={styles.header__wrapper} >
         <nav className={styles.header__nav}>
-          <button onClick={() => {
-            ddd()
-          }}>сброс</button>
+
           <a className="tn-atom"
             href="https://kantar-logistics.ru/">
             <Image
@@ -73,12 +80,37 @@ export default function Header() {
               <div className={styles.header__nav_button_content}>
                 <span>КАЛЬКУЛЯТОР</span>
               </div>
+
             </Link>
+            {loggedIn ?
+              <button className={styles.header__nav_button}
+                style={{ lineHeight: "1.1", padding: "3px 15px", fontSize: "15px", position: 'absolute', bottom: "-30px", right: "0", backgroundColor: 'white', color: "#e53535", borderRadius: "0 0 15px 15px", border: '1px solid transparent', cursor: 'pointer' }}
+                onClick={() => {
+                  exitLogin()
+                }}>
+                выход
+              </button>
+              :
+              <div className={styles.loginWrapper}>
+                <button
+                  className={styles.header__nav_button}
+
+                >
+                  <span className={styles.defaultText}>ЛИЧНЫЙ КАБИНЕТ</span>
+
+                  <div className={styles.hoverLinks}>
+                    <Link href="/register" className={styles.header__nav_button_content}>РЕГИСТРАЦИЯ</Link>
+                    <Link href="/login" className={styles.header__nav_button_content}>ВХОД</Link>
+                  </div>
+                </button>
+              </div>
+            }
+
           </div>
         </nav>
         {/* 
       <div className={styles.header__phone}>+7 (800) 123-45-67</div> */}
-      </div>
-    </header>
+      </div >
+    </header >
   );
 }

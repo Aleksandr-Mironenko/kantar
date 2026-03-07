@@ -32,10 +32,13 @@ export default function CooperationRequestForm() {
     setNotification(true)
     console.log("alertNotification", title, description)
   }
+  const titleblock = `Заключите с нами 
+          договор для более 
+          выгодного сотрудничества`
   return (
     <section className={styles.formcalc} id="requestForCooperation" >
       <div className={styles.formcalc__container}>
-        <h2 className={styles.formcalc__title}>Запрос на сотрудничество</h2>
+        <h2 className={styles.formcalc__title}>{titleblock} </h2>
         <div className={styles.formcalc__forms} >
 
           <div className={styles.radioGroup}>

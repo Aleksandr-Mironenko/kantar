@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   }
 
   let resolvedPhone = phone;
-
+  console.log("send-code", phone, email)
   if (!phone && email) {
     const { error, data } = await retry(async () =>
       supabaseServer

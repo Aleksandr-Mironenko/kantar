@@ -7,10 +7,12 @@ import { toCorrectUserAcc, CommentUserType } from "@/app/components/DTO/DTO";
 // import readComment from '@/app/api/admin/admin-panel-poling/users/comment-In_user/get/readComment'
 import UserProfileClient from "@/app/components/UserProfileClient/UserProfileClient";
 import OrderTableClient from "@/app/components/OrderTableClient/OrderTableClient";
+import ThirdPartyFix from "../components/ThirdPartyFix/ThirdPartyFix";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
+import CooperationRequestForm from "../components/CooperationRequestForm/CooperationRequestForm";
 
-export default async function LcPage({ params }: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function LcPage() {
   // const { id } = await params;
   const supabaseServers = supabaseServer();
   const { data: session } = await supabaseServers.auth.getSession();
@@ -25,13 +27,24 @@ export default async function LcPage({ params }: {
 
   const dataUserSendler: toCorrectUserAcc = await findUser(id)
   // const comments: CommentUserType[] = await readComment(idUser)
-  return (<>
-    <UserProfileClient
-      searchParams={{ id, idUserProps: dataUserSendler }}
+  return (
+    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: 'space-between' }}>
 
-    />
-    <OrderTableClient searchParams={{ idUserProps: id, headerPage: `Заказы клиента` }} />;
+      <ThirdPartyFix />
+      {/* <RealtimeAdminPanel /> //полностью котов к проду купить доступ и выгрузить папку сервера Render.com */}
+      <Header />
 
 
-  </>)
-}
+
+      <UserProfileClient
+        searchParams={{ id, idUserProps: dataUserSendler }}
+
+      />
+      {!dataUserSendler.is_dogovor && <CooperationRequestForm />}
+
+      <OrderTableClient searchParams={{ idUserProps: id, headerPage: `Ваши заказы` }} />;
+
+      <Footer />
+    </main>
+  )
+} 

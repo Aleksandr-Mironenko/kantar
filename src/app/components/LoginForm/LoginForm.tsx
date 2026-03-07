@@ -40,7 +40,7 @@ export default function LoginForm() {
         display: "flex",
         flexDirection: "column",
         maxWidth: "400px",
-        minWidth: "300px",
+        minWidth: "340px",
         margin: "0 auto",
         gap: "12px",
         padding: "20px",

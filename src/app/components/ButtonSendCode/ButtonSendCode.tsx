@@ -62,7 +62,8 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
     }
   }
   return (
-    !check && !trueCode && <>
+    /*!check && !trueCode && вместе с 104 строкой*/
+    <>
       {isCode ?
         <div className={styles.label__wrapper}  >
           {lastCode ?
@@ -100,7 +101,7 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
 
 
 
-      <p>{textReaponse}</p>
+      {/* <p>{textReaponse}</p>  вместе с 65 строкой */}
       {isFiledCheck === 'filledTime' && <button type="button" className={styles.modal__submit} onClick={(e) => sendVerificationCode(e)}>повторный запрос кода</button>}
     </>
     //handleSubmit(onSubmit

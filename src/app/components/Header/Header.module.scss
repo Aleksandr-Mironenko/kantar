@@ -151,6 +151,7 @@
 .loginWrapper {
   // position: relative;
   display: inline-block;
+  border: 1px solid transparent;
 }
 
 .loginWrapper .header__nav_button {
@@ -158,7 +159,7 @@
   padding: 3px 15px;
   font-size: 15px;
   position: absolute;
-  bottom: -45px;
+  bottom: -43px;
   right: 0;
   background-color: white;
   color: #e53535;
@@ -172,7 +173,7 @@
   @media (max-width: 670px) {
     bottom: -30px;
     // right: unset;
-// left: 0
+    // left: 0
   }
 }
 
@@ -232,5 +233,3 @@
 .hoverLinks button:hover {
   text-decoration: underline;
 }
-
- 

@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import styles from "./Header.module.scss";
+import burger from "@../public/burger.svg";
 import logo from "./photo.png";
 import Image from "next/image";
 import Link from "next/link";
@@ -83,13 +84,17 @@ export default function Header() {
 
             </Link>
             {loggedIn ?
-              <button className={styles.header__nav_button}
-                style={{ lineHeight: "1.1", padding: "3px 15px", fontSize: "15px", position: 'absolute', bottom: "-30px", right: "0", backgroundColor: 'white', color: "#e53535", borderRadius: "0 0 15px 15px", border: '1px solid transparent', cursor: 'pointer' }}
-                onClick={() => {
-                  exitLogin()
-                }}>
-                выход
-              </button>
+              <div className={styles.loginWrapper}>
+                <button className={styles.header__nav_button}
+                >
+                  <span className={styles.defaultText}>ЛИЧНЫЙ КАБИНЕТ</span>
+
+                  <div className={styles.hoverLinks}>
+                    <Link href="/login" className={styles.header__nav_button_content}>В АККАУНТ</Link>
+                    <button style={{ border: "none", backgroundColor: "transparent" }} onClick={() => { exitLogin() }} className={styles.header__nav_button_content}>ВЫХОД</button>
+                  </div>
+                </button>
+              </div>
               :
               <div className={styles.loginWrapper}>
                 <button

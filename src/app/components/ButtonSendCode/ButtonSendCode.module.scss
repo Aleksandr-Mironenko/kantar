@@ -251,6 +251,7 @@
     transform: scale(1);
     cursor: pointer;
     display: inline-block;
+    padding: 10px;
     transition: (transform 0.8s cubic-bezier(0.075, 0.82, 0.165, 1),
         background 0.8s cubic-bezier(0.075, 0.82, 0.165, 1));
 

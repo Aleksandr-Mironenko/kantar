@@ -40,12 +40,15 @@ export default function LoginForm() {
         display: "flex",
         flexDirection: "column",
         maxWidth: "400px",
+        minWidth: "300px",
         margin: "0 auto",
         gap: "12px",
         padding: "20px",
         border: "1px solid #ccc",
         borderRadius: "8px",
         backgroundColor: "#fafafa",
+        marginBottom: '100px',
+        marginTop: '100px'
       }}
     >
       <h2 style={{ textAlign: "center" }}>Вход</h2>

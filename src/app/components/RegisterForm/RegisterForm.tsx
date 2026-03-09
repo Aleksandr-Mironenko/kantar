@@ -100,24 +100,28 @@ export default function RegisterForm() {
       <button
         disabled={!check || !trueCode || !email || !password || !phone} type="submit"
         style={{
+
           padding: "10px",
-          fontSize: "14px",
-          borderRadius: "4px",
+          fontSize: "18px",
+          borderRadius: "8px",
           backgroundColor: "#ff0d01",
           color: "white",
           border: "none",
           cursor: "pointer",
+          fontWeight: "600",
         }}
       >
 
-        Зарегистрироваться
+        зарегистрироваться
       </button>
 
-      {error && (
-        <p style={{ color: "red", fontSize: "13px", textAlign: "center" }}>
-          {error}
-        </p>
-      )}
-    </form>
+      {
+        error && (
+          <p style={{ color: "red", fontSize: "13px", textAlign: "center" }}>
+            {error}
+          </p>
+        )
+      }
+    </form >
   );
 }

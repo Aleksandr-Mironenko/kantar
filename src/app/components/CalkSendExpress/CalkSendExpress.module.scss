@@ -420,9 +420,13 @@
  .place__inputGroup {
    display: flex;
    align-items: center;
-   background: 2px solid #ac0901;
+   //  background: 2px solid #ac0901;
    border-radius: 10px;
    background-color: #fff;
+
+   & p {
+     padding-right: 8px
+   }
  }
 
  .place__inputGroup p {

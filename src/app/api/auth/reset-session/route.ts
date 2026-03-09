@@ -50,10 +50,11 @@
 //---------------------------------------------------
 
 
-
+import { cookies } from "next/headers";
 import { createClient } from '@supabase/supabase-js';
 
 export async function GET() {
+  const cookieStore = await cookies()
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -63,10 +64,11 @@ export async function GET() {
 
   const headers = new Headers();
 
-  headers.append(
-    "Set-Cookie",
-    "sb-pyzpdyaqsrbgstfdlycz-auth-token=; Path=/; Domain=localhost; Max-Age=0; SameSite=Lax"
-  );
+  for (const c of cookieStore.getAll()) {
+    if (c.name.startsWith("sb-") && c.name.includes("auth-token")) {
+      headers.append("Set-Cookie", `${c.name}=; Path=/; Max-Age=0`);
+    }
+  }
 
   return new Response("Signed out globally", { headers });
 }

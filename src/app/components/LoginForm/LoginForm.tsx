@@ -2,8 +2,10 @@
 import ButtonSendCode from "../ButtonSendCode/ButtonSendCode";
 // import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -28,9 +30,8 @@ export default function LoginForm() {
       setError(data.error || "Ошибка входа");
       return;
     }
-    //момент спорный    router.replace("/lk");
-    alert("Вход выполнен!");
-    window.location.href = "/admin";
+
+    router.replace("/lk");
   };
 
   return (
@@ -88,15 +89,16 @@ export default function LoginForm() {
 
         style={{
           padding: "10px",
-          fontSize: "14px",
-          borderRadius: "4px",
+          fontSize: "18px",
+          borderRadius: "8px",
           backgroundColor: "#ff0d01",
           color: "white",
           border: "none",
           cursor: "pointer",
+          fontWeight: "600",
         }}
       >
-        Войти
+        войти
       </button>
 
       {error && (

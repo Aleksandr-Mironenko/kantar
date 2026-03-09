@@ -7,7 +7,7 @@ export default function Footer() {
         rel="noopener"
         target="_blank"
       > <div className={styles.footer__copyright}>
-          © 2026 KANTAR Logistics
+          © 2022-2026 KANTAR Logistics
         </div>
       </a>
 

@@ -549,57 +549,9 @@
   }
 }
 
-.index {
-  &::after {
-    content: "ВАЖНО ДЛЯ ТОЧНОСТИ";
-    font-size: 12px;
-    opacity: 0;
-    margin-left: 8px;
-    transition: opacity 0.3s ease;
-    position: absolute;
-    bottom: -15px;
-    right: 20px;
-    font-weight: 700;
 
-    @media (max-width: 421px) {
-      font-size: 9px;
-    }
-  }
 
-  &:hover::after {
-    opacity: 1;
-  }
 
-  &:has(input:focus)::after {
-    opacity: 1;
-  }
-}
-
-.costOfCargo {
-  &::after {
-    content: "ВАЖНО ДЛЯ ТОЧНОСТИ";
-    font-size: 12px;
-    opacity: 0;
-    margin-left: 8px;
-    transition: opacity 0.3s ease;
-    position: absolute;
-    bottom: -15px;
-    right: 20px;
-    font-weight: 700;
-
-    @media (max-width: 421px) {
-      font-size: 9px;
-    }
-  }
-
-  &:hover::after {
-    opacity: 1;
-  }
-
-  &:has(input:focus)::after {
-    opacity: 1;
-  }
-}
 
 .phone {
   &::after {

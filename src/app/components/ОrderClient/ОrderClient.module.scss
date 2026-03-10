@@ -1,7 +1,7 @@
 .closeButton {
   position: absolute;
-  top: 0;
-  right: 10px;
+  top: -7px;
+  right: 3px;
   font-size: 22px;
   color: gray;
 
@@ -46,16 +46,16 @@
 
 
 
- .commentsButton {
-   padding: 0 5px;
-   border: none;
-   background-color: transparent;
-   font-size: 15px;
-   color: gray;
+.commentsButton {
+  padding: 0 5px;
+  border: none;
+  background-color: transparent;
+  font-size: 15px;
+  color: gray;
 
-   &:hover {
-     cursor: pointer;
-     color: red;
-     transform: scale(1.3);
-   }
- }
+  &:hover {
+    cursor: pointer;
+    color: red;
+    transform: scale(1.3);
+  }
+}

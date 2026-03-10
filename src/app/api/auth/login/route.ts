@@ -49,8 +49,47 @@ export async function POST(req: Request) {
       );
     }
 
-    // Supabase автоматически установит access_token и refresh_token в куки через res
-    return res; // ✅ возвращаем именно res, чтобы cookie реально поставились
+    // Получаем сессию
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: "Не удалось получить сессию" },
+        { status: 500 }
+      );
+    }
+    // Декодируем JWT
+    const payload = JSON.parse(
+      Buffer.from(session.access_token.split(".")[1], "base64").toString()
+    );
+
+    const roles: string[] =
+      payload.app_metadata?.roles ??
+      payload.claims?.app_metadata?.roles ??
+      [];
+
+    const isPerson = roles.includes("admin") ? "admin" :
+      roles.includes("user") ? "user" :
+        roles.includes("root") ? "root" :
+          roles.includes("support") ? "support" :
+            roles.includes("manager") ? "manager" : "guest";
+
+
+    res.headers.set("Content-Type", "application/json");
+    const finalResponse = NextResponse.json(
+      {
+        success: true,
+        isPerson,
+      },
+      {
+        headers: res.headers, // переносим куки
+      }
+    );
+
+    return finalResponse;;
+
+
 
   } catch (err: unknown) {
     let message = "Ошибка сервера";

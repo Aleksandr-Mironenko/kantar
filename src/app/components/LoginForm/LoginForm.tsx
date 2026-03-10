@@ -30,8 +30,13 @@ export default function LoginForm() {
       setError(data.error || "Ошибка входа");
       return;
     }
-
-    router.replace("/lk");
+    if (data.isPerson === "user") {
+      router.replace("/lk");
+    } else if (data.isPerson === "guest") {
+      router.replace("/");
+    } else {
+      router.replace("/admin");
+    }
   };
 
   return (

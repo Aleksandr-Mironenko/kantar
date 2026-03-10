@@ -306,7 +306,7 @@ export default function ServicesAdmin() {
       </div>
 
 
-      <div style={{ padding: "5px 7px" }}>
+      <div style={{ padding: "5px 7px", fontSize: "15px", }}>
         <span> Отображается или нет: </span>
 
         {editingId === el.id && editValues ? (
@@ -330,7 +330,7 @@ export default function ServicesAdmin() {
       </div>
 
 
-      <div style={{ padding: "5px 7px" }}>
+      <div style={{ padding: "5px 7px", fontSize: "15px", }}>
         <span>Является ли основным: </span>
 
         {editingId === el.id && editValues ? (

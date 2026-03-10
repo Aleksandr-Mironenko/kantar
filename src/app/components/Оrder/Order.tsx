@@ -1323,16 +1323,16 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
         <p style={{ marginTop: "15px" }}> Статус заказа: <b>{status}</b></p>
         <p style={{ marginTop: "15px" }}> Был создан: <b>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
-        <p style={{ marginTop: "15px" }}> Тип содержимого: <b>{order.document === "document" ? "Документ" : "Груз"}</b></p>
+        <p style={{ marginTop: "15px" }}> Тип содержимого: <b>{order.document === "document" ? "документ" : "груз"}</b></p>
 
         <p style={{ marginTop: "15px" }}> Вес: <b>{order.heft_only_full} кг</b></p>
         <p> Объем: <b>{order.volume_only_full} м³</b></p>
         <p> Рассчетный вес: <b>{order.heft_full} кг</b></p>
 
-        <p style={{ marginTop: "15px" }}> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>{order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}</span></p>
+        <p style={{ marginTop: "15px" }}> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>{order.is_individual ? "индивидуальный рассчет" : "фиксированная цена(экспресс)"}</span></p>
         <p> Индивидуальная скидка (заказа): <b>{order.discount_this_send} %</b></p>
-        <p> Поступление оплаты: <b>{order.is_paid ? "Оплачен" : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>Не оплачен</span>}</b></p>
-
+        <p> Поступление оплаты: <b>{order.is_paid ? "оплачен" : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не оплачен</span>}</b></p>
+        л
         <p style={{ marginTop: "15px" }}> Дата забора груза: <b>{order.loading_date ? dateCreateOrderLoad(String(order.loading_date)) : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не выбрана</span>}</b></p>
         <p> Дата вручения груза: <b>{order.unloading_date ? dateCreateOrderLoad(String(order.unloading_date)) : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не выбрана</span>}</b></p>
 

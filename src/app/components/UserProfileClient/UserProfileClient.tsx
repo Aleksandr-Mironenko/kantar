@@ -157,7 +157,7 @@ export default function UserProfileClient({ searchParams }: { searchParams: { id
       <div style={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap", justifyContent: "start" }}>
         <div>
           <div style={{ display: "inline-block", margin: "1vh", padding: "1vh", border: "1px solid #000000", borderRadius: "10px", background: 'rgba(255, 255, 255, 0.7)' }}>
-            <p><b>Контактная информация</b></p>
+            <p><b>Контактная информация:</b></p>
             <p>Email представителя:   <b>{searchParams.idUserProps.email}</b> </p>
             <p style={{ display: "flex", flexWrap: "wrap" }}><span>Телефон представителя: </span><b >{searchParams.idUserProps.phone}</b> </p>
             <p>Заключен ли договор с клиентом: <b>{searchParams.idUserProps.is_dogovor ? "да" : "нет"}</b></p>

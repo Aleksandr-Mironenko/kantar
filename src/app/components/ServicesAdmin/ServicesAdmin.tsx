@@ -368,6 +368,7 @@ export default function ServicesAdmin() {
             showInvois={showFilesOrder}
             setShowInvois={setShowFilesOrder}
             isOrder={false}
+            isUserOrganizer={false}
             isUserSender={false}
             isUserRecipient={false}
             isService={true} />

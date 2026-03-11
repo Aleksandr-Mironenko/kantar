@@ -1255,7 +1255,6 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 setInvoiceFiles={setFilesUserOrganizer}
                 showInvois={showFilesUserOrganizer}
                 setShowInvois={setShowFilesUserOrganizer}
-
                 isOrder={false}
                 isUserSender={false}
                 isUserRecipient={false}

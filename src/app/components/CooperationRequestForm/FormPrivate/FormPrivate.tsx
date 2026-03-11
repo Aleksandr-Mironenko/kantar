@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller, useWatch, set } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { IMaskInput } from "react-imask";
@@ -40,6 +40,15 @@ const schema = yup.object({
       if (!value) return false;
       const digits = value.replace(/\D/g, "");
       return digits.length === 10;
+    }),
+
+  snils: yup
+    .string()
+    .required("Данные обязательны (11 цифр)")
+    .test("valid-kss", "Введите (11 цифр)", (value) => {
+      if (!value) return false;
+      const digits = value.replace(/\D/g, "");
+      return digits.length === 11;
     }),
 
 
@@ -89,6 +98,7 @@ export default function FormPrivate({ alertNotification }: CooperationProps) {
     formData.append("phone", data.phone);
     formData.append("email", data.email);
     formData.append("passport", data.passport);
+    formData.append("snils", data.snils);
     formData.append("comment", data.comment);
     formData.append("agree", data.agree ? "1" : "0");
 
@@ -118,6 +128,7 @@ export default function FormPrivate({ alertNotification }: CooperationProps) {
       setValue("phone", "");
       setValue("email", "");
       setValue("passport", "");
+      setValue("snils", "");
       setValue("comment", "");
     }
   }
@@ -129,6 +140,7 @@ export default function FormPrivate({ alertNotification }: CooperationProps) {
       "phone",
       "email",
       "passport",
+      "snils",
       "comment"
     ],
   });
@@ -207,6 +219,24 @@ export default function FormPrivate({ alertNotification }: CooperationProps) {
             />
             {errors.passport && <p className={styles.errmsg}>{errors.passport.message}</p>}
           </label>
+
+          <label className={errors.snils ? styles.label_error : styles.label}>
+            <span className={styles.label__span}>Данные СНИЛС</span>
+            <Controller
+              name="snils"
+              control={control}
+              render={({ field }) => (
+                <IMaskInput
+                  {...field}
+                  mask="000 - 000 - 000 00"
+                  placeholder="000 - 000 - 000 00"
+                  className={`${styles.input} ${errors.snils && styles.error}`}
+                />
+              )}
+            />
+            {errors.snils && <p className={styles.errmsg}>{errors.snils.message}</p>}
+          </label>
+
         </div>
 
 
@@ -219,6 +249,7 @@ export default function FormPrivate({ alertNotification }: CooperationProps) {
               showInvois={showInvois}
               setShowInvois={setShowInvois}
               isOrder={false}
+              isUserOrganizer={false}
               isUserSender={false}
               isUserRecipient={false} />
           </div>

@@ -34,6 +34,7 @@ export default async function fabric(formData: FormData) {
   let kpp: string = "";
   let ogrn: string = "";
   let passport: string = "";
+  let snils: string = "";
 
   for (const [key, value] of formData.entries()) {
     if (key === "client" && typeof value === "string") {
@@ -50,9 +51,9 @@ export default async function fabric(formData: FormData) {
     phone: null,
     name: null,
     address_id: null,//надо изменить создав новый или получив старый
-    is_client: true,
+    is_client: false,  //раньше был true
     is_dogovor: false,
-    type_acc: null,
+    type_acc: "request", //раньше был null
     ref_code: null,//поменять
     count_refcode_use: null,
     discount: null,
@@ -218,6 +219,8 @@ export default async function fabric(formData: FormData) {
           comment = value
         } else if (key === "passport") {
           passport = value
+        } else if (key === "snils") {
+          snils = value
         }
       }
 
@@ -235,7 +238,7 @@ export default async function fabric(formData: FormData) {
       getOrCreateUserWhereData.discount = 0
       getOrCreateUserWhereData.comment = comment
       getOrCreateUserWhereData.passport = passport
-      getOrCreateUserWhereData.snils = null  //заменить  
+      getOrCreateUserWhereData.snils = snils
     }
   }
 
@@ -298,6 +301,7 @@ export default async function fabric(formData: FormData) {
         <p>Эл. почта ${email}</p>
         <p>Важное для клиента: ${comment}</p>
         <p>Пасспорт клиента: ${passport}</p>
+        <p>СНИЛС: ${snils}</p>
          `) : ""
   )
 
@@ -401,7 +405,9 @@ ${kss}`
 ФИО: ${name},
 
 Паспорт: ${passport},
- 
+
+СНИЛС: ${snils},
+
 Телефон: ${phone},
 
 Почта: ${email},

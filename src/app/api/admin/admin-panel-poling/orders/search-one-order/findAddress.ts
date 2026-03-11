@@ -6,7 +6,7 @@ export default async function findAddress(address_id: number) {
 
   const { data: dataAddress, error: error6 } = await supabaseServer
     .from("addresses")
-    .select("id, full_address, country_name,country_zone,country_id,city_name,city_zone,city_id_rf,city_id_foreign,city_zone_id,index")
+    .select("*")
     .eq("id", address_id)
     .single();
   if (error6) throw new Error(`addresses from error  ${JSON.stringify(error6)}`);

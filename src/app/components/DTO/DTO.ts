@@ -84,6 +84,7 @@ export type DownloadFileProps = {
   isOrder: boolean;
   isUserSender: boolean;
   isUserRecipient: boolean;
+  isUserOrganizer: boolean;
   isService?: boolean;
 };
 
@@ -108,6 +109,7 @@ export interface PrivateIndividualFields {
   phone: string;
   email: string;
   passport: string;
+  snils: string;
   comment: string;
   agree: boolean;
 }

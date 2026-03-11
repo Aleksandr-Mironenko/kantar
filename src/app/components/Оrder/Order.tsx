@@ -44,6 +44,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const [files, setFiles] = useState<string[]>([]);
   const [filesSender, setFilesSender] = useState<string[]>([]);
   const [filesRecipient, setFilesRecipient] = useState<string[]>([]);
+  const [filesOrganizer, setFilesOrganizer] = useState<string[]>([]);
 
 
   const [filesOrder, setFilesOrder] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
@@ -55,7 +56,47 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const [filesUserRecipient, setFilesUserRecipient] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showFilesUserRecipient, setShowFilesUserRecipient] = useState<boolean>(false) //открыты ли файлы флаг
 
+  const [filesUserOrganizer, setFilesUserOrganizer] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
+
+  const [showFilesUserOrganizer, setShowFilesUserOrganizer] = useState<boolean>(false) //открыты ли файлы флаг
+
   const [showComments, setShowComments] = useState<boolean>(false) //открыты ли файлы флаг
+
+
+  const [userOrganizer, setUserOrganizer] = useState<toCorrectUserAcc>({
+    id: "",
+    created_at: "",
+    email: "",
+    phone: "",
+    name: "",
+    address_id: 0,//надо изменить создав новый или получив старый
+    is_client: false,
+    is_dogovor: false,
+    type_acc: "noAcc",
+    ref_code: "",//поменять
+    count_refcode_use: null,
+    discount: 0,
+    passport: null,
+    snils: null,
+    fio_gd_OOO: null,
+    name_OOO: null,
+    oficial_adress_OOO: null,
+    actual_address_OOO: null,
+    inn_OOO: null,
+    kpp_OOO: null,
+    ogrn_OOO: null,
+    rs_OOO: null,
+    bic_OOO: null,
+    corr_score_OOO: null,
+    comment: null,
+    fio_IP: null,
+    actual_address_IP: null,
+    inn_IP: null,
+    ogrn_IP: null,
+    rs_IP: null,
+    bic_IP: null,
+    corr_score_IP: null,
+  })
 
   const [userSendler, setUserSendler] = useState<toCorrectUserAcc>({
     id: "",
@@ -243,18 +284,22 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const [openDataSendler, setOpenDataSendler] = useState<boolean>(false)
   const [openDataRecipient, setOpenDataRecipient] = useState<boolean>(false)
+  const [openDataOrganizer, setOpenDataOrganizer] = useState<boolean>(false)
+
 
   const [openOrderFiles, setOpenOrderFiles] = useState<boolean>(false)
   const [openOrderFilesSender, setOpenOrderFilesSender] = useState<boolean>(false)
   const [openOrderFilesRecipient, setOpenOrderFilesRecipient] = useState<boolean>(false)
-
+  const [openOrderFilesOrganizer, setOpenOrderFilesOrganizer] = useState<boolean>(false)
 
 
   const [addFileInOrder, setAddFileInOrder] = useState<boolean>(false)
   const [addFileInSendler, setAddFileInSendler] = useState<boolean>(false)
+  const [addFileInOrganizer, setAddFileInOrganizer] = useState<boolean>(false)
+
+
   const [addFileInRecipient, setAddFileInRecipient] = useState<boolean>(false)
   const [openOrderPlaces, setOpenOrderPlaces] = useState<boolean>(false)
-
 
 
   const [comment, setComment] = useState<string>('')
@@ -263,7 +308,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
 
 
-  const getPlaces = async (numberOrder: number) => {
+  const getOrder = async (numberOrder: number) => {
     const request = await fetch("/api/admin/admin-panel-poling/orders/search-one-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -280,10 +325,12 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     setOrder(response.dataOrder)
     setFiles(response.arrrfiles)
     setPlace(response.arrayPlacesInOrder)
+    setUserOrganizer(response.dataUserOrganizer)
     setUserSendler(response.dataUserSendler)
     setUserRecipient(response.dataUserRecipient)
     setAddressSendler(response.dataAddressSendler)
     setAddressRecipient(response.dataAddressRecipient)
+    setFilesOrganizer(response.filesOrganizer)
     setFilesSender(response.filesSendler)
     setFilesRecipient(response.filesRecipient)
   }
@@ -304,13 +351,13 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
     console.log("pdf создан")
 
-    getPlaces(numberOrder)
+    getOrder(numberOrder)
   }
 
   useEffect(() => {
     if (!numberOrder) return;
 
-    getPlaces(numberOrder)
+    getOrder(numberOrder)
 
   }, [numberOrder]);
 
@@ -384,30 +431,87 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
     return (
-      <li key={el.id} style={{ marginTop: "10px", display: "flex", marginBottom: "10px", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
-        <div style={{ width: "90%", display: "flex", flexDirection: "column" }}>
-          <p style={{ fontSize: "28px", alignSelf: "center" }}>{personalMarker}</p>
-          <p style={{ display: "flex", flexWrap: "wrap" }}> Проверка фактических характеристик: <b style={{ marginLeft: "5px" }}>{statusEl === "не проверен" ? <span style={{ color: "red" }}>{statusEl}</span> : statusEl}</b></p>
-          <p style={{ display: "flex", flexWrap: "wrap" }}> Номер места: <b style={{ marginLeft: "5px" }}>{el.id}</b></p>
+      <li className={styles.orderContainer__place}
+        key={el.id}
+        style={{ marginTop: "10px", display: "flex", marginBottom: "10px", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+        <div className={styles.orderContainer__place_wrapper}
+          style={{ width: "90%", display: "flex", flexDirection: "column" }}>
+          <p className={styles.orderContainer__place_marker}
+            style={{ fontSize: "28px", alignSelf: "center" }}>
+            {personalMarker}
+          </p>
+          <p className={styles.orderContainer__place_title}
+            style={{ display: "flex", flexWrap: "wrap" }}>
+            Проверка фактических характеристик:
+            <b className={styles.orderContainer__place_text}
+              style={{ marginLeft: "5px" }}>{statusEl === "не проверен" ? <span style={{ color: "red" }}>{statusEl}</span> : statusEl}</b></p>
+          <p className={styles.orderContainer__place_title}
+            style={{ display: "flex", flexWrap: "wrap" }}>
+            Номер места:
+            <b className={styles.orderContainer__place_text}
+              style={{ marginLeft: "5px" }}>
+              {el.id}
+            </b></p>
           {/* <p>{new Date(order.created_at).toLocaleString()}</p> */}
 
           {/* <p> id заказа: {el.order_id}</p> */}
 
-          <div style={{}}>
-            <p style={{ display: "flex", flexWrap: "wrap" }}> Условная стоимость места: <b style={{ marginLeft: "5px" }}>{Math.ceil(el.price / el.sumPlaces)} ₽ </b></p>
-            {el.nds > 0 && <p> Условный НДС: {Math.ceil(el.nds / el.sumPlaces)} p.</p>}
+          <div className={styles.orderContainer__place_generalСharacteristics}>
+            <p className={styles.orderContainer__place_title}
+              style={{ display: "flex", flexWrap: "wrap" }}>
+              Условная стоимость места:
+              <b className={styles.orderContainer__place_text}
+                style={{ marginLeft: "5px" }}>
+                {Math.ceil(el.price / el.sumPlaces)} ₽
+              </b></p>
+            {el.nds > 0 && <p className={styles.orderContainer__place_title}
+              style={{ display: "flex", flexWrap: "wrap" }}>
+              Условный НДС:
+              <b className={styles.orderContainer__place_text}>
+                {Math.ceil(el.nds / el.sumPlaces)} p.
+              </b> </p>
+            }
           </div>
 
 
-          <div style={{ alignSelf: "flex-end", borderTop: "1px solid black" }}>
-            <p style={{ display: "flex", flexWrap: "wrap" }}> Длина: <b style={{ marginLeft: "5px" }}>{el.length} см.</b></p>
-            <p style={{ display: "flex", flexWrap: "wrap" }}> Ширина: <b style={{ marginLeft: "5px" }}>{el.width} см.</b></p>
-            <p style={{ display: "flex", flexWrap: "wrap" }}> Высота: <b style={{ marginLeft: "5px" }}>{el.height} см.</b></p>
-            <p style={{ display: "flex", flexWrap: "wrap" }}> Вес: <b style={{ marginLeft: "5px" }}>{el.heft} кг.</b></p>
-            <p style={{ display: "flex", flexWrap: "wrap" }}> Объем: <b style={{ marginLeft: "5px" }}>{el.volume} м³</b> </p>
+          <div className={styles.orderContainer__place_personalСharacteristics}
+            style={{ alignSelf: "flex-end", borderTop: "1px solid black" }}>
+            <p className={styles.orderContainer__place_title}
+              style={{ display: "flex", flexWrap: "wrap" }}>
+              Длина:
+              <b className={styles.orderContainer__place_text}
+                style={{ marginLeft: "5px" }}>
+                {el.length} см.
+              </b></p>
+            <p className={styles.orderContainer__place_title}
+              style={{ display: "flex", flexWrap: "wrap" }}>
+              Ширина:
+              <b className={styles.orderContainer__place_text}
+                style={{ marginLeft: "5px" }}>
+                {el.width} см.
+              </b></p>
+            <p className={styles.orderContainer__place_title}
+              style={{ display: "flex", flexWrap: "wrap" }}>
+              Высота:
+              <b className={styles.orderContainer__place_text}
+                style={{ marginLeft: "5px" }}>
+                {el.height} см.
+              </b></p>
+            <p className={styles.orderContainer__place_title}
+              style={{ display: "flex", flexWrap: "wrap" }}>
+              Вес:
+              <b className={styles.orderContainer__place_text}
+                style={{ marginLeft: "5px" }}>
+                {el.heft} кг.
+              </b></p>
+            <p className={styles.orderContainer__place_title}
+              style={{ display: "flex", flexWrap: "wrap" }}>
+              Объем:
+              <b className={styles.orderContainer__place_text}
+                style={{ marginLeft: "5px" }}>
+                {el.volume} м³
+              </b> </p>
           </div>
-
-
         </div>
       </li>
     )
@@ -417,13 +521,15 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
 
-  const mapFilesSender = Array.isArray(filesSender) ?
-    filesSender.map((el, index) => {
+  const mapFilesOrganizer = Array.isArray(filesOrganizer) ?
+    filesOrganizer.map((el, index) => {
       const type = getFileType(el);
       return (
-        <li key={el}  >
+        <li key={el}
+          className={styles.files__item}>
           {type === 'image' ? (
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <div className={styles.files__file}
+              style={{ display: "flex", flexDirection: "row"/*, justifyContent: "space-between" */ }}>
               {/* <Image  //возможность просмотра
                   src={el}
                   alt=""
@@ -452,7 +558,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
             //   </div>
             // ) 
             type === 'waybill' ? (
-              <div style={{ display: "flex", flexDirection: "row" }}>
+              <div className={styles.files__file}
+                style={{ display: "flex", flexDirection: "row" }}>
                 <a
                   href={el}
                   target="_blank"
@@ -463,7 +570,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               </div>)
               :
               type === 'pdf' ? (
-                <div style={{ display: "flex", flexDirection: "row" }}>
+                <div className={styles.files__file}
+                  style={{ display: "flex", flexDirection: "row" }}>
                   <a
                     href={el}
                     target="_blank"
@@ -474,7 +582,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 </div>)
                 :
                 type === 'doc' ? (
-                  <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div className={styles.files__file}
+                    style={{ display: "flex", flexDirection: "row" }}>
                     {/* добавить hover */}
                     <a
                       href={el}
@@ -487,7 +596,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
                 ) :
                   type === 'xls' ? (
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
                       {/* добавить hover */}
                       <a
                         href={el}
@@ -499,7 +609,114 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     </div>
 
                   ) : (
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
+                      {/* добавить hover */}
+                      <a
+                        href={el}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                      >
+                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                      </a>
+                    </div>
+                  )
+          }
+        </li >
+      );
+    })
+    : null;
+
+  const mapFilesSender = Array.isArray(filesSender) ?
+    filesSender.map((el, index) => {
+      const type = getFileType(el);
+      return (
+        <li key={el}
+          className={styles.files__item}>
+          {type === 'image' ? (
+            <div className={styles.files__file}
+              style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              {/* <Image  //возможность просмотра
+                  src={el}
+                  alt=""
+                  width={1300}
+                  height={1200}
+                  style={{ objectFit: 'contain' }}
+                /> */}
+              <a
+                href={el}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >
+                {index + 1}. ИЗОБРАЖЕНИЕ скачать
+              </a>
+            </div>
+
+          ) : //type === 'pdf' ? (  //возможность просмотра
+            //   <div style={{ display: "flex", flexDirection: "row" }}>
+            //     {/* добавить hover */}
+            //     <iframe
+            //       src={el}
+            //       width="100%"
+            //       height="600"
+            //     />
+            //     <p>пдф</p>
+            //   </div>
+            // ) 
+            type === 'waybill' ? (
+              <div className={styles.files__file}
+                style={{ display: "flex", flexDirection: "row" }}>
+                <a
+                  href={el}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                >
+                  {index + 1}. waybill.pdf смотреть
+                </a>
+              </div>)
+              :
+              type === 'pdf' ? (
+                <div className={styles.files__file}
+                  style={{ display: "flex", flexDirection: "row" }}>
+                  <a
+                    href={el}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
+                    {index + 1}. ФАЙЛ PDF смотреть
+                  </a>
+                </div>)
+                :
+                type === 'doc' ? (
+                  <div className={styles.files__file}
+                    style={{ display: "flex", flexDirection: "row" }}>
+                    {/* добавить hover */}
+                    <a
+                      href={el}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                    >
+                      {index + 1}. ФАЙЛ DOC скачать
+                    </a>
+                  </div>
+
+                ) :
+                  type === 'xls' ? (
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
+                      {/* добавить hover */}
+                      <a
+                        href={el}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                      >
+                        {index + 1}. ФАЙЛ XLS скачать
+                      </a>
+                    </div>
+
+                  ) : (
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
                       {/* добавить hover */}
                       <a
                         href={el}
@@ -520,9 +737,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     filesRecipient.map((el, index) => {
       const type = getFileType(el);
       return (
-        <li key={el}  >
+        <li key={el}
+          className={styles.files__item}>
           {type === 'image' ? (
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <div className={styles.files__file}
+              style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
               {/* <Image  //возможность просмотра
                   src={el}
                   alt=""
@@ -551,7 +770,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
             //   </div>
             // ) 
             type === 'waybill' ? (
-              <div style={{ display: "flex", flexDirection: "row" }}>
+              <div className={styles.files__file}
+                style={{ display: "flex", flexDirection: "row" }}>
                 <a
                   href={el}
                   target="_blank"
@@ -562,7 +782,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               </div>)
               :
               type === 'pdf' ? (
-                <div style={{ display: "flex", flexDirection: "row" }}>
+                <div className={styles.files__file}
+                  style={{ display: "flex", flexDirection: "row" }}>
                   <a
                     href={el}
                     target="_blank"
@@ -573,7 +794,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 </div>)
                 :
                 type === 'doc' ? (
-                  <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div className={styles.files__file}
+                    style={{ display: "flex", flexDirection: "row" }}>
                     {/* добавить hover */}
                     <a
                       href={el}
@@ -586,7 +808,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
                 ) :
                   type === 'xls' ? (
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
                       {/* добавить hover */}
                       <a
                         href={el}
@@ -598,7 +821,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     </div>
 
                   ) : (
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
                       {/* добавить hover */}
                       <a
                         href={el}
@@ -620,9 +844,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     ? files.map((el, index) => {
       const type = getFileType(el);
       return (
-        <li key={el}  >
+        <li key={el}
+          className={styles.files__item}>
           {type === 'image' ? (
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <div className={styles.files__file}
+              style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
               {/* <Image  //возможность просмотра
                   src={el}
                   alt=""
@@ -651,7 +877,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
             //   </div>
             // ) 
             type === 'waybill' ? (
-              <div style={{ display: "flex", flexDirection: "row" }}>
+              <div className={styles.files__file}
+                style={{ display: "flex", flexDirection: "row" }}>
                 <a
                   href={el}
                   target="_blank"
@@ -662,7 +889,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               </div>)
               :
               type === 'pdf' ? (
-                <div style={{ display: "flex", flexDirection: "row" }}>
+                <div className={styles.files__file}
+                  style={{ display: "flex", flexDirection: "row" }}>
                   <a
                     href={el}
                     target="_blank"
@@ -673,7 +901,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 </div>)
                 :
                 type === 'doc' ? (
-                  <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div className={styles.files__file}
+                    style={{ display: "flex", flexDirection: "row" }}>
                     {/* добавить hover */}
                     <a
                       href={el}
@@ -686,7 +915,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
                 ) :
                   type === 'xls' ? (
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
                       {/* добавить hover */}
                       <a
                         href={el}
@@ -698,7 +928,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     </div>
 
                   ) : (
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className={styles.files__file}
+                      style={{ display: "flex", flexDirection: "row" }}>
                       {/* добавить hover */}
                       <a
                         href={el}
@@ -798,10 +1029,34 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       throw new Error("Ошибка отправки")
     }
 
-    getPlaces(numberOrder)
+    getOrder(numberOrder)
     setAddFileInOrder(false)
   };
 
+
+  const onSubmitUserOrganization = async () => {
+
+    const formData = new FormData();
+    filesUserOrganizer.forEach((el: {
+      id: number;
+      file: File | null;
+    }) => {
+      if (el.file) {
+        formData.append(`files[${el.id}]`, el.file as File);
+      }
+    });
+    formData.append("userId", String(userOrganizer.id))       // id отправителя
+
+    const response = await fetch("/api/admin/admin-actions/addFilesInUser", {
+      method: "POST", body: formData,
+    });
+    if (!response.ok) {
+      throw new Error("Ошибка отправки")
+    }
+    getOrder(numberOrder)
+    setAddFileInOrganizer(false)
+
+  };
 
 
   const onSubmitUserSender = async () => {
@@ -823,7 +1078,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     if (!response.ok) {
       throw new Error("Ошибка отправки")
     }
-    getPlaces(numberOrder)
+    getOrder(numberOrder)
     setAddFileInSendler(false)
 
   };
@@ -850,24 +1105,202 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       throw new Error("Ошибка отправки")
     }
 
-    getPlaces(numberOrder)
+    getOrder(numberOrder)
     setAddFileInRecipient(false)
   };
 
 
+  const organizerData = openDataOrganizer && userOrganizer.name !== "N/a" && (
+    <div className={styles.orderContainer__organizer}
+      style={{ flex: "1 1 0", maxWidth: "350px", position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}
+    >
+      <div
+        onClick={() => setOpenDataOrganizer(false)}
+        className={styles.closeButton} >
+        ×
+      </div>
+      <h2 className={styles.orderContainer__organizer_title}
+        style={{ fontSize: "28px", alignSelf: "center" }}
+      >Данные организатора</h2>
+
+      {userOrganizer.type_acc === "OOO" &&
+        <p className={styles.orderContainer__organizer_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          Название компании:
+          <b className={styles.orderContainer__organizer_text}
+            style={{ marginLeft: "5px" }}>
+            {userOrganizer.fio_gd_OOO}
+          </b>
+        </p>
+      }
+
+      {userOrganizer.type_acc === "OOO" &&
+        <p className={styles.orderContainer__organizer_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          ФИО Ген.Директора:
+          <b className={styles.orderContainer__organizer_text}
+            style={{ marginLeft: "5px" }}>
+            {userOrganizer.fio_gd_OOO}
+          </b>
+        </p>
+      }
+
+      {userOrganizer.type_acc === "IP" &&
+        <p className={styles.orderContainer__organizer_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+          Имя ИП:
+          <b className={styles.orderContainer__organizer_text}
+            style={{ marginLeft: "5px" }}>
+            {userOrganizer.fio_IP}
+
+          </b>
+        </p>
+      }
+
+      <p className={styles.orderContainer__organizer_name}
+        style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        {userOrganizer.type_acc === "private" ? "ФИО клиента" : (userOrganizer.type_acc === "noAcc" || userOrganizer.type_acc === "request") ? "ФИО" : userOrganizer.type_acc === "OOO" ? "Представитель клиента" : userOrganizer.type_acc === "IP" ? "Представитель ИП" : "ФИО"}
+        <b className={styles.orderContainer__organizer_nameText}
+          style={{ marginLeft: "5px" }}>
+          {userOrganizer.name}
+        </b>
+      </p>
+
+
+      <p className={styles.orderContainer__organizer_phone}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Телефон:
+        <b>
+          <a className={styles.orderContainer__organizer_textPhone}
+            style={{ fontSize: "15px", padding: "7px" }}
+            href={`tel:${userOrganizer.phone}`} >
+            {userOrganizer.phone}
+          </a>
+        </b>
+      </p>
+      <p className={styles.orderContainer__organizer_email}
+        style={{ marginBottom: "0", display: "flex", flexWrap: "wrap" }}>
+        Эл. почта:
+        <b>
+          <a className={styles.orderContainer__organizer_textEmail}
+            style={{ fontSize: "15px", padding: "7px" }}
+            href={`mailto:${userOrganizer.email}`}
+          >
+            {userOrganizer.email}
+          </a>
+        </b>
+
+      </p>
+
+      {/* <p>{userSendler.created_at}</p>  */}
+      {/*уже известно когда созданы места*/}
+      <p className={styles.orderContainer__organizer_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Персональная скидка клиента:
+        <b className={styles.orderContainer__organizer_textDescription}
+          style={{ marginLeft: "5px" }}>{userOrganizer.discount} %</b></p>
+      {/* <p>{userOrganizer.id}</p> */}{/*айдишник клиента*/}
+      <p className={styles.orderContainer__organizer_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Заключен договор:
+        <b className={styles.orderContainer__organizer_textDescription}
+          style={{ marginLeft: "5px" }}> {userOrganizer.is_client ? "да" : "нет"}</b></p>{/* логика смены */}
+      <p className={styles.orderContainer__organizer_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Наличие договора:
+        <b className={styles.orderContainer__organizer_textDescription}
+          style={{ marginLeft: "5px" }}> {userOrganizer.type_acc === "noAcc" || userOrganizer.type_acc === "request" ? "нет" : "да"}</b></p>
+      {userOrganizer.type_acc !== "noAcc" && userOrganizer.type_acc !== "request" && <p className={styles.orderContainer__organizer_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Реферальный код:
+        <b className={styles.orderContainer__organizer_textDescription}
+          style={{ marginLeft: "5px" }}>{userOrganizer.ref_code ? userOrganizer.ref_code : "не задан"}</b></p>}
+
+      <Link
+        className={styles.orderContainer__organizer_linkUser}
+        style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+        href={`/admin/user/${userOrganizer.id}`}>
+        Перейти в профиль
+      </Link>
+
+
+      {openOrderFilesOrganizer
+        ?
+        <div className={styles.orderContainer__organizer_files}
+          style={{ display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px", position: "relative" }}
+        >
+          <div
+            onClick={() => setOpenOrderFilesOrganizer(false)}
+            className={styles.closeButton} >
+            ×
+          </div>
+          <p className={styles.orderContainer__organizer_filesList}>Файлы отправителя:</p>
+          <ol className={styles.files}
+            style={{ listStyleType: "none", marginTop: "30px" }}>
+            {mapFilesOrganizer}
+          </ol>
+
+
+
+
+
+          {addFileInOrganizer ?
+            <div className={styles.file__add}
+              style={{ position: "relative" }}>
+              <div
+                onClick={() => setAddFileInOrganizer(false)}
+                className={`${styles.closeButton} ${styles.file__addClose}`}
+                style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
+                отмена
+              </div>
+
+              <DownloadFile invoiceFiles={filesUserOrganizer}
+                setInvoiceFiles={setFilesUserOrganizer}
+                showInvois={showFilesUserOrganizer}
+                setShowInvois={setShowFilesUserOrganizer}
+
+                isOrder={false}
+                isUserSender={false}
+                isUserRecipient={false}
+                isUserOrganizer={true} />
+              <button className={styles.file__addSend}
+                style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmitUserOrganization()}>❱❱❱</button>
+            </div>
+            :
+            <button className={styles.file__add_plus}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInOrganizer(true)}>Добавить файл</button>
+          }
+        </div>
+        : <button className={styles.file__addbutton}
+          style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+          onClick={(e) => {
+            e.preventDefault()
+            setOpenOrderFilesOrganizer(true)
+          }}>Открыть файлы отправителя</button>
+      }
+    </div>)
+
+
   const senderData = openDataSendler && (
-    <div style={{ maxWidth: "350px", position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+    <div className={styles.orderContainer__sender}
+      style={{ flex: "1 1 0", maxWidth: "350px", position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}
+    >
       <div
         onClick={() => setOpenDataSendler(false)}
         className={styles.closeButton} >
         ×
       </div>
-      <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные отправителя</h2>
+      <h2 className={styles.orderContainer__sender_title}
+        style={{ fontSize: "28px", alignSelf: "center" }}>
+        Данные отправителя
+      </h2>
 
       {userSendler.type_acc === "OOO" &&
-        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        <p className={styles.orderContainer__sender_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
           Название компании:
-          <b style={{ marginLeft: "5px" }}>
+          <b className={styles.orderContainer__sender_text}
+            style={{ marginLeft: "5px" }}>
             {userSendler.fio_gd_OOO}
           </b>
         </p>
@@ -883,46 +1316,55 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       }
 
       {userSendler.type_acc === "IP" &&
-        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        <p className={styles.orderContainer__sender_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
           Имя ИП:
-          <b style={{ marginLeft: "5px" }}>
+          <b className={styles.orderContainer__sender_text}
+            style={{ marginLeft: "5px" }}>
             {userSendler.fio_IP}
 
           </b>
         </p>
       }
 
-      <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+      <p className={styles.orderContainer__sender_name}
+        style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
         {userSendler.type_acc === "private" ? "ФИО клиента" : (userSendler.type_acc === "noAcc" || userSendler.type_acc === "request") ? "ФИО" : userSendler.type_acc === "OOO" ? "Представитель клиента" : userSendler.type_acc === "IP" ? "Представитель ИП" : "ФИО"}
-        <b style={{ marginLeft: "5px" }}>
+        <b className={styles.orderContainer__sender_nameText}
+          style={{ marginLeft: "5px" }}>
           {userSendler.name}
         </b>
       </p>
 
 
-      <p style={{ display: "flex", flexWrap: "wrap" }}>
+      <p className={styles.orderContainer__sender_phone}
+        style={{ display: "flex", flexWrap: "wrap" }}>
         Телефон:
         <b>
-          <a style={{ fontSize: "15px", padding: "7px" }}
+          <a className={styles.orderContainer__sender_textPhone}
+            style={{ fontSize: "15px", padding: "7px" }}
             href={`tel:${userSendler.phone}`} >
             {userSendler.phone}
           </a>
         </b>
       </p>
-      <p style={{ marginBottom: "0", display: "flex", flexWrap: "wrap" }}>
+      <p className={styles.orderContainer__sender_email}
+        style={{ marginBottom: "0", display: "flex", flexWrap: "wrap" }}>
         Эл. почта:
         <b>
           <a
+            className={styles.orderContainer__sender_textEmail}
             style={{ fontSize: "15px", padding: "7px" }}
             href={`mailto:${userSendler.email}`}
           >
-            {userRecipient.email}
+            {userSendler.email}
           </a>
         </b>
 
       </p>
       <a
         href={`${yandexMapsLink(addressSendler.full_address)}`}
+        className={styles.orderContainer__sender_map}
         style={{ margin: "15px 0", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
         target="_blank">
         НА КАРТЕ: {addressSendler.full_address}
@@ -930,13 +1372,30 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
       {/* <p>{userSendler.created_at}</p>  */}
       {/*уже известно когда созданы места*/}
-      <p style={{ display: "flex", flexWrap: "wrap" }}>Персональная скидка клиента: <b style={{ marginLeft: "5px" }}>{userSendler.discount} %</b></p>
+      <p className={styles.orderContainer__sender_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Персональная скидка клиента:
+        <b className={styles.orderContainer__sender_textDescription}
+          style={{ marginLeft: "5px" }}>{userSendler.discount} %</b></p>
       {/* <p>{userSendler.id}</p> */}{/*айдишник клиента*/}
-      <p style={{ display: "flex", flexWrap: "wrap" }}>Делал заказы: <b style={{ marginLeft: "5px" }}> {userSendler.is_client ? "да" : "нет"}</b></p>{/* логика смены */}
-      <p style={{ display: "flex", flexWrap: "wrap" }}>Наличие договора: <b style={{ marginLeft: "5px" }}> {userSendler.type_acc === "noAcc" || userSendler.type_acc === "request" ? "нет" : "да"}</b></p>
-      {userSendler.type_acc !== "noAcc" && userSendler.type_acc !== "request" && <p style={{ display: "flex", flexWrap: "wrap" }}>Реферальный код: <b style={{ marginLeft: "5px" }}>{userRecipient.ref_code ? userSendler.ref_code : "не задан"}</b></p>}
+      <p className={styles.orderContainer__sender_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Заключен договор:
+        <b className={styles.orderContainer__sender_textDescription}
+          style={{ marginLeft: "5px" }}> {userSendler.is_client ? "да" : "нет"}</b></p>{/* логика смены */}
+      <p className={styles.orderContainer__sender_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Наличие договора:
+        <b className={styles.orderContainer__sender_textDescription}
+          style={{ marginLeft: "5px" }}> {userSendler.type_acc === "noAcc" || userSendler.type_acc === "request" ? "нет" : "да"}</b></p>
+      {userSendler.type_acc !== "noAcc" && userSendler.type_acc !== "request" && <p className={styles.orderContainer__organizer_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Реферальный код:
+        <b className={styles.orderContainer__sender_textDescription}
+          style={{ marginLeft: "5px" }}>{userSendler.ref_code ? userSendler.ref_code : "не задан"}</b></p>}
 
       <Link
+        className={styles.orderContainer__sender_linkUser}
         style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
         href={`/admin/user/${userSendler.id}`}>
         Перейти в профиль
@@ -945,14 +1404,16 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
       {openOrderFilesSender
         ?
-        <div style={{ display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px", position: "relative" }}>
+        <div className={styles.orderContainer__sender_files}
+          style={{ display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px", position: "relative" }}>
           <div
             onClick={() => setOpenOrderFilesSender(false)}
             className={styles.closeButton} >
             ×
           </div>
-          <p>Файлы отправителя:</p>
-          <ol style={{ listStyleType: "none", marginTop: "30px" }}>
+          <p className={styles.orderContainer__sender_filesList}>Файлы отправителя:</p>
+          <ol className={styles.files}
+            style={{ listStyleType: "none", marginTop: "30px" }}>
             {mapFilesSender}
           </ol>
 
@@ -961,10 +1422,12 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
           {addFileInSendler ?
-            <div style={{ position: "relative" }}>
+            <div className={styles.file__add}
+              style={{ position: "relative" }}>
               <div
                 onClick={() => setAddFileInSendler(false)}
-                className={styles.closeButton} style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
+                className={`${styles.closeButton} ${styles.file__addClose}`}
+                style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
                 отмена
               </div>
 
@@ -975,14 +1438,18 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
                 isOrder={false}
                 isUserSender={true}
-                isUserRecipient={false} />
-              <button style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmitUserSender()}>❱❱❱</button>
+                isUserRecipient={false}
+                isUserOrganizer={false} />
+              <button className={styles.file__addSend}
+                style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmitUserSender()}>❱❱❱</button>
             </div>
             :
-            <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInSendler(true)}>Добавить файл</button>
+            <button className={styles.file__add_plus}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInSendler(true)}>Добавить файл</button>
           }
         </div>
-        : <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+        : <button className={styles.file__addbutton}
+          style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
           onClick={(e) => {
             e.preventDefault()
             setOpenOrderFilesSender(true)
@@ -991,64 +1458,79 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     </div>)
 
   const recipientData = openDataRecipient && (
-    <div style={{ maxWidth: "350px", position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+    <div className={styles.orderContainer__recipient}
+      style={{ flex: "1 1 0", maxWidth: "350px", position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
 
       <div
         onClick={() => setOpenDataRecipient(false)}
         className={styles.closeButton} >
         ×
       </div>
-      <h2 style={{ fontSize: "28px", alignSelf: "center" }}>Данные получателя</h2>
-
+      <h2 className={styles.orderContainer__recipient_title}
+        style={{ fontSize: "28px", alignSelf: "center" }}>
+        Данные получателя
+      </h2>
 
       {userRecipient.type_acc === "OOO" &&
-        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        <p className={styles.orderContainer__recipient_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
           Название компании:
-          <b style={{ marginLeft: "5px" }}>
+          <b className={styles.orderContainer__recipient_text}
+            style={{ marginLeft: "5px" }}>
             {userRecipient.fio_gd_OOO}
           </b>
         </p>
       }
 
       {userRecipient.type_acc === "OOO" &&
-        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        <p className={styles.orderContainer__recipient_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
           ФИО Ген.Директора:
-          <b style={{ marginLeft: "5px" }}>
+          <b className={styles.orderContainer__recipient_text}
+            style={{ marginLeft: "5px" }}>
             {userRecipient.fio_gd_OOO}
           </b>
         </p>
       }
 
       {userRecipient.type_acc === "IP" &&
-        <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        <p className={styles.orderContainer__recipient_name}
+          style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
           Имя ИП:
-          <b style={{ marginLeft: "5px" }}>
+          <b className={styles.orderContainer__recipient_text}
+            style={{ marginLeft: "5px" }}>
             {userRecipient.fio_IP}
 
           </b>
         </p>
       }
 
-      <p style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
-        {userRecipient.type_acc === "private" ? "ФИО клиента" : (userRecipient.type_acc === "noAcc" || userRecipient.type_acc === "request") ? "ФИО" : userRecipient.type_acc === "OOO" ? "Представитель клиента" : userRecipient.type_acc === "IP" ? "Представитель ИП" : "ФИО"}
-        <b style={{ marginLeft: "5px" }}>
+      <p className={styles.orderContainer__recipient_name}
+        style={{ marginTop: "15px", display: "flex", flexWrap: "wrap" }}>
+        {userRecipient.type_acc === "private" ? "ФИО клиента:" : (userRecipient.type_acc === "noAcc" || userRecipient.type_acc === "request") ? "ФИО:" : userRecipient.type_acc === "OOO" ? "Представитель клиента:" : userRecipient.type_acc === "IP" ? "Представитель ИП:" : "ФИО:"}
+        <b className={styles.orderContainer__recipient_nameText}
+          style={{ marginLeft: "5px" }}>
           {userRecipient.name}
         </b>
       </p>
 
 
-      <p style={{ display: "flex", flexWrap: "wrap" }}>
+      <p className={styles.orderContainer__recipient_phone}
+        style={{ display: "flex", flexWrap: "wrap" }}>
         Телефон:
         <b>
-          <a style={{ fontSize: "15px", padding: "7px" }} href={`tel:${userRecipient.phone}`} >
+          <a className={styles.orderContainer__recipient_textPhone}
+            style={{ fontSize: "15px", padding: "7px" }} href={`tel:${userRecipient.phone}`} >
             {userRecipient.phone}
           </a>
         </b>
       </p>
-      <p style={{ marginBottom: "0", display: "flex", flexWrap: "wrap" }}>
+      <p className={styles.orderContainer__recipient_email}
+        style={{ marginBottom: "0", display: "flex", flexWrap: "wrap" }}>
         Эл. почта:
         <b>
           <a
+            className={styles.orderContainer__recipient_textEmail}
             style={{ fontSize: "15px", padding: "7px" }}
             href={`mailto:${userRecipient.email}`}
           >
@@ -1058,21 +1540,38 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       </p>
       <a
         href={`${yandexMapsLink(addressRecipient.full_address)}`}
+        className={styles.orderContainer__recipient_map}
         style={{ margin: "15px 0", background: "#e31e24", color: "white", padding: "12px 24px", borderRadius: "10px", textDecoration: "none", fontWeight: "600", display: "inline-block" }}
         target="_blank">
         НА КАРТЕ: {addressRecipient.full_address}
       </a>
       {/* <p>{userSendler.created_at}</p>  */}
       {/*уже известно когда созданы места*/}
-      <p style={{ display: "flex", flexWrap: "wrap" }}>Персональная скидка клиента:
-        <b style={{ marginLeft: "5px" }}>
+      <p className={styles.orderContainer__recipient_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Персональная скидка клиента:
+        <b className={styles.orderContainer__recipient_textDescription}
+          style={{ marginLeft: "5px" }}>
           {userRecipient.discount} %</b></p>
       {/* <p>{userSendler.id}</p> */}{/*айдишник клиента*/}
-      <p style={{ display: "flex", flexWrap: "wrap" }}>Делал заказы:  <b style={{ marginLeft: "5px" }}>{userRecipient.is_client ? "да" : "нет"}</b></p>{/* логика смены */}
-      <p style={{ display: "flex", flexWrap: "wrap" }}>Наличие договора: <b style={{ marginLeft: "5px" }}> {userRecipient.type_acc === "noAcc" || userRecipient.type_acc === "request" ? "нет" : "да"}</b></p>
-      {userRecipient.type_acc !== "noAcc" && userRecipient.type_acc !== "request" && <p style={{ display: "flex", flexWrap: "wrap" }}>Реферальный код: <b style={{ marginLeft: "5px" }}>{userRecipient.ref_code ? userSendler.ref_code : "не задан"}</b></p>}
+      <p className={styles.orderContainer__recipient_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Заключен договор:
+        <b className={styles.orderContainer__recipient_textDescription}
+          style={{ marginLeft: "5px" }}>{userRecipient.is_client ? "да" : "нет"}</b></p>{/* логика смены */}
+      <p className={styles.orderContainer__recipient_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Наличие договора:
+        <b className={styles.orderContainer__recipient_textDescription}
+          style={{ marginLeft: "5px" }}> {userRecipient.type_acc === "noAcc" || userRecipient.type_acc === "request" ? "нет" : "да"}</b></p>
+      {userRecipient.type_acc !== "noAcc" && userRecipient.type_acc !== "request" && <p className={styles.orderContainer__recipient_description}
+        style={{ display: "flex", flexWrap: "wrap" }}>
+        Реферальный код:
+        <b className={styles.orderContainer__recipient_textDescription}
+          style={{ marginLeft: "5px" }}>{userRecipient.ref_code ? userRecipient.ref_code : "не задан"}</b></p>}
 
       <Link
+        className={styles.orderContainer__recipient_linkUser}
         style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
         href={`/admin/user/${userRecipient.id}`}>
         Перейти в профиль
@@ -1081,23 +1580,29 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
       {openOrderFilesRecipient
         ?
-        <div style={{ display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px", position: "relative" }}>
+        <div className={styles.orderContainer__recipient_files}
+          style={{ display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px", position: "relative" }}>
           <div
             onClick={() => setOpenOrderFilesRecipient(false)}
             className={styles.closeButton} >
             ×
           </div> {/*вернуться */}
-          <p>Файлы получателя:</p>
-          <ol style={{ listStyleType: "none", marginTop: "30px" }}>
+          <p className={styles.orderContainer__recipient_filesList}>
+            Файлы получателя:
+          </p>
+          <ol className={styles.files}
+            style={{ listStyleType: "none", marginTop: "30px" }}>
             {mapFilesRecipient}
           </ol>
-          {<div style={{ position: "relative" }}>
+          {<div
+            style={{ position: "relative" }}>
             {addFileInRecipient ?
-              <div style={{ position: "relative" }}>
-
+              <div className={styles.file__add}
+                style={{ position: "relative" }}>
                 <div
                   onClick={() => setAddFileInRecipient(false)}
-                  className={styles.closeButton} style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
+                  className={`${styles.closeButton} ${styles.file__addClose}`}
+                  style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
                   отмена
                 </div>
                 <DownloadFile invoiceFiles={filesUserRecipient}
@@ -1106,15 +1611,20 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   setShowInvois={setShowFilesUserRecipient}
                   isOrder={false}
                   isUserSender={false}
-                  isUserRecipient={true} />
+                  isUserRecipient={true}
+                  isUserOrganizer={false}
+                />
 
-                <button style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmitUserRecipient()}>❱❱❱</button>
+                <button className={styles.file__addSend}
+                  style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmitUserRecipient()}>❱❱❱</button>
               </div>
               :
-              <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInRecipient(true)}>Добавить файл</button>
+              <button className={styles.file__add_plus}
+                style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInRecipient(true)}>Добавить файл</button>
             }
           </div>}
-        </div> : <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+        </div> : <button className={styles.file__addbutton}
+          style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
           onClick={(e) => {
             e.preventDefault()
             setOpenOrderFilesRecipient(true)
@@ -1176,9 +1686,14 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
   const commentsMap = (comments ?? []).map((el: { id: string, user_id: string, author_id: string, text: string, created_at: string }) =>
-  (<li style={{ borderBottom: "1px solid black", borderRadius: "30px" }} key={el.id} >
-    <p style={{ display: "flex", margin: "10px 0", alignItems: "center" }}>
-      <span
+  (<li className={styles.orderContainer__comments_item}
+    style={{ borderBottom: "1px solid black", borderRadius: "30px" }}
+    key={el.id}
+  >
+    <p className={styles.orderContainer__comments_item}
+      style={{ display: "flex", margin: "10px 0", alignItems: "center" }}
+    >
+      <span className={styles.orderContainer__comments_create}
         style={{ color: "gray", paddingTop: "5px", paddingLeft: "10px", fontSize: "10px", borderRadius: "30px 0 ", borderTop: "1px solid black" }}>
         {dateCreateOrder(el.created_at)}
         :
@@ -1188,6 +1703,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         &&
 
         <textarea
+          className={styles.orderContainer__comments_edit}
           style={{
             resize: "vertical",     // менять высоту
             minHeight: "60px",
@@ -1201,8 +1717,7 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       {editingCommentId === el.id
         ?
         <>
-
-          <button className={styles.commentsButton}
+          <button className={`${styles.commentsButton} ${styles.orderContainer__comments_update}}`}
             onClick={() => {
               commentAction("update", { commentId: el.id, newText: newComment })
               setEditingCommentId(null)
@@ -1212,9 +1727,13 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
         </>
         :
         <>
-          <span style={{ paddingLeft: "10px", textDecoration: "underline", whiteSpace: "pre-wrap", wordWrap: "break-word", }}>{(el.text)}</span>
+          <span className={styles.orderContainer__comments_text}
+            style={{ paddingLeft: "10px", textDecoration: "underline", whiteSpace: "pre-wrap", wordWrap: "break-word", }}
+          >
+            {(el.text)}
+          </span>
           <span>
-            <button className={styles.commentsButton}
+            <button className={`${styles.commentsButton} ${styles.orderContainer__comments_buttonEdit}}`}
               onClick={() => {
                 setEditingCommentId(el.id)
                 setNewComment(el.text) // загружаем текст комментария для редактирования
@@ -1235,43 +1754,62 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   )
 
 
-
-
-
-  const commentBlock = (<div style={{ position: "relative", display: "inline-block", margin: "1vh", padding: "1vh", border: "1px solid #000000", borderRadius: "10px", background: 'rgba(255, 255, 255, 0.7)', marginTop: "20px" }}>
-    <div
-      onClick={() => setShowComments(false)}
-      className={styles.closeButton} >
-      ×
-    </div>
-    <p style={{ marginTop: "10px", marginRight: "20px" }}>
-      <b>Служебные отметки о заказе:</b>
-    </p>
-    <div style={{ display: "flex" }}> <textarea
-
-      style={{ padding: "5px 10px", borderRadius: "10px", resize: "vertical", minHeight: "60px", width: "100%" }}
-      value={comment}
-      onChange={(e) => setComment(e.target.value)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          setComment((e.target as HTMLInputElement).value)
-        }
-      }}
-    />
-      <button className={styles.commentsButton} style={{ border: "none", padding: "5px 10px", backgroundColor: "transparent" }}
-        onClick={() => commentAction("add", { order_number: numberOrder, text: comment, authorId: "937d1ef3-f9e8-4d4c-9a12-afcfabec996a" })}>❱❱❱</button>
-    </div>
-    <ol style={{ listStyleType: "none" }}>{commentsMap}</ol>
-  </div>)
+  const commentBlock = (
+    <div className={styles.orderContainer__commentBlock}
+      style={{ position: "relative", display: "inline-block", margin: "1vh", padding: "1vh", border: "1px solid #000000", borderRadius: "10px", background: 'rgba(255, 255, 255, 0.7)', marginTop: "20px" }}>
+      <div
+        onClick={() => setShowComments(false)}
+        className={styles.closeButton} >
+        ×
+      </div>
+      <p className={styles.orderContainer__commentBlock_title}
+        style={{ marginTop: "10px", marginRight: "20px" }}>
+        <b>Служебные отметки о заказе:</b>
+      </p>
+      <div className={styles.orderContainer__commentBlock_textblock}
+        style={{ display: "flex" }}>
+        <textarea
+          className={styles.orderContainer__commentBlock_textarea}
+          style={{ padding: "5px 10px", borderRadius: "10px", resize: "vertical", minHeight: "60px", width: "100%" }}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setComment((e.target as HTMLInputElement).value)
+            }
+          }}
+        />
+        <button className={`${styles.commentsButton} ${styles.orderContainer__commentBlock_add}`}
+          style={{ border: "none", padding: "5px 10px", backgroundColor: "transparent" }}
+          onClick={() => commentAction("add", { order_number: numberOrder, text: comment, authorId: "937d1ef3-f9e8-4d4c-9a12-afcfabec996a" })}>❱❱❱</button>
+      </div>
+      <ol className={styles.orderContainer__comments}
+        style={{ listStyleType: "none" }}
+      >
+        {commentsMap}
+      </ol>
+    </div>)
 
   const mapOrder = (
-    <div key={order.id} style={{ display: "flex" }}>
-      <div style={{ width: "100%", }}>
-        <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+    <div key={order.id}
+      className={styles.orderContainer}
+      style={{ display: "flex" }}
 
-          <h2 style={{ fontSize: "28px" }}> Номер заказа: {numberOrder}</h2>
+    >
+      <div className={styles.orderContainer__content}
+        style={{ width: "100%", }}
+      >
+        <div className={styles.orderContainer__info}
+          style={{ position: "relative", display: "flex", alignItems: "center" }}
+        >
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", position: "absolute", top: "0px", right: "0px" }}>
+          <h2 className={styles.orderContainer__title}
+            style={{ fontSize: "28px" }}
+          > Номер заказа: {numberOrder}</h2>
+
+          <div className={styles.orderContainer__qr}
+            style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", position: "absolute", top: "0px", right: "0px" }}
+          >
             <Flex gap="middle"  >
               <QRCode
                 {...sharedProps}
@@ -1280,37 +1818,50 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 styles={stylesFunction}
               />
             </Flex>
-            <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+            <button className={styles.orderContainer__buttonrule}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
               onClick={(e) => {
                 e.preventDefault()
                 createPDFWaybill(propsPGF)
               }}>Создать waybill</button>
 
-            {!openDataSendler && <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+            {!openDataSendler && <button className={styles.orderContainer__buttonrule}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
               onClick={(e) => {
                 e.preventDefault()
                 setOpenDataSendler(true)
 
               }}>Открыть отправителя</button>}
+            {!openDataOrganizer && userOrganizer.name !== "N/a" &&
+              <button className={styles.orderContainer__buttonrule}
+                style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setOpenDataOrganizer(true)
+                }}>Открыть организатора</button>}
             {!openDataRecipient &&
-              <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+              <button className={styles.orderContainer__buttonrule}
+                style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
                 onClick={(e) => {
                   e.preventDefault()
                   setOpenDataRecipient(true)
                 }}>Открыть получателя</button>}
-            {!openOrderFiles && <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+            {!openOrderFiles && <button className={styles.orderContainer__buttonrule}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
               onClick={(e) => {
                 e.preventDefault()
                 setOpenOrderFiles(true)
               }}>Открыть файлы заказа</button>}
 
-            {!openOrderPlaces && <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+            {!openOrderPlaces && <button className={styles.orderContainer__buttonrule}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
               onClick={(e) => {
                 e.preventDefault()
                 setOpenOrderPlaces(true)
               }}>Открыть места заказа</button>}
 
-            {!showComments && <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
+            {!showComments && <button className={styles.orderContainer__buttonrule}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }}
               onClick={(e) => {
                 e.preventDefault()
                 setShowComments(true)
@@ -1321,56 +1872,96 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
         </div>
 
-        <p style={{ marginTop: "15px" }}> Статус заказа: <b>{status}</b></p>
-        <p style={{ marginTop: "15px" }}> Был создан: <b>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
-        <p style={{ marginTop: "15px" }}> Тип содержимого: <b>{order.document === "document" ? "документ" : "груз"}</b></p>
+        <p className={styles.orderContainer__textblock}
+          style={{ marginTop: "15px" }}
+        > Статус заказа: <b>{status}</b></p>
+        <p className={styles.orderContainer__textblock}
+          style={{ marginTop: "15px" }}
+        > Был создан: <b>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
+        <p className={styles.orderContainer__textblock}
+          style={{ marginTop: "15px" }}
+        > Тип содержимого: <b>{order.document === "document" ? "документ" : "груз"}</b></p>
+        <div className={styles.orderContainer__textblock}
+          style={{ marginTop: "15px" }}          >
+          <p > Вес: <b>{order.heft_only_full} кг</b></p>
+          <p> Объем: <b>{order.volume_only_full} м³</b></p>
+          <p> Рассчетный вес: <b>{order.heft_full} кг</b></p>
+        </div>
 
-        <p style={{ marginTop: "15px" }}> Вес: <b>{order.heft_only_full} кг</b></p>
-        <p> Объем: <b>{order.volume_only_full} м³</b></p>
-        <p> Рассчетный вес: <b>{order.heft_full} кг</b></p>
+        <div style={{ marginTop: "15px" }}
+          className={styles.orderContainer__textblock}>
+          <p> Полная стоимость:
+            <b>
+              {order.price_full} ₽
+            </b>
+            <span className={styles.orderContainer__textblock_error}
+              style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>
+              {order.is_individual ? "индивидуальный рассчет" : "фиксированная цена(экспресс)"}
+            </span></p>
+          <p> Индивидуальная скидка (заказа): <b>{order.discount_this_send} %</b></p>
+          <p> Поступление оплаты: <b>{order.is_paid ? "оплачен" : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не оплачен</span>}</b></p>
 
-        <p style={{ marginTop: "15px" }}> Полная стоимость: <b>{order.price_full} ₽</b>   <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>{order.is_individual ? "индивидуальный рассчет" : "фиксированная цена(экспресс)"}</span></p>
-        <p> Индивидуальная скидка (заказа): <b>{order.discount_this_send} %</b></p>
-        <p> Поступление оплаты: <b>{order.is_paid ? "оплачен" : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не оплачен</span>}</b></p>
-        л
-        <p style={{ marginTop: "15px" }}> Дата забора груза: <b>{order.loading_date ? dateCreateOrderLoad(String(order.loading_date)) : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не выбрана</span>}</b></p>
-        <p> Дата вручения груза: <b>{order.unloading_date ? dateCreateOrderLoad(String(order.unloading_date)) : <span style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не выбрана</span>}</b></p>
+        </div>
+        <div className={styles.orderContainer__textblock}
+          style={{ marginTop: "15px" }}
+        >
+          <p>Дата забора груза: <b>{order.loading_date ? dateCreateOrderLoad(String(order.loading_date)) :
+            <span className={styles.orderContainer__textblock_error}
+              style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>не выбрана</span>}</b></p>
+          <p>Дата вручения груза: <b>{order.unloading_date ? dateCreateOrderLoad(String(order.unloading_date)) :
+            <span className={styles.orderContainer__textblock_error}
+              style={{ color: "red", fontWeight: "900", textDecoration: "underline" }}>
+              не выбрана
+            </span>}</b></p>
 
+        </div>
         {showComments && commentBlock}
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", marginTop: "20px", marginBottom: "20px" }}>
+        <div className={styles.orderContainer__clients}
+          style={{ display: "flex", justifyContent: "space-between", gap: "10px", marginTop: "20px", marginBottom: "20px" }}>
+          {organizerData}
           {senderData}
           {recipientData}
         </div>
         {openOrderPlaces &&
 
-          <div style={{ position: "relative", padding: "20px", border: "2px solid black ", borderRadius: "10px", marginBottom: "20px" }}>
-            <h3 style={{ textAlign: "center", marginTop: "0", fontSize: "28px" }}>Места заказа</h3>
+          <div className={styles.orderContainer__places}
+            style={{ position: "relative", padding: "20px", border: "2px solid black ", borderRadius: "10px", marginBottom: "20px" }}>
+            <h3 className={styles.orderContainer__places_title}
+              style={{ textAlign: "center", marginTop: "0", fontSize: "28px" }}>
+              Места заказа
+            </h3>
             <div
               onClick={() => setOpenOrderPlaces(false)}
               className={styles.closeButton} >
               ×
             </div>
-            <ol style={{ listStyleType: "none" }}>
+            <ol className={styles.orderContainer__places_map}
+              style={{ listStyleType: "none" }}>
               {mapPlaces}
             </ol>
           </div>}
-        {openOrderFiles && <div style={{ position: "relative", display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}>
+        {openOrderFiles && <div className={styles.orderContainer__files}
+          style={{ position: "relative", display: "inline-block", padding: "10px", border: "2px solid black ", borderRadius: "10px" }}
+        >
           <p>Файлы заказа:</p>
           <div
             onClick={() => setOpenOrderFiles(false)}
             className={styles.closeButton} >
             ×
           </div>
-          <ol style={{ listStyleType: "none", marginTop: "30px" }}>
+          <ol className={styles.orderContainer__filesList}
+            style={{ listStyleType: "none", marginTop: "30px" }}>
             {mapfiles}
           </ol>
 
 
           {addFileInOrder ?
-            <div style={{ position: "relative" }}>
+            <div className={styles.orderContainer__files_add}
+              style={{ position: "relative" }}>
               <div
                 onClick={() => setAddFileInOrder(false)}
-                className={styles.closeButton} style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
+                className={`${styles.closeButton} ${styles.file__addClose}`}
+                style={{ color: "red", zIndex: '100', fontSize: "10px", right: "-7px", top: "5px" }} >
                 отмена
               </div>
               <DownloadFile invoiceFiles={filesOrder}
@@ -1379,12 +1970,16 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 setShowInvois={setShowFilesOrder}
                 isOrder={true}
                 isUserSender={false}
-                isUserRecipient={false} />
+                isUserRecipient={false}
+                isUserOrganizer={false}
+              />
 
-              <button style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmit()}>❱❱❱</button>
+              <button className={styles.file__addSend}
+                style={{ border: "none", backgroundColor: "white", padding: "10px 0", marginTop: "10px", fontSize: "35px", position: "absolute", right: "-10px", top: "7px" }} onClick={() => onSubmit()}>❱❱❱</button>
             </div>
             :
-            <button style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInOrder(true)}>Добавить файл</button>}
+            <button className={styles.file__add_plus}
+              style={{ backgroundColor: "#e31e24", fontWeight: "600", color: "white", padding: "5px", marginTop: "10px", fontSize: "15px", border: "1px solid #e31e24", borderRadius: "5px" }} onClick={() => setAddFileInOrder(true)}>Добавить файл</button>}
         </div>}
 
 

@@ -456,6 +456,7 @@ export default function FormOOO({ alertNotification }: CooperationProps) {
               showInvois={showInvois}
               setShowInvois={setShowInvois}
               isOrder={false}
+              isUserOrganizer={false}
               isUserSender={false}
               isUserRecipient={false} />
           </div>

@@ -742,6 +742,7 @@ export default function OrderModal({ initialData, isOpen, onClose, alertNotifica
                   showInvois={showInvois}
                   setShowInvois={setShowInvois}
                   isOrder={false}
+                  isUserOrganizer={false}
                   isUserSender={false}
                   isUserRecipient={false}
                 />

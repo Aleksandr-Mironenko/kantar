@@ -194,8 +194,8 @@
   background: white;
 
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-around;
   gap: 4px;
 
   opacity: 0;
@@ -217,6 +217,9 @@
   color: #e53535;
   text-decoration: none;
   font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .hoverLinks button {
@@ -224,6 +227,11 @@
   text-decoration: none;
   font-size: 12px;
   font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent
 }
 
 .hoverLinks a:hover {

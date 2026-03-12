@@ -101,7 +101,7 @@ export default function DownloadFile({
           ()}
 
       {
-        !isOrder && !isUserSender && !isUserRecipient && !isService &&
+        !isOrder && !isUserSender && !isUserRecipient && !isUserOrganizer && !isService &&
         invoiceFiles.length - 1 === index && <button // добавляем возможность добавить файлы
           onClick={() => addInvoiceFiles()}
           className={styles.whoAmI__add} >

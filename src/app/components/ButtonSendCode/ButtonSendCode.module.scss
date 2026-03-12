@@ -1,3 +1,12 @@
+.codeOk {
+  color: black
+}
+
+.codeNoOk {
+  color: red;
+  font-weight: 800;
+}
+
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -241,6 +250,7 @@
 
   &__submit {
     height: 52px;
+    width: 100%;
     background: #ff0d01;
     color: white;
     border: none;

@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     const arrrfiles = await findFilesInOrder(numberOrder)
     console.log(arrrfiles)
 
-    //получние данных об отправителе
+    //получние данных отправителя
     const dataUserSendler = await findUser(dataOrder.sender_id)
     console.log(dataUserSendler)
 
@@ -35,11 +35,19 @@ export async function POST(req: Request) {
     const filesSendler = await findFilesInUser(dataOrder.sender_id)
     console.log(filesSendler)
 
-    //получние данных о получателе
+    //получние данных получателя
     const dataUserRecipient = await findUser(dataOrder.recipient_id)
     console.log(dataUserRecipient)
+    //получение файлов получателе
     const filesRecipient = await findFilesInUser(dataOrder.recipient_id)
     console.log(filesRecipient)
+
+    //получние данных об организаторе
+    const dataUserOrganizer = await findUser(dataOrder.address_organizer_id)
+
+    //получение файлов организаторе
+    const filesOrganizer = await findFilesInUser(dataOrder.address_organizer_id)
+
 
     //получние данных адреса отправителя
     const dataAddressSendler = await findAddress(dataOrder.address_from_id)
@@ -54,10 +62,12 @@ export async function POST(req: Request) {
         dataOrder,
         arrayPlacesInOrder,
         arrrfiles,
+        dataUserOrganizer,
         dataUserSendler,
         dataUserRecipient,
         dataAddressSendler,
         dataAddressRecipient,
+        filesOrganizer,
         filesSendler,
         filesRecipient
       })

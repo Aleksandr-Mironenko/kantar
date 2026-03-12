@@ -90,8 +90,8 @@ export default function Header() {
                   <span className={styles.defaultText}>ЛИЧНЫЙ КАБИНЕТ</span>
 
                   <div className={styles.hoverLinks}>
-                    <Link href="/login" className={styles.header__nav_button_content}>В АККАУНТ</Link>
-                    <button style={{ border: "none", backgroundColor: "transparent" }} onClick={() => { exitLogin() }} className={styles.header__nav_button_content}>ВЫХОД</button>
+                    <Link href="/login"  >В АККАУНТ</Link>
+                    <button onClick={() => { exitLogin() }} className={styles.header__nav_button_content}>ВЫХОД</button>
                   </div>
                 </button>
               </div>
@@ -104,8 +104,8 @@ export default function Header() {
                   <span className={styles.defaultText}>ЛИЧНЫЙ КАБИНЕТ</span>
 
                   <div className={styles.hoverLinks}>
-                    <Link href="/register" className={styles.header__nav_button_content}>РЕГИСТРАЦИЯ</Link>
-                    <Link href="/login" className={styles.header__nav_button_content}>ВХОД</Link>
+                    <Link href="/register">РЕГИСТРАЦИЯ</Link>
+                    <Link href="/login">ВХОД</Link>
                   </div>
                 </button>
               </div>

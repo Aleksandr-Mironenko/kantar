@@ -49,7 +49,7 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
     else {
       setIsFiledCheck('noFailed');
       setTrueCode(true);
-      setTextReaponse("Код принят, продолжите оформления заказа.")
+      setTextReaponse("Код подтверждения верный")
       setCheck(true);
     }
   }
@@ -61,8 +61,11 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
       setCode(value);
     }
   }
+
+  const checkText = textReaponse === "Код подтверждения верный"
+
   return (
-    /*!check && !trueCode && вместе с 104 строкой*/
+
     <>
       {isCode ?
         <div className={styles.label__wrapper}  >
@@ -101,7 +104,7 @@ export default function ButtonSendCode({ phone, email, check, trueCode, isFiledC
 
 
 
-      {/* <p>{textReaponse}</p>  вместе с 65 строкой */}
+      <p className={checkText ? styles.codeOk : styles.codeNoOk}>{textReaponse}</p>
       {isFiledCheck === 'filledTime' && <button type="button" className={styles.modal__submit} onClick={(e) => sendVerificationCode(e)}>повторный запрос кода</button>}
     </>
     //handleSubmit(onSubmit

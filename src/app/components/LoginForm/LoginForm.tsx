@@ -87,7 +87,7 @@ export default function LoginForm() {
 
       <ButtonSendCode check={check} trueCode={trueCode} isFiledCheck={isFiledCheck} email={email} phone={undefined} setIsFiledCheck={setIsFiledCheck} setTrueCode={setTrueCode} setCheck={setCheck} />
 
-      {check && trueCode && <p>Код подтверждения верный</p>}
+      {/* {check && trueCode && <p>Код подтверждения верный</p>} */}
       <button
         disabled={!check || !trueCode || !email || !password}
         type="submit"
@@ -107,7 +107,7 @@ export default function LoginForm() {
       </button>
 
       {error && (
-        <p style={{ color: "red", fontSize: "13px", textAlign: "center" }}>
+        <p style={{ color: "red", fontWeight: "800", fontSize: "16px", textAlign: "center" }}>
           {error}
         </p>
       )}

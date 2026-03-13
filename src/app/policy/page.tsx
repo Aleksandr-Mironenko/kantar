@@ -1,15 +1,8 @@
-// import Image from "next/image";
-
 import Header from '../components/Header/Header';
-import WhoWeAre from '../components/WhoWeAre/WhoWeAre';
-// import Services from './components/Services/Services';
-import Advantages from '../components/Advantages/Advantages';
 import Footer from '../components/Footer/Footer';
-// import FormCalc from './components/FormCalc/FormCalc'
 import ThirdPartyFix from '../components/ThirdPartyFix/ThirdPartyFix';
-// import RealtimeAdminPanel from './components/RealtimeAdminPanel/RealtimeAdminPanel' //полностью котов к проду купить доступ и выгрузить папку сервера Render.com
-export default function Home() {
 
+export default function Home() {
   const text = (<>
     <p style={{ fontSize: "20px" }}>1. Общие положения</p>
     <p style={{ fontSize: "20px" }}> 1.1. Настоящая Политика обработки персональных данных (далее по тексту – Политика) является неотъемлемой частью договора публичной оферты,
@@ -179,6 +172,7 @@ export default function Home() {
       от неправомерного или случайного доступа, уничтожения, изменения, блокирования, копирования, распространения, а также от иных неправомерных
       действий третьих лиц.</p>
   </>)
+
   return (
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", }}>
       <ThirdPartyFix />

@@ -21,8 +21,6 @@ export default async function LcPage() {
 
       <ThirdPartyFix />
 
-      {/* <RealtimeAdminPanel /> //полностью котов к проду купить доступ и выгрузить папку сервера Render.com */}
-
       <Header />
 
       <UserProfileClient searchParams={{ id, idUserProps: dataUserSendler }} />

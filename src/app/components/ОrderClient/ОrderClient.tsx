@@ -43,10 +43,10 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
   };
 
   const [place, setPlace] = useState<PleaseInServer[]>([])
-  const [files, setFiles] = useState<string[]>([]);
-  const [filesSender, setFilesSender] = useState<string[]>([]);
-  const [filesRecipient, setFilesRecipient] = useState<string[]>([]);
-  const [filesOrganizer, setFilesOrganizer] = useState<string[]>([]);
+  const [files, setFiles] = useState<string[]>([]);//{ filename: string, signedUrl: string }
+  const [filesSender, setFilesSender] = useState<{ filename: string, signedUrl: string }[]>([]);
+  const [filesRecipient, setFilesRecipient] = useState<{ filename: string, signedUrl: string }[]>([]);
+  const [filesOrganizer, setFilesOrganizer] = useState<{ filename: string, signedUrl: string }[]>([]);
 
   const [filesOrder, setFilesOrder] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showFilesOrder, setShowFilesOrder] = useState<boolean>(false) //открыты ли файлы флаг
@@ -401,14 +401,19 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       el.status_place === "confirmed" ? "подтвержден" :
         el.status_place === "changes_have_been_made" ? "были внесены изменения" :
           el.status_place === "canceled" ? "отменен" : ""
-    const personalMarker = `${el.places_personal_id} (место: ${el.id})`
+
     return (
       <li className={styles.orderContainer__place}
         key={el.id}>
         <div className={styles.orderContainer__place_wrapper}>
-          <p className={styles.orderContainer__place_marker} >
-            {personalMarker}
-          </p>
+          <div className={styles.orderContainer__place_marker} >
+            <p className={styles.orderContainer__place_markerId}>
+              {el.places_personal_id}
+            </p>
+            <p className={styles.orderContainer__place_markerId}>
+              (место:{el.id})
+            </p>
+          </div>
           <p className={styles.orderContainer__place_title}>
             Проверка фактических характеристик:
             <b className={styles.orderContainer__place_text}>
@@ -472,26 +477,27 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const mapFilesOrganizer = Array.isArray(filesOrganizer) ?
     filesOrganizer.map((el, index) => {
-      const type = getFileType(el);
+      const type = getFileType(el.signedUrl);
       return (
-        <li key={el}
+        <li key={el.signedUrl}
           className={styles.files__item}>
           {type === 'image' ? (
             <div className={styles.files__file}
             >
               {/* <Image  //возможность просмотра
-                  src={el}
-                  alt=""
-                  width={1300}
-                  height={1200}
-                  style={{ objectFit: 'contain' }}
-                /> */}
+                    src={el}
+                    alt=""
+                    width={1300}
+                    height={1200}
+                    style={{ objectFit: 'contain' }}
+                  /> */}
               <a
-                href={el}
+
+                href={el.signedUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
               >
-                {index + 1}. ИЗОБРАЖЕНИЕ скачать
+                {index + 1}. ИЗОБРАЖЕНИЕ {el.filename}
               </a>
             </div>
 
@@ -510,11 +516,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               <div className={styles.files__file}
               >
                 <a
-                  href={el}
+                  href={el.signedUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  {index + 1}. waybill.pdf смотреть
+                  {index + 1}. waybill.pdf
                 </a>
               </div>)
               :
@@ -522,11 +528,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 <div className={styles.files__file}
                 >
                   <a
-                    href={el}
+                    href={el.signedUrl}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                   >
-                    {index + 1}. ФАЙЛ PDF смотреть
+                    {index + 1}. ФАЙЛ PDF {el.filename}
                   </a>
                 </div>)
                 :
@@ -535,11 +541,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   >
                     {/* добавить hover */}
                     <a
-                      href={el}
+                      href={el.signedUrl}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {index + 1}. ФАЙЛ DOC скачать
+                      {index + 1}. ФАЙЛ DOC {el.filename}
                     </a>
                   </div>
 
@@ -549,11 +555,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ XLS скачать
+                        {index + 1}. ФАЙЛ XLS {el.filename}
                       </a>
                     </div>
 
@@ -562,11 +568,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                        {index + 1}. ФАЙЛ {el.filename}
                       </a>
                     </div>
                   )
@@ -578,26 +584,26 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const mapFilesSender = Array.isArray(filesSender) ?
     filesSender.map((el, index) => {
-      const type = getFileType(el);
+      const type = getFileType(el.signedUrl);
       return (
-        <li key={el}
+        <li key={el.signedUrl}
           className={styles.files__item}>
           {type === 'image' ? (
             <div className={styles.files__file}
             >
               {/* <Image  //возможность просмотра
-                  src={el}
-                  alt=""
-                  width={1300}
-                  height={1200}
-                  style={{ objectFit: 'contain' }}
-                /> */}
+                    src={el}
+                    alt=""
+                    width={1300}
+                    height={1200}
+                    style={{ objectFit: 'contain' }}
+                  /> */}
               <a
-                href={el}
+                href={el.signedUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
               >
-                {index + 1}. ИЗОБРАЖЕНИЕ скачать
+                {index + 1}. ИЗОБРАЖЕНИЕ {el.filename}
               </a>
             </div>
 
@@ -616,11 +622,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               <div className={styles.files__file}
               >
                 <a
-                  href={el}
+                  href={el.signedUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  {index + 1}. waybill.pdf смотреть
+                  {index + 1}. waybill.pdf
                 </a>
               </div>)
               :
@@ -628,11 +634,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 <div className={styles.files__file}
                 >
                   <a
-                    href={el}
+                    href={el.signedUrl}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                   >
-                    {index + 1}. ФАЙЛ PDF смотреть
+                    {index + 1}. ФАЙЛ PDF {el.filename}
                   </a>
                 </div>)
                 :
@@ -641,11 +647,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   >
                     {/* добавить hover */}
                     <a
-                      href={el}
+                      href={el.signedUrl}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {index + 1}. ФАЙЛ DOC скачать
+                      {index + 1}. ФАЙЛ DOC {el.filename}
                     </a>
                   </div>
 
@@ -655,11 +661,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ XLS скачать
+                        {index + 1}. ФАЙЛ XLS {el.filename}
                       </a>
                     </div>
 
@@ -668,11 +674,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                        {index + 1}. ФАЙЛ {el.filename}
                       </a>
                     </div>
                   )
@@ -684,26 +690,26 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const mapFilesRecipient = Array.isArray(filesRecipient) ?
     filesRecipient.map((el, index) => {
-      const type = getFileType(el);
+      const type = getFileType(el.signedUrl);
       return (
-        <li key={el}
+        <li key={el.signedUrl}
           className={styles.files__item}>
           {type === 'image' ? (
             <div className={styles.files__file}
             >
               {/* <Image  //возможность просмотра
-                  src={el}
-                  alt=""
-                  width={1300}
-                  height={1200}
-                  style={{ objectFit: 'contain' }}
-                /> */}
+                    src={el}
+                    alt=""
+                    width={1300}
+                    height={1200}
+                    style={{ objectFit: 'contain' }}
+                  /> */}
               <a
-                href={el}
+                href={el.signedUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
               >
-                {index + 1}. ИЗОБРАЖЕНИЕ скачать
+                {index + 1}. ИЗОБРАЖЕНИЕ {el.filename}
               </a>
             </div>
 
@@ -722,11 +728,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               <div className={styles.files__file}
               >
                 <a
-                  href={el}
+                  href={el.signedUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  {index + 1}. waybill.pdf смотреть
+                  {index + 1}. waybill.pdf
                 </a>
               </div>)
               :
@@ -734,11 +740,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 <div className={styles.files__file}
                 >
                   <a
-                    href={el}
+                    href={el.signedUrl}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                   >
-                    {index + 1}. ФАЙЛ PDF смотреть
+                    {index + 1}. ФАЙЛ PDF {el.filename}
                   </a>
                 </div>)
                 :
@@ -747,11 +753,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   >
                     {/* добавить hover */}
                     <a
-                      href={el}
+                      href={el.signedUrl}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {index + 1}. ФАЙЛ DOC скачать
+                      {index + 1}. ФАЙЛ DOC {el.filename}
                     </a>
                   </div>
 
@@ -761,11 +767,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ XLS скачать
+                        {index + 1}. ФАЙЛ XLS {el.filename}
                       </a>
                     </div>
 
@@ -774,11 +780,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                        {index + 1}. ФАЙЛ {el.filename}
                       </a>
                     </div>
                   )
@@ -1644,20 +1650,75 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
       className={styles.orderContainer}>
       <div className={styles.orderContainer__content}>
         <div className={styles.orderContainer__info}>
+          <div className={styles.orderContainer__title_wrapper}>
+            <div>
+              <h2 className={styles.orderContainer__title}>
+                Номер заказа: {numberOrder}
+              </h2>
+              <div className={styles.orderContainer__textblock_wrapper}>
+                <p className={styles.orderContainer__textblock}>
+                  Статус заказа:
+                  <b className={styles.orderContainer__textblock_text}>{status}
+                  </b></p>
+              </div>
+            </div>
 
-          <h2 className={styles.orderContainer__title}>
-            Номер заказа: {numberOrder}
-          </h2>
+            <div className={styles.orderContainer__qr}>
+              <Flex gap="middle"  >
+                <QRCode
+                  {...sharedProps}
+                  type="canvas"
+                  size={110}
+                  icon="https://cdn.iconscout.com/icon/premium/png-512-thumb/gps-arrow-icon-svg-download-png-6291895.png?f=webp&w=512"
+                  styles={stylesFunction}
+                />
+              </Flex>
+            </div>
+          </div>
 
-          <div className={styles.orderContainer__qr}>
-            <Flex gap="middle"  >
-              <QRCode
-                {...sharedProps}
-                type="canvas"
-                icon="https://cdn.iconscout.com/icon/premium/png-512-thumb/gps-arrow-icon-svg-download-png-6291895.png?f=webp&w=512"
-                styles={stylesFunction}
-              />
-            </Flex>
+        </div>
+        <p className={styles.orderContainer__textblock}>
+          Тип содержимого:
+          <b className={styles.orderContainer__textblock_text}>{order.document === "document" ? "документ" : "груз"}
+          </b></p>
+        <p className={styles.orderContainer__textblock}>
+          Был создан:
+          <b className={styles.orderContainer__textblock_text}>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
+        <div className={styles.orderContainer__textblock}>
+          <p > Вес: <b className={styles.orderContainer__textblock_text}>{order.heft_only_full} кг</b></p>
+          <p> Объем: <b className={styles.orderContainer__textblock_text}>{order.volume_only_full} м³</b></p>
+          <p> Рассчетный вес: <b className={styles.orderContainer__textblock_text}>{order.heft_full} кг</b></p>
+        </div>
+
+        <div className={styles.orderContainer__textblock}>
+          <p className={`${styles.orderContainer__textblock_title} `}>
+            <b className={styles.orderContainer__textblock_text}>
+              {order.is_individual ? "Индивидуальный рассчет" : "Фиксированная цена(экспресс)"}
+            </b>
+          </p>
+          <p className={styles.orderContainer__textblock_title}> Полная стоимость:
+            <b className={styles.orderContainer__textblock_text}>
+              {order.price_full} ₽
+            </b>
+          </p>
+          <p className={styles.orderContainer__textblock_title}> Индивидуальная скидка (заказа): <b className={styles.orderContainer__textblock_text}>{order.discount_this_send} %</b></p>
+          <p className={styles.orderContainer__textblock_title}> Поступление оплаты: <b className={styles.orderContainer__textblock_text}>{order.is_paid ? "оплачен" :
+            <span className={styles.orderContainer__textblock_error}>
+              не оплачен
+            </span>}</b></p>
+
+        </div>
+        <div className={styles.orderContainer__textblock}>
+          <p className={styles.orderContainer__textblock_title}>Дата забора груза: <b>{order.loading_date ? dateCreateOrderLoad(String(order.loading_date)) :
+            <span className={styles.orderContainer__textblock_error}>
+              не выбрана
+            </span>}</b></p>
+          <p className={styles.orderContainer__textblock_title}>Дата вручения груза: <b>{order.unloading_date ? dateCreateOrderLoad(String(order.unloading_date)) :
+            <span className={styles.orderContainer__textblock_error}>
+              не выбрана
+            </span>}</b></p>
+
+          <div className={styles.orderContainer__buttonBlock}>
             <button className={styles.orderContainer__buttonRule}
               onClick={(e) => {
                 e.preventDefault()
@@ -1702,49 +1763,6 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
 
           </div>
-
-        </div>
-
-        <p className={styles.orderContainer__textblock}>
-          Статус заказа:
-          <b className={styles.orderContainer__textblock_text}>{status}</b></p>
-        <p className={styles.orderContainer__textblock}>
-          Был создан:
-          <b className={styles.orderContainer__textblock_text}>{order.created_at ? dateCreateOrder(order.created_at) : ""}</b></p>
-        <p className={styles.orderContainer__textblock}>
-          Тип содержимого:
-          <b className={styles.orderContainer__textblock_text}>{order.document === "document" ? "документ" : "груз"}</b></p>
-        <div className={styles.orderContainer__textblock}>
-          <p > Вес: <b className={styles.orderContainer__textblock_text}>{order.heft_only_full} кг</b></p>
-          <p> Объем: <b className={styles.orderContainer__textblock_text}>{order.volume_only_full} м³</b></p>
-          <p> Рассчетный вес: <b className={styles.orderContainer__textblock_text}>{order.heft_full} кг</b></p>
-        </div>
-
-        <div className={styles.orderContainer__textblock}>
-          <p> Полная стоимость:
-            <b className={styles.orderContainer__textblock_text}>
-              {order.price_full} ₽
-            </b>
-            <span className={styles.orderContainer__textblock_error}>
-              {order.is_individual ? "индивидуальный рассчет" : "фиксированная цена(экспресс)"}
-            </span></p>
-          <p> Индивидуальная скидка (заказа): <b className={styles.orderContainer__textblock_text}>{order.discount_this_send} %</b></p>
-          <p> Поступление оплаты: <b className={styles.orderContainer__textblock_text}>{order.is_paid ? "оплачен" :
-            <span className={styles.orderContainer__textblock_error}>
-              не оплачен
-            </span>}</b></p>
-
-        </div>
-        <div className={styles.orderContainer__textblock}>
-          <p>Дата забора груза: <b>{order.loading_date ? dateCreateOrderLoad(String(order.loading_date)) :
-            <span className={styles.orderContainer__textblock_error}>
-              не выбрана
-            </span>}</b></p>
-          <p>Дата вручения груза: <b>{order.unloading_date ? dateCreateOrderLoad(String(order.unloading_date)) :
-            <span className={styles.orderContainer__textblock_error}>
-              не выбрана
-            </span>}</b></p>
-
         </div>
         {showComments && commentBlock}
         <div className={styles.orderContainer__clients}
@@ -1821,7 +1839,8 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               <p>Минуточку...</p>
               <Loader />
             </div>) :
-            mapOrder}
+            mapOrder
+          }
 
         </div>
       </div>

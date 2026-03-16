@@ -44,9 +44,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const [place, setPlace] = useState<PleaseInServer[]>([])
   const [files, setFiles] = useState<string[]>([]);
-  const [filesSender, setFilesSender] = useState<string[]>([]);
-  const [filesRecipient, setFilesRecipient] = useState<string[]>([]);
-  const [filesOrganizer, setFilesOrganizer] = useState<string[]>([]);
+  const [filesSender, setFilesSender] = useState<{ filename: string, signedUrl: string }[]>([]);
+  const [filesRecipient, setFilesRecipient] = useState<{ filename: string, signedUrl: string }[]>([]);
+  const [filesOrganizer, setFilesOrganizer] = useState<{ filename: string, signedUrl: string }[]>([]);
 
   const [filesOrder, setFilesOrder] = useState<FileObj[] | []>([{ file: null, id: 0 }]); //файлы
   const [showFilesOrder, setShowFilesOrder] = useState<boolean>(false) //открыты ли файлы флаг
@@ -322,9 +322,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
     setUserRecipient(response.dataUserRecipient)
     setAddressSendler(response.dataAddressSendler)
     setAddressRecipient(response.dataAddressRecipient)
-    setFilesOrganizer(response.filesOrganizer)
-    setFilesSender(response.filesSendler)
-    setFilesRecipient(response.filesRecipient)
+    setFilesOrganizer(response.filesOrganizer)//поменять тип и использовать по ключу
+    setFilesSender(response.filesSendler)//поменять тип и использовать по ключу
+    setFilesRecipient(response.filesRecipient)//поменять тип и использовать по ключу
   }
 
   const createPDFWaybill = async (data: PDFWayBillClient) => {
@@ -472,9 +472,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const mapFilesOrganizer = Array.isArray(filesOrganizer) ?
     filesOrganizer.map((el, index) => {
-      const type = getFileType(el);
+      const type = getFileType(el.signedUrl);
       return (
-        <li key={el}
+        <li key={el.signedUrl}
           className={styles.files__item}>
           {type === 'image' ? (
             <div className={styles.files__file}
@@ -487,11 +487,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     style={{ objectFit: 'contain' }}
                   /> */}
               <a
-                href={el}
+                href={el.signedUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
               >
-                {index + 1}. ИЗОБРАЖЕНИЕ скачать
+                {index + 1}. ИЗОБРАЖЕНИЕ {el.filename}
               </a>
             </div>
 
@@ -510,11 +510,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               <div className={styles.files__file}
               >
                 <a
-                  href={el}
+                  href={el.signedUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  {index + 1}. waybill.pdf смотреть
+                  {index + 1}. waybill.pdf
                 </a>
               </div>)
               :
@@ -522,11 +522,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 <div className={styles.files__file}
                 >
                   <a
-                    href={el}
+                    href={el.signedUrl}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                   >
-                    {index + 1}. ФАЙЛ PDF смотреть
+                    {index + 1}. ФАЙЛ PDF {el.filename}
                   </a>
                 </div>)
                 :
@@ -535,11 +535,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   >
                     {/* добавить hover */}
                     <a
-                      href={el}
+                      href={el.signedUrl}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {index + 1}. ФАЙЛ DOC скачать
+                      {index + 1}. ФАЙЛ DOC {el.filename}
                     </a>
                   </div>
 
@@ -549,11 +549,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ XLS скачать
+                        {index + 1}. ФАЙЛ XLS {el.filename}
                       </a>
                     </div>
 
@@ -562,11 +562,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                        {index + 1}. ФАЙЛ {el.filename}
                       </a>
                     </div>
                   )
@@ -578,9 +578,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const mapFilesSender = Array.isArray(filesSender) ?
     filesSender.map((el, index) => {
-      const type = getFileType(el);
+      const type = getFileType(el.signedUrl);
       return (
-        <li key={el}
+        <li key={el.signedUrl}
           className={styles.files__item}>
           {type === 'image' ? (
             <div className={styles.files__file}
@@ -593,11 +593,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     style={{ objectFit: 'contain' }}
                   /> */}
               <a
-                href={el}
+                href={el.signedUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
               >
-                {index + 1}. ИЗОБРАЖЕНИЕ скачать
+                {index + 1}. ИЗОБРАЖЕНИЕ {el.filename}
               </a>
             </div>
 
@@ -616,11 +616,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               <div className={styles.files__file}
               >
                 <a
-                  href={el}
+                  href={el.signedUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  {index + 1}. waybill.pdf смотреть
+                  {index + 1}. waybill.pdf
                 </a>
               </div>)
               :
@@ -628,11 +628,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 <div className={styles.files__file}
                 >
                   <a
-                    href={el}
+                    href={el.signedUrl}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                   >
-                    {index + 1}. ФАЙЛ PDF смотреть
+                    {index + 1}. ФАЙЛ PDF {el.filename}
                   </a>
                 </div>)
                 :
@@ -641,11 +641,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   >
                     {/* добавить hover */}
                     <a
-                      href={el}
+                      href={el.signedUrl}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {index + 1}. ФАЙЛ DOC скачать
+                      {index + 1}. ФАЙЛ DOC {el.filename}
                     </a>
                   </div>
 
@@ -655,11 +655,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ XLS скачать
+                        {index + 1}. ФАЙЛ XLS {el.filename}
                       </a>
                     </div>
 
@@ -668,11 +668,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                        {index + 1}. ФАЙЛ {el.filename}
                       </a>
                     </div>
                   )
@@ -684,9 +684,9 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
 
   const mapFilesRecipient = Array.isArray(filesRecipient) ?
     filesRecipient.map((el, index) => {
-      const type = getFileType(el);
+      const type = getFileType(el.signedUrl);
       return (
-        <li key={el}
+        <li key={el.signedUrl}
           className={styles.files__item}>
           {type === 'image' ? (
             <div className={styles.files__file}
@@ -699,11 +699,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     style={{ objectFit: 'contain' }}
                   /> */}
               <a
-                href={el}
+                href={el.signedUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
               >
-                {index + 1}. ИЗОБРАЖЕНИЕ скачать
+                {index + 1}. ИЗОБРАЖЕНИЕ {el.filename}
               </a>
             </div>
 
@@ -722,11 +722,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
               <div className={styles.files__file}
               >
                 <a
-                  href={el}
+                  href={el.signedUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  {index + 1}. waybill.pdf смотреть
+                  {index + 1}. waybill.pdf
                 </a>
               </div>)
               :
@@ -734,11 +734,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                 <div className={styles.files__file}
                 >
                   <a
-                    href={el}
+                    href={el.signedUrl}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                   >
-                    {index + 1}. ФАЙЛ PDF смотреть
+                    {index + 1}. ФАЙЛ PDF {el.filename}
                   </a>
                 </div>)
                 :
@@ -747,11 +747,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                   >
                     {/* добавить hover */}
                     <a
-                      href={el}
+                      href={el.signedUrl}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {index + 1}. ФАЙЛ DOC скачать
+                      {index + 1}. ФАЙЛ DOC {el.filename}
                     </a>
                   </div>
 
@@ -761,11 +761,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ XLS скачать
+                        {index + 1}. ФАЙЛ XLS {el.filename}
                       </a>
                     </div>
 
@@ -774,11 +774,11 @@ const Order = ({ numberOrder }: { numberOrder: number }) => {
                     >
                       {/* добавить hover */}
                       <a
-                        href={el}
+                        href={el.signedUrl}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                       >
-                        {index + 1}. ФАЙЛ (неопределенный тип) скачать
+                        {index + 1}. ФАЙЛ {el.filename}
                       </a>
                     </div>
                   )

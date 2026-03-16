@@ -5,11 +5,11 @@ export default function Hero() {
   return (
     <section className={styles.hero}>
       <div className={styles.hero__container} >
-        <h1 className={styles.hero__title}>
+        <h2 className={styles.hero__title}>
           Отправляйте
           грузы вместе с
           Kantar
-        </h1>
+        </h2>
 
         <p className={styles.hero__subtitle}>
           Быстрая и безопасная доставка грузов по России и всему миру.

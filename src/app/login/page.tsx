@@ -3,8 +3,12 @@ import LoginForm from '../components/LoginForm/LoginForm';
 import Footer from '../components/Footer/Footer';
 import ThirdPartyFix from '../components/ThirdPartyFix/ThirdPartyFix';
 
-export default function Home() {
+export const metadata = {
+  title: "Вход в личный кабинет | Kantar Logistic",
+  robots: "noindex, nofollow",
+};
 
+export default function Home() {
 
   return (
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: 'space-between' }}>

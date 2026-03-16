@@ -22,13 +22,13 @@
       }
     }
 
-    @media (max-width: 490px) {
+    @media (max-width: 595px) {
       margin-top: 30px;
       flex-direction: column;
     }
   }
 
-  @media (max-width: 812px) {
+  @media (max-width: 850px) {
     width: 100vw;
     flex-direction: column;
     justify-content: center;

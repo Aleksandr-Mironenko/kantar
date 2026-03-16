@@ -239,7 +239,7 @@ export default function UserProfileClient({ searchParams }: { searchParams: { id
     if (!response.ok) {
       throw new Error("Ошибка отправки")
     }
-    getOrder(numberOrder)//добавить обновление
+    // getOrder(numberOrder)//добавить обновление
     setAddFileInUser(false)
   };
 

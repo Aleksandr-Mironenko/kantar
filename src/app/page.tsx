@@ -118,8 +118,8 @@ export default function Home() {
         <CalcSend />
 
         {/* SEO‑текст на главной (очень полезно) */}
-        <section style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto" }}>
-          <h2 style={{ fontSize: "0px", height: "0px", overflow: "hidden" }}>
+        <section  >
+          <h2 style={{ fontSize: "16px", lineHeight: "1.6", position: "absolute", left: "-9999px", top: "-9999px", }}>
             Логистическая компания Kantar Logistic — международные перевозки
           </h2>
           <h3 style={{
